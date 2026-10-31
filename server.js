@@ -31,7 +31,7 @@ const server = http.createServer(async (req, res) => {
     }
   } catch (e) {
     console.error('[server]', e);
-    if (!res.writableEnded) fail(res, 500, '服务器内部错误');
+    if (!res.headersSent && !res.writableEnded) fail(res, 500, '服务器内部错误');
   }
 });
 

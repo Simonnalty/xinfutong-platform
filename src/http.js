@@ -22,6 +22,7 @@ const MIME = {
 };
 
 function json(res, code, data) {
+  if (res.headersSent || res.writableEnded) return;
   const body = JSON.stringify(data);
   res.writeHead(code, {
     'content-type': 'application/json; charset=utf-8',
