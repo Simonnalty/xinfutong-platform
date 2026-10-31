@@ -409,4 +409,5 @@ onMounted(async () => {
 <style scoped>
 .case-tabs :deep(.el-tabs__header) { margin-bottom: 18px; }
 .case-tabs :deep(.el-tabs__item) { font-size: 14px; }
+.case-tabs :deep(.el-tabs__content) { min-height: 430px; }
 </style>
