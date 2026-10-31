@@ -45,6 +45,16 @@ CREATE TABLE IF NOT EXISTS org_members (
   PRIMARY KEY (org_id, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS org_enterprises (
+  org_id INT NOT NULL,
+  enterprise_id INT NOT NULL,
+  perm VARCHAR(10) NOT NULL DEFAULT 'read',          -- read|write
+  note VARCHAR(200) NULL,
+  granted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  revoked_at DATETIME NULL,
+  PRIMARY KEY (org_id, enterprise_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS enterprise_members (
   enterprise_id INT NOT NULL,
   user_id INT NOT NULL,

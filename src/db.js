@@ -88,6 +88,7 @@ function ready() {
         const seed = require('../db/seed.js');
         await seed({ all, one, run });
       }
+      await require('../db/migrate.js')({ all, one, run });
     })().catch(err => { readyPromise = null; throw err; });
   }
   return readyPromise;

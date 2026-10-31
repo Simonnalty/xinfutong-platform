@@ -18,6 +18,15 @@ async function guard(user, caseId) {
   return k;
 }
 
+/** 写操作：除可访问外，还要求对目标企业有写权限（企业 owner / 机构 write 授权 / 运营） */
+async function guardWrite(user, caseId) {
+  const k = await guard(user, caseId);
+  if (!(await auth.canWrite(user, k.enterprise_id))) {
+    const e = new Error('当前账号对该企业只有查看权限'); e.code = 'FORBIDDEN'; throw e;
+  }
+  return k;
+}
+
 function levelLabel(level) {
   return rules.LEVELS[level] ? rules.LEVELS[level].label : level;
 }
@@ -67,7 +76,7 @@ module.exports = function register(r) {
 
   // 重新诊断
   r.post('/api/cases/:id/diagnose', async ({ user, params, ip }) => {
-    await guard(user, params.id);
+    await guardWrite(user, params.id);
     const result = await diagnose.run(params.id);
     await auth.audit(user.id, 'diagnose', params.id, `分数 ${result.score}`, ip);
     return { diagnosis: result };
@@ -82,7 +91,7 @@ module.exports = function register(r) {
 
   // 保存定稿（AI 润色或手改）
   r.post('/api/cases/:id/docs/:key', async ({ user, params, body, ip }) => {
-    await guard(user, params.id);
+    await guardWrite(user, params.id);
     const built = await docs.save(params.id, params.key, String(body.html || ''), { source: body.source || 'manual', userId: user.id });
     await auth.audit(user.id, 'doc_save', `${params.id}/${params.key}`, body.source || 'manual', ip);
     return { docs: Object.entries(built.docs).map(([key, d]) => ({ key, ...d })) };
@@ -90,14 +99,14 @@ module.exports = function register(r) {
 
   // 恢复模板
   r.post('/api/cases/:id/docs/:key/reset', async ({ user, params }) => {
-    await guard(user, params.id);
+    await guardWrite(user, params.id);
     const built = await docs.reset(params.id, params.key);
     return { docs: Object.entries(built.docs).map(([key, d]) => ({ key, ...d })) };
   }, { auth: true });
 
   // 一致性校验
   r.post('/api/cases/:id/doc-check', async ({ user, params }) => {
-    await guard(user, params.id);
+    await guardWrite(user, params.id);
     return { check: await docs.check(params.id) };
   }, { auth: true });
 
@@ -105,7 +114,7 @@ module.exports = function register(r) {
   r.post('/api/tasks/:id/status', async ({ user, params, body }) => {
     const t = await db.one('SELECT * FROM tasks WHERE id = ?', [Number(params.id)]);
     if (!t) { const e = new Error('任务不存在'); e.code = 'NOT_FOUND'; throw e; }
-    await guard(user, t.case_id);
+    await guardWrite(user, t.case_id);
     const status = ['todo', 'doing', 'done'].includes(body.status) ? body.status : 'done';
     await db.run('UPDATE tasks SET status = ? WHERE id = ?', [status, t.id]);
     return { task: { ...t, status } };

@@ -35,10 +35,18 @@ function genPdf(payload) {
   });
 }
 
+async function guardWrite(user, caseId) {
+  const k = await guard(user, caseId);
+  if (!(await auth.canWrite(user, k.enterprise_id))) {
+    const e = new Error('当前账号对该企业只有查看权限'); e.code = 'FORBIDDEN'; throw e;
+  }
+  return k;
+}
+
 module.exports = function register(r) {
   // 巡检
   r.post('/api/cases/:id/rescan', async ({ user, params }) => {
-    await guard(user, params.id);
+    await guardWrite(user, params.id);
     const run = await checks.rescan(params.id, 'manual');
     return { run, latest: await checks.latest(params.id) };
   }, { auth: true });
@@ -56,7 +64,7 @@ module.exports = function register(r) {
   }, { auth: true });
 
   r.post('/api/cases/:id/objection', async ({ user, params, body, ip }) => {
-    await guard(user, params.id);
+    await guardWrite(user, params.id);
     const channel = body.channel || 'qcc';
     const out = await checks.createObjection(params.id, channel, body.html);
     await auth.audit(user.id, 'objection_send', `${params.id}/${channel}`, '发送异议函', ip);
@@ -65,7 +73,7 @@ module.exports = function register(r) {
 
   // 凭证
   r.post('/api/cases/:id/certificates', async ({ user, params }) => {
-    await guard(user, params.id);
+    await guardWrite(user, params.id);
     return { certificate: await cert.issue(params.id) };
   }, { auth: true });
 
@@ -86,7 +94,7 @@ module.exports = function register(r) {
 
   // AI 润色
   r.post('/api/cases/:id/docs/:key/polish', async ({ user, params, ip }) => {
-    await guard(user, params.id);
+    await guardWrite(user, params.id);
     const built = await docs.build(params.id);
     const doc = built.docs[params.key];
     if (!doc) throw new Error('文书不存在');
