@@ -29,9 +29,15 @@ async function run(caseId) {
 
   const warnings = [];
   for (const b of ev.blockers) {
-    warnings.push({ level: b.kind === 'unmet' ? 'bad' : b.kind === 'unknown' ? 'warn' : 'warn', text: b.text });
+    warnings.push({ level: b.kind === 'unmet' || b.kind === 'level_conflict' ? 'bad' : b.kind === 'level_unknown' ? 'warn' : b.kind === 'unknown' ? 'warn' : 'warn', text: b.text });
   }
-  if (ev.eligible) warnings.push({ level: 'info', text: `三项条件均已满足，${ev.applyFrom} 起可提交申请，规则配置办理参考时限 ${ev.reviewDays} 个工作日（以受理机关告知为准）。` });
+  // 轻微失信：公示期满由机关停止公示，不需要企业申请。
+  // 这里必须把「无需申请」讲明白，否则等于让企业去做一件法律上不必做的事。
+  if (ev.autoStopOnly) {
+    warnings.push({ level: 'warn', text: `本情形属轻微失信：公示期满三个月由作出决定的机关停止公示，企业无需提交信用修复申请。${ev.applyFrom ? `按登记日期推算，预计停止公示日 ${ev.applyFrom}；` : ''}请在「信用中国」核对公示状态，若届满仍未停止，再向作出决定的机关反映。` });
+  } else if (ev.eligible) {
+    warnings.push({ level: 'info', text: `三项条件均已满足，${ev.applyFrom} 起可提交申请，规则配置办理参考时限 ${ev.reviewDays} 个工作日（以受理机关告知为准）。` });
+  }
   if (kase.type === 'penalty') warnings.push({ level: 'info', text: '请按受理机关要求准备履行及整改证明，材料清单须结合具体事项核对。' });
   warnings.push({ level: 'info', text: '请通过官方渠道核实办理要求，警惕声称「内部渠道包过」的中介承诺。' });
 
@@ -46,7 +52,10 @@ async function run(caseId) {
     waitDays: ev.waitDays,
     conditions: ev.conditions,
     materials: ev.materials,
-    basis: ev.ruleVersion?[{law:ev.ruleVersion.title,text:ev.ruleVersion.review_note,url:ev.ruleVersion.source_url}]:[],
+    levelCheck: ev.levelCheck || null,
+    autoStopOnly: Boolean(ev.autoStopOnly),
+    rejectReasons: ev.rejectReasons || [],
+    basis: (ev.basis && ev.basis.length) ? ev.basis : (ev.ruleVersion?[{law:ev.ruleVersion.title,text:ev.ruleVersion.review_note,url:ev.ruleVersion.source_url}]:[]),
     ruleVersion:ev.ruleVersion,
     warnings,
     score: ev.score,

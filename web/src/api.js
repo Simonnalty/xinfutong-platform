@@ -36,6 +36,7 @@ export const api = {
   createEnterprise: body => request('/api/enterprises', {method:'POST',body}),
   updateEnterprise: (id,body) => request(`/api/enterprises/${id}`, {method:'PATCH',body}),
   createCase: (id,body) => request(`/api/enterprises/${id}/cases`, {method:'POST',body}),
+  caseTypes: () => request('/api/case-types'),
   overview: (id) => request(`/api/enterprises/${id}/overview`),
   evidence: id => request(`/api/cases/${id}/evidence`),
   uploadEvidence: (id,body) => request(`/api/cases/${id}/evidence`,{method:'POST',body}),

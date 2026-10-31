@@ -11,6 +11,7 @@ const stage = require('../services/stage.js');
 const docs = require('../services/docs.js');
 const enterprises = require('../services/enterprises.js');
 const cases = require('../services/cases.js');
+const caseTypes = require('../services/case-types.js');
 const validation = require('../services/validation.js');
 
 async function guard(user, caseId) {
@@ -36,6 +37,9 @@ function levelLabel(level) {
 }
 
 module.exports = function register(r) {
+  // 事项类型清单：含支持等级、受理机关、官方入口与参考材料
+  r.get('/api/case-types', async () => ({ items: caseTypes.list() }), { auth: true });
+
   // 企业列表
   r.get('/api/enterprises', async ({ user }) => ({ items: await auth.enterprisesOf(user) }), { auth: true });
 
@@ -76,7 +80,7 @@ module.exports = function register(r) {
     return {
       case: { ...kase, levelLabel: levelLabel(kase.level) },
       enterprise: ent,
-      rule: { ...evald, basis: evald.ruleVersion?[{law:evald.ruleVersion.title,text:evald.ruleVersion.review_note,url:evald.ruleVersion.source_url}]:[] },
+      rule: { ...evald, basis: (evald.basis && evald.basis.length) ? evald.basis : (evald.ruleVersion?[{law:evald.ruleVersion.title,text:evald.ruleVersion.review_note,url:evald.ruleVersion.source_url}]:[]) },
       diagnosisHistory:await db.all('SELECT id,content,digest,created_at FROM diagnosis_snapshots WHERE case_id=? ORDER BY id DESC LIMIT 10',[params.id]),
       stage: await stage.info(kase),
       docs: Object.entries(built.docs).map(([key, d]) => ({ key, documentKey: key, ...d })),
@@ -145,11 +149,11 @@ module.exports = function register(r) {
       if (f[key] && kase.listed_date && f[key] < kase.listed_date) throw new Error('履行、整改或移出日期不能早于列入日期');
     }
     await db.tx(async t => {
-      await t.run('UPDATE cases SET obligation_at=?,rectified=?,rectify_at=?,no_new_similar=?,removed_date=?,facts_updated_at=NOW() WHERE id=?',
-        [f.obligation_at,f.rectified,f.rectify_at,f.no_new_similar,f.removed_date,params.id]);
+      await t.run('UPDATE cases SET obligation_at=?,rectified=?,rectify_at=?,no_new_similar=?,removed_date=?,fine_amount=?,discretion=?,facts_updated_at=NOW() WHERE id=?',
+        [f.obligation_at,f.rectified,f.rectify_at,f.no_new_similar,f.removed_date,f.fine_amount,f.discretion,params.id]);
       await t.run('INSERT INTO timeline_events (case_id, at, actor, action, detail) VALUES (?, NOW(), ?, ?, ?)',
         [params.id,user.name || '企业','更新案件事实','事实已更新，请重新诊断并核对已生成材料']);
-      await t.run("INSERT INTO audit_logs (actor_id,action,target,detail,ip) VALUES (?,'facts',?,?,?)",[user.id,params.id,'更新履行/整改/新增失信事实',ip||null]);
+      await t.run("INSERT INTO audit_logs (actor_id,action,target,detail,ip) VALUES (?,'facts',?,?,?)",[user.id,params.id,'更新履行/整改/裁量阶次事实',ip||null]);
     });
     const today = new Date().toISOString().slice(0, 10);
     const fresh = await db.one('SELECT * FROM cases WHERE id = ?', [params.id]);

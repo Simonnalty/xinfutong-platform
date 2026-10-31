@@ -98,6 +98,8 @@ CREATE TABLE IF NOT EXISTS cases (
   rectified TINYINT NULL,                           -- 整改是否完成：1 是 / 0 否 / NULL 未知
   rectify_at DATE NULL,
   no_new_similar TINYINT NULL,                      -- 近12个月无新增同类：1/0/NULL
+  fine_amount DECIMAL(12,2) NULL,                   -- 罚款金额（元），决定书载明的数额
+  discretion VARCHAR(16) NULL,                      -- 裁量阶次：lighter从轻/mitigated减轻/normal一般/heavier从重
   facts_updated_at DATETIME NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   KEY idx_case_ent (enterprise_id)

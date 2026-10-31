@@ -10,7 +10,7 @@ async function issue(caseId,{months=12}={}){
   return db.tx(async t=>{
     const k=await t.one('SELECT * FROM cases WHERE id=? FOR UPDATE',[caseId]);if(!k)throw new Error('事项不存在');
     const proof=await evidence.official(caseId,t);
-    if(k.stage!=='repaired'||!proof||!k.removed_date)throw new Error('须登记已修复、移出日期，并保留已人工核录的官方结果材料，方可签发平台状态说明');
+    if(k.stage!=='repaired'||!proof||!k.removed_date)throw new Error('须登记已修复、移出日期，并保留已人工核录的官方结果材料，方可生成办理进度记录');
     const bytes=await t.one('SELECT content FROM evidence_files WHERE id=?',[proof.id]);
     if(require('node:crypto').createHash('sha256').update(bytes.content).digest('hex')!==proof.digest)throw new Error('官方材料文件与摘要不一致');
     const e=await t.one('SELECT * FROM enterprises WHERE id=?',[k.enterprise_id]);
@@ -25,25 +25,25 @@ async function issue(caseId,{months=12}={}){
     const c={code:'XF-C-'+randomBytes(12).toString('hex').toUpperCase(),case_id:caseId,doc_no:k.doc_no||'',digest,prev_hash:last?.digest||'0'.repeat(64),issued_at:issuedAt,valid_until:validUntil};
     await t.run("INSERT INTO certificates (code,case_id,doc_no,digest,prev_hash,signature,issued_at,valid_until,status) VALUES (?,?,?,?,?,?,?,?,'valid')",[c.code,caseId,c.doc_no,digest,c.prev_hash,signature(c,version),issuedAt,validUntil]);
     await t.run('INSERT INTO certificate_snapshots (code,case_id,version,content,content_hash) VALUES (?,?,?,?,?)',[c.code,caseId,version,JSON.stringify(content),digest]);
-    await t.run("INSERT INTO timeline_events (case_id,at,actor,action,detail) VALUES (?,NOW(),'平台','签发平台修复状态说明',?)",[caseId,c.code+' · 版本 '+version]);
+    await t.run("INSERT INTO timeline_events (case_id,at,actor,action,detail) VALUES (?,NOW(),'平台','生成办理进度记录',?)",[caseId,c.code+' · 版本 '+version]);
     return {...c,status:'valid',version};
   });
 }
 async function get(code){return db.one('SELECT * FROM certificates WHERE code=?',[code]);}
 async function verify(code){
-  const c=await get(code);if(!c)return {state:'notfound',message:'未找到该凭证编号'};
+  const c=await get(code);if(!c)return {state:'notfound',message:'未找到该记录编号'};
   const s=await db.one('SELECT * FROM certificate_snapshots WHERE code=?',[code]);
-  if(!s)return {state:'legacy',message:'此为旧版演示凭证，缺少不可变证据快照，请重新签发'};
+  if(!s)return {state:'legacy',message:'此为旧版演示记录，缺少不可变证据快照，请重新生成'};
   const content=parse(s.content),valid=sha256(stable(content))===c.digest&&c.digest===s.content_hash&&equal(signature(c,s.version),c.signature);
-  let state=valid?'valid':'tampered',message=valid?'签发时快照完整，官方材料由企业人工核录；当前渠道状态需重新核验。':'凭证内容、有效期或签名与签发记录不一致。';
-  if(valid&&c.status==='revoked'){state='revoked';message='凭证已撤销。';}
-  else if(valid&&c.valid_until<new Date().toISOString().slice(0,10)){state='expired';message='凭证已过期。';}
+  let state=valid?'valid':'tampered',message=valid?'生成时快照完整，官方材料由企业人工核录；当前渠道状态需重新核验。':'记录内容、核对有效期或签名与生成记录不一致。';
+  if(valid&&c.status==='revoked'){state='revoked';message='该记录已作废。';}
+  else if(valid&&c.valid_until<new Date().toISOString().slice(0,10)){state='expired';message='该记录已过核对有效期。';}
   const active=await evidence.official(c.case_id);
-  if(valid&&state==='valid'&&(!active||active.id!==content.officialProof.id)){state='stale';message='该凭证所依据的官方材料已归档或更新，请重新签发。';}
+  if(valid&&state==='valid'&&(!active||active.id!==content.officialProof.id)){state='stale';message='该记录所依据的官方材料已归档或更新，请重新生成。';}
   await db.run('INSERT INTO cert_scans (code,ip,ua,result) VALUES (?,?,?,?)',[code,'','',state]);
   if(!valid)return {state,message,certificate:{code:c.code}};
   return {state,message,certificate:{code:c.code,docNo:c.doc_no,issuedAt:c.issued_at,validUntil:c.valid_until,digest:c.digest,prevHash:c.prev_hash,status:c.status,version:s.version},enterprise:content.enterprise,case:content.case,officialProof:{digest:content.officialProof.digest,observedAt:content.officialProof.observedAt,reviewType:content.officialProof.reviewType},channels:content.channels.map(x=>({name:x.channel_name,state:x.state,provider:x.provider,checkedAt:x.last_checked_at}))};
 }
-async function revoke(code,reason){reason=v.text(reason,'撤销原因',300,true);if(!await get(code))throw new Error('凭证不存在');await db.run("UPDATE certificates SET status='revoked',revoked_reason=?,revoked_at=NOW() WHERE code=?",[reason,code]);return get(code);}
+async function revoke(code,reason){reason=v.text(reason,'撤销原因',300,true);if(!await get(code))throw new Error('记录不存在');await db.run("UPDATE certificates SET status='revoked',revoked_reason=?,revoked_at=NOW() WHERE code=?",[reason,code]);return get(code);}
 async function listOf(caseId){return db.all('SELECT c.*,s.version FROM certificates c LEFT JOIN certificate_snapshots s ON s.code=c.code WHERE c.case_id=? ORDER BY c.issued_at DESC,s.version DESC',[caseId]);}
 module.exports={issue,get,verify,revoke,listOf};

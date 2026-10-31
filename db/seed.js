@@ -17,11 +17,16 @@ const ENTERPRISES = [
 ];
 
 const CASES = [
-  ['XF-2026-000437', 1, 'abnormal', '未按规定期限公示 2024 年度报告', '湘潭市市场监督管理局', '潭市监信列〔2025〕0317 号', '2025-03-18', '2025-07-02', 'minor', 'reviewing', 62, '2025-10-02', '2026-11-12'],
-  ['XF-2026-000381', 2, 'penalty', '特种设备超期未检（起重机械）', '湘潭市市场监督管理局', '潭市监处罚〔2026〕0214 号', '2026-02-11', null, 'serious', 'draft', 30, '2027-02-11', '2027-05-11'],
-  ['XF-2026-000352', 3, 'abnormal', '未按期报送 2024 年度报告', '湘潭市市场监督管理局', '潭市监信列〔2025〕0188 号', '2025-05-09', '2025-09-15', 'general', 'draft', 15, '2025-11-15', '2026-12-20'],
-  ['XF-2026-000298', 4, 'penalty', '生产经营标注虚假生产日期的食品', '湘潭市市场监督管理局', '潭市监处罚〔2025〕0533 号', '2025-08-20', null, 'general', 'reviewing', 48, '2026-02-20', '2026-11-18'],
-  ['XF-2026-000240', 5, 'abnormal', '未按期报送 2023 年度报告', '湘潭市雨湖区市场监督管理局', '雨市监信列〔2024〕0091 号', '2024-04-12', '2024-08-01', 'minor', 'repaired', 100, '2024-10-01', '2025-01-01']
+  ['XF-2026-000437', 1, 'abnormal', '未按规定期限公示 2024 年度报告', '湘潭市市场监督管理局', '潭市监信列〔2025〕0317 号', '2025-03-18', '2025-07-02', 'minor', 'reviewing', 62, '2025-10-02', '2026-11-12', null, null],
+  ['XF-2026-000381', 2, 'penalty', '特种设备超期未检（起重机械）', '湘潭市市场监督管理局', '潭市监处罚〔2026〕0214 号', '2026-02-11', null, 'serious', 'draft', 30, '2027-02-11', '2027-05-11', 80000.00, 'normal'],
+  ['XF-2026-000352', 3, 'abnormal', '未按期报送 2024 年度报告', '湘潭市市场监督管理局', '潭市监信列〔2025〕0188 号', '2025-05-09', '2025-09-15', 'general', 'draft', 15, '2025-11-15', '2026-12-20', null, null],
+  // 演示「只按金额判等级会判错」：3 万元低于 5 万，但裁量阶次是一般，
+  // 依 107 号令第七条不构成轻微失信，应按一般失信等满三个月再申请。
+  ['XF-2026-000298', 4, 'penalty', '生产经营标注虚假生产日期的食品', '湘潭市市场监督管理局', '潭市监处罚〔2025〕0533 号', '2025-08-20', null, 'general', 'reviewing', 48, '2026-02-20', '2026-11-18', 30000.00, 'normal'],
+  ['XF-2026-000240', 5, 'abnormal', '未按期报送 2023 年度报告', '湘潭市雨湖区市场监督管理局', '雨市监信列〔2024〕0091 号', '2024-04-12', '2024-08-01', 'minor', 'repaired', 100, '2024-10-01', '2025-01-01', null, null],
+  // 演示「轻微失信无需申请」：仅处罚款 2 万元、从轻阶次，两项要件同时成立，
+  // 依 107 号令第七条公示期满三个月由机关停止公示，企业不需要提交申请。
+  ['XF-2026-000455', 1, 'penalty', '未按规定明码标价（建材价签与实际不符）', '湘潭市雨湖区市场监督管理局', '雨市监处罚〔2026〕0088 号', '2026-08-15', null, 'minor', 'draft', 20, '2026-11-15', '2026-12-15', 20000.00, 'lighter']
 ];
 
 const CHANNELS = [
@@ -69,8 +74,12 @@ const RULES = [
   ['min_months.general', '6', '一般失信最短公示期（月）'],
   ['min_months.serious', '12', '严重失信最短公示期（月）'],
   ['review_days', '15', '行政机关受理后作出决定的承诺时限（工作日）'],
+  ['similar_window_months', '12', '「无新增同类失信」的观察期（月）'],
+  ['required_conditions', 'obligation,rectify,nomore', '参与判定的前置条件，逗号分隔（obligation=已履行义务, rectify=已整改, nomore=无新增同类）；留空表示三项全要'],
   ['objection_sla_days', '3', '平台对异议函的答复时限（工作日）'],
-  ['cert_valid_months', '12', '数字凭证有效期（月）']
+  ['minor_fine_cap', '50000', '较低数额罚款上限：经营主体五万元以下，须与从轻或减轻阶次同时成立（107号令第七条）'],
+  ['person_fine_cap', '5000', '较低数额罚款上限：相关责任人员五千元以下（107号令第七条）'],
+  ['cert_valid_months', '12', '办理进度记录有效期（月）']
 ];
 
 const TEMPLATES = [
@@ -139,13 +148,22 @@ module.exports = async function seed({ all, one, run }) {
   // 演示账号绑定第一家企业
   await run('INSERT INTO enterprise_members (enterprise_id, user_id, role) VALUES (?,?,\'owner\')', [entIds[0], 1]);
   await run('INSERT INTO enterprise_members (enterprise_id, user_id, role) VALUES (?,?,\'staff\')', [entIds[1], 1]);
+  // 第 4 家企业：演示「罚 3 万但裁量阶次为一般」应按一般失信处理（同一负责人名下另一家企业）
+  await run('INSERT INTO enterprise_members (enterprise_id, user_id, role) VALUES (?,?,\'owner\')', [entIds[3], 1]);
 
   for (const c of CASES) {
     const enterpriseId = entIds[c[1] - 1];
-    await run(`INSERT INTO cases (id, enterprise_id, type, event, authority, doc_no, listed_date, removed_date, level, stage, progress, apply_from, due_date)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-      [c[0], enterpriseId, c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11], c[12]]);
+    await run(`INSERT INTO cases (id, enterprise_id, type, event, authority, doc_no, listed_date, removed_date, level, stage, progress, apply_from, due_date, fine_amount, discretion)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [c[0], enterpriseId, c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11], c[12], c[13], c[14]]);
   }
+
+  // 轻微失信演示案例：把履行、整改、无新增同类登记完整，便于看到「无需申请」的结论
+  await run(`UPDATE cases SET obligation_at='2026-08-28', rectified=1, rectify_at='2026-09-05', no_new_similar=1
+             WHERE id='XF-2026-000455'`);
+  // 一般失信的演示案例：罚 3 万但裁量阶次为一般，条件满足后应「可申请」而非「自动停止」
+  await run(`UPDATE cases SET obligation_at='2025-09-10', rectified=1, rectify_at='2025-09-20', no_new_similar=1
+             WHERE id='XF-2026-000298'`);
 
   for (const ch of CHANNELS) {
     await run(`INSERT INTO case_channels (case_id, channel_code, channel_name, state, note, last_checked_at, sort)

@@ -1,0 +1,7 @@
+﻿信复通 Windows 版本
+Git分支：codex/windows-demo
+提交：e4a889db11fbda8a8272d59a8bcaa98e40c64307
+首次安装：windows/setup.bat
+操作说明：windows/README.md
+只演示：start.bat（安装并配置数据库后）
+不含Linux依赖、本机.env和原业务数据库。Windows实机运行尚待验证。

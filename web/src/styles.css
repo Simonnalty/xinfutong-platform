@@ -213,6 +213,8 @@ a { color: var(--teal-dark); text-decoration: none; }
 .login-left h1 { font-size: 34px; line-height: 1.35; margin: 0 0 18px; letter-spacing: 1px; }
 .login-left h1 em { color: #4FD1C5; font-style: normal; }
 .login-left p { color: #9FB4C6; line-height: 1.9; max-width: 460px; }
+.login-note { margin-top: 18px; max-width: 460px; padding: 12px 14px; border-radius: 10px; background: rgba(201, 162, 39, .12); border: 1px solid rgba(201, 162, 39, .35); color: #E8D9AE; font-size: 12.5px; line-height: 1.85; }
+.login-note strong { color: #F2C94C; }
 .login-feats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 30px; }
 .login-feat { border: 1px solid rgba(255, 255, 255, .12); border-radius: 10px; padding: 14px 16px; background: rgba(255, 255, 255, .03); }
 .login-feat .t { font-size: 14px; color: #fff; margin-bottom: 4px; }

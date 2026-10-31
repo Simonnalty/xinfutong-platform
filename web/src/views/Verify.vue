@@ -5,15 +5,15 @@
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#1FA69B,#37C2B4);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">信</div>
           <div>
-            <div style="font-weight:600;letter-spacing:1px">信复通 · 凭证核验</div>
-            <div class="muted tiny">Credit Restoration Certificate Verify</div>
+            <div style="font-weight:600;letter-spacing:1px">信复通 · 办理进度记录核对</div>
+            <div class="muted tiny">Credit Restoration Progress Record</div>
           </div>
         </div>
         <el-tag size="small" effect="plain">公开核验 · 无需登录</el-tag>
       </div>
 
       <div style="margin-top:22px" class="row">
-        <el-input v-model="code" placeholder="输入凭证编号，如 XF-C-XXXXXXXXXXXX" size="large" style="flex:1" @keyup.enter="lookup" />
+        <el-input v-model="code" placeholder="输入记录编号，如 XF-C-XXXXXXXXXXXX" size="large" style="flex:1" @keyup.enter="lookup" />
         <el-button type="primary" size="large" :loading="loading" @click="lookup">核验</el-button>
       </div>
 
@@ -28,7 +28,7 @@
       </div>
 
       <div v-if="result?.enterprise" class="card card-pad" style="margin-top:6px">
-        <div class="card-title"><span class="bar"></span>凭证内容</div>
+        <div class="card-title"><span class="bar"></span>记录内容</div>
         <el-descriptions :column="1" border size="small">
           <el-descriptions-item label="企业名称">{{ result.enterprise.name }}</el-descriptions-item>
           <el-descriptions-item label="统一社会信用代码">{{ result.enterprise.creditCode }}</el-descriptions-item>
@@ -38,7 +38,7 @@
           <el-descriptions-item label="决定文号">{{ result.case.docNo }}</el-descriptions-item>
           <el-descriptions-item label="列入日期">{{ result.case.listedDate }}</el-descriptions-item>
           <el-descriptions-item label="移出日期">{{ result.case.removedDate || '—' }}</el-descriptions-item>
-          <el-descriptions-item label="凭证编号">{{ result.certificate.code }}</el-descriptions-item>
+          <el-descriptions-item label="记录编号">{{ result.certificate.code }}</el-descriptions-item>
           <el-descriptions-item label="有效期至">{{ result.certificate.validUntil }}</el-descriptions-item>
           <el-descriptions-item label="内容摘要" :span="2">
             <span class="mono">{{ result.certificate.digest }}</span>
@@ -49,14 +49,21 @@
         </el-descriptions>
         <div v-if="result.officialProof" class="muted tiny" style="margin-top:12px">依据：{{ result.officialProof.reviewType }}</div>
         <div v-for="c in result.channels" :key="c.name" class="muted tiny">{{ c.name }} · {{ c.provider }} · {{ c.state }} · {{ c.checkedAt || '未核验' }}</div>
-        <div class="muted tiny" style="margin-top:14px;line-height:1.8">
-          核验原理：平台核验签发时不可变快照及签名，签名同时覆盖版本和有效期；企业后续改档不覆盖历史。
-          本平台仅证明「数据与存证一致」，不替代行政机关作出的决定。
+        <div class="muted tiny" style="margin-top:14px;line-height:1.9">
+          <strong>这不是修复证明。</strong>本页只能证明「页面内容与平台留存的记录一致」：记录生成时是什么内容，现在还是什么内容，没有被改动过。
+          它<strong>不能</strong>证明失信信息已经修复，<strong>不能</strong>作为征信报告、资信证明或投标资格证明使用。
+        </div>
+        <div class="muted tiny" style="margin-top:10px;line-height:1.9">
+          能证明已修复的，只有作出决定的行政机关出具的《信用修复决定书》或移出决定，以及「信用中国」上的实际公示状态。
+          需要确认是否真的修复，请以官方渠道为准。平台不能提交申请，也不对办理结果作任何承诺。
+        </div>
+        <div class="muted tiny" style="margin-top:10px;line-height:1.9">
+          核验原理：平台核验生成时的不可变快照与签名，签名同时覆盖版本和核对有效期；企业后续改档不覆盖历史记录。
         </div>
       </div>
 
       <div v-if="!result && !loading" class="center" style="padding:40px 0">
-        <el-empty description="输入凭证编号开始核验" :image-size="90" />
+        <el-empty description="输入记录编号开始核对" :image-size="90" />
       </div>
     </div>
   </div>
@@ -73,8 +80,8 @@ const loading = ref(false)
 const result = ref(null)
 
 const stateText = computed(() => ({
-  valid: '凭证有效', revoked: '凭证已撤销', tampered: '内容可能被篡改',
-  expired: '凭证已过期', notfound: '未找到凭证', stale:'依据已更新',legacy:'旧版凭证需重新签发'
+  valid: '记录内容一致', revoked: '记录已作废', tampered: '内容可能被改动',
+  expired: '核对有效期已过', notfound: '未找到该记录', stale:'依据已更新，请重新生成',legacy:'旧版记录需重新生成'
 }[result.value?.state] || '未知状态'))
 
 async function lookup() {

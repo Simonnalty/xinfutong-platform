@@ -56,7 +56,7 @@ async function advance(caseId,to,{user,note='',ip,evidenceId}={}) {
     }
     if(to==='repaired'){
       proof=await require('./evidence').official(caseId,t);
-      if(!proof)throw fail('请上传官方修复结果并完成人工核录，再登记已修复；平台凭证不能代替官方结果');
+      if(!proof)throw fail('请上传官方修复结果并完成人工核录，再登记已修复；平台的进度记录不能代替官方结果');
       if(!kase.removed_date)throw fail('请先登记官方结果对应的移出日期');
     }
     const progress=PROGRESS[to]??kase.progress;

@@ -1,6 +1,6 @@
 'use strict';
 /*
- * 同步监测、异议、凭证、验真、PDF、AI 润色。
+ * 同步监测、异议、办理进度记录、核对、PDF、AI 润色。
  */
 const db = require('../db.js');
 const auth = require('../services/auth.js');
@@ -87,7 +87,7 @@ module.exports = function register(r) {
     return out;
   }, { auth: true });
 
-  // 凭证
+  // 办理进度记录
   r.post('/api/cases/:id/certificates', async ({ user, params }) => {
     await guardWrite(user, params.id);
     return { certificate: await cert.issue(params.id) };
@@ -100,7 +100,7 @@ module.exports = function register(r) {
 
   r.post('/api/certificates/:code/revoke', async ({ user, params, body, ip }) => {
     const existing=await cert.get(params.code);
-    if(!existing)throw new Error('凭证不存在');
+    if(!existing)throw new Error('记录不存在');
     await guardWrite(user,existing.case_id);
     const c = await cert.revoke(params.code, body.reason);
     await auth.audit(user.id, 'cert_revoke', params.code, body.reason, ip);
@@ -170,25 +170,25 @@ module.exports = function register(r) {
     return {__raw:true};
   }, {auth:true});
 
-  // PDF：凭证
+  // PDF：办理进度记录（原「信用修复状态凭证」，不具行政效力，不作修复证明）
   r.get('/api/pdf/cert', async ({ user, res, url }) => {
     const code = url.searchParams.get('code');
     const original=await cert.get(code);
-    if(!original)throw new Error('凭证不存在');
+    if(!original)throw new Error('记录不存在');
     await guard(user,original.case_id);
     const v = await cert.verify(code);
-    if(v.state!=='valid')throw new Error('凭证当前不可用于导出：'+v.message);
+    if(v.state!=='valid')throw new Error('该记录当前不可导出：'+v.message);
     const esc=docs.esc;
     const html=`<p>企业：${esc(v.enterprise.name)}；统一社会信用代码：${esc(v.enterprise.creditCode)}。</p>
 <p>事项：${esc(v.case.event)}；决定文号：${esc(v.case.docNo)}；决定机关：${esc(v.case.authority)}；企业登记移出日期：${esc(v.case.removedDate)}。</p>
-<p>本说明记录签发时企业提供且人工核录的官方材料摘要：${v.officialProof.digest}。未向行政机关联网验证，不替代官方决定、银行授信或招标方审核。</p>
+<p>本记录仅说明企业在上述事项上的办理进度，记录生成时由企业提供并人工核录的官方材料摘要为：${v.officialProof.digest}。未向行政机关联网验证，不证明失信信息已完成修复，不替代官方决定、银行授信或招标方审核。</p>
 <p>渠道快照：${v.channels.map(c=>esc(c.name)+'（'+esc(c.provider)+'）：'+esc(c.state)).join('；')||'尚无核验记录'}。模拟、待核验或失败记录不能证明真实同步。</p>
-<p>凭证编号：${esc(code)}；签发日期：${esc(v.certificate.issuedAt)}；有效期至：${esc(v.certificate.validUntil)}；版本：${v.certificate.version}。</p>
+<p>记录编号：${esc(code)}；生成日期：${esc(v.certificate.issuedAt)}；核对有效期至：${esc(v.certificate.validUntil)}；版本：${v.certificate.version}。</p>
 <p>内容摘要：${v.certificate.digest}</p>`;
     const buf = await genPdf({
-      title: '平台信用修复状态说明', html, docNo: code, qrUrl:require('../config').publicBaseUrl+'/verify?code='+encodeURIComponent(code), footer: '信复通 · 企业材料核录快照', seal: false
+      title: '信用修复办理进度记录', html, docNo: code, qrUrl:require('../config').publicBaseUrl+'/verify?code='+encodeURIComponent(code), footer: '信复通 · 办理进度记录（非修复证明）', seal: false
     });
-    sendBuffer(res, buf, 'application/pdf', '信用修复状态凭证.pdf');
+    sendBuffer(res, buf, 'application/pdf', '信用修复办理进度记录.pdf');
     return { __raw: true };
   }, { auth: true });
 };

@@ -19,7 +19,37 @@
       <!-- 诊断 -->
       <el-tab-pane label="智能诊断" name="diagnose">
         <div class="card card-pad">
-          <div class="verdict">
+          <div v-if="rule.support" class="spread" style="align-items:center;margin-bottom:14px">
+            <div style="display:flex;gap:10px;align-items:center">
+              <span style="font-size:15px;font-weight:600">{{ rule.support.label }}</span>
+              <el-tag size="small" :type="rule.support.autoJudgeable ? 'success' : 'warning'" effect="plain">{{ rule.support.supportLabel }}</el-tag>
+            </div>
+            <a v-if="rule.support.channel" :href="rule.support.channel.url" target="_blank" rel="noopener noreferrer" class="tiny">{{ rule.support.channel.name }} 官方入口 →</a>
+          </div>
+
+          <!-- 轻微失信：公示期满由机关停止公示，企业无需申请 -->
+          <el-alert v-if="rule.autoStopOnly" type="success" :closable="false" show-icon style="margin-bottom:16px">
+            <template #title>本情形无需申请：公示期满由作出决定的机关直接停止公示</template>
+            <div class="tiny" style="line-height:2">
+              依《市场监督管理信用修复管理办法》第七条，仅受到警告的行政处罚信息不予公示；仅受到通报批评、仅受到较低数额罚款的，公示期满三个月由市场监督管理部门停止公示。
+            </div>
+            <div class="tiny" style="line-height:2">
+              按登记日期推算，预计停止公示日为 <strong>{{ rule.applyFrom || '待定' }}</strong>。企业不需要提交信用修复申请，提交了也不会被受理。
+            </div>
+            <div class="tiny" style="line-height:2">
+              请到「信用中国」核对公示状态；届满仍未停止公示的，再向作出决定的机关反映，或按渠道差异生成异议草稿。
+            </div>
+          </el-alert>
+
+          <!-- 指引支持 / 仅导航：不做判定，只给说明与入口 -->
+          <el-alert v-if="rule.support && !rule.support.autoJudgeable" type="warning" :closable="false" show-icon>
+            <template #title>该类情形暂不提供自动判定</template>
+            <div class="tiny" style="line-height:2">{{ rule.support.note }}</div>
+            <div class="tiny" style="line-height:2">受理机关：{{ rule.support.authority }}</div>
+            <div class="tiny" style="line-height:2">平台不判断可申请时间，也不代为生成正式文书；请以受理机关的公开要求为准。</div>
+          </el-alert>
+
+          <div v-else class="verdict">
             <div>
               <div class="score-ring" :style="{ '--p': rule.score }">
                 <div class="num">{{ rule.score }}</div>
@@ -37,8 +67,8 @@
                   <div style="font-size:18px;font-weight:600">{{ rule.levelLabel }}</div>
                 </div>
                 <div>
-                  <div class="muted tiny">可申请修复日</div>
-                  <div style="font-size:18px;font-weight:600" :style="{ color: rule.eligible ? 'var(--ok)' : 'var(--warn)' }">
+                  <div class="muted tiny">{{ rule.autoStopOnly ? '预计停止公示日' : '可申请修复日' }}</div>
+                  <div style="font-size:18px;font-weight:600" :style="{ color: rule.autoStopOnly || rule.eligible ? 'var(--ok)' : 'var(--warn)' }">
                     {{ rule.applyFrom || '待定' }}
                   </div>
                 </div>
@@ -74,9 +104,33 @@
           </div>
         </div>
 
+        <!-- 等级核实：107 号令第七条的「较低数额罚款」是两个条件同时成立 -->
+        <div v-if="rule.levelCheck" class="card card-pad" style="margin-top:18px">
+          <div class="card-title"><span class="bar"></span>等级核实（罚款金额 × 裁量阶次）</div>
+          <div class="muted tiny" style="margin-bottom:12px;line-height:1.9">
+            《市场监督管理信用修复管理办法》第七条：较低数额罚款是指<strong>按照从轻或者减轻处罚的裁量阶次</strong>，对经营主体处以<strong>五万元以下</strong>罚款。两个条件必须同时成立——只按金额判断会把「一般阶次、罚 3 万」误判成轻微，可申请日随之算错。
+          </div>
+          <div class="kv" style="display:grid;grid-template-columns:110px 1fr;gap:8px 14px;font-size:13px">
+            <div class="muted">罚款金额</div>
+            <div>{{ rule.levelCheck.fineAmount == null ? '未登记' : rule.levelCheck.fineAmount.toLocaleString() + ' 元' }}</div>
+            <div class="muted">裁量阶次</div>
+            <div>{{ rule.levelCheck.discretionLabel || '未登记' }}</div>
+            <div class="muted">金额上限</div>
+            <div>{{ rule.levelCheck.fineCap.toLocaleString() }} 元（经营主体）</div>
+            <div class="muted">核实结论</div>
+            <div :style="{ color: rule.levelCheck.state === 'conflict' ? 'var(--bad)' : rule.levelCheck.state === 'warn' ? 'var(--warn)' : rule.levelCheck.state === 'unknown' ? 'var(--warn)' : 'var(--ok)' }">
+              {{ { ok: '与登记等级一致', warn: '建议复核等级', conflict: '与法条要件冲突', unknown: '要件缺失，暂不判断' }[rule.levelCheck.state] }}
+            </div>
+          </div>
+          <div class="tiny" style="margin-top:10px;line-height:1.9">{{ rule.levelCheck.text }}</div>
+          <div class="row" style="margin-top:12px">
+            <el-button size="small" @click="openFacts">去登记罚款金额与裁量阶次</el-button>
+          </div>
+        </div>
+
         <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:18px;margin-top:18px">
           <div class="card card-pad">
-            <div class="card-title"><span class="bar"></span>需要准备的材料（{{ rule.materials.length }} 份）</div>
+            <div class="card-title"><span class="bar"></span>{{ rule.support && !rule.support.autoJudgeable ? '材料参考清单' : '需要准备的材料' }}（{{ rule.materials.length }} 份）</div>
             <div v-for="(m, i) in rule.materials" :key="m.key" class="spread" style="padding:10px 0;border-bottom:1px dashed var(--line)">
               <div>
                 <span class="muted mono" style="margin-right:10px">{{ String(i + 1).padStart(2, '0') }}</span>
@@ -91,6 +145,17 @@
               <div style="font-size:13px;font-weight:500">{{ b.law }}</div>
               <div class="muted tiny" style="margin-top:4px;line-height:1.7">{{ b.text }}</div>
             </div>
+            <div v-if="!rule.basis || !rule.basis.length" class="muted tiny" style="line-height:1.9">
+              该类情形尚未录入经复核的规则版本，平台不提供法律依据与结论。请以受理机关公布的现行文件为准。
+            </div>
+          </div>
+        </div>
+
+        <div v-if="rule.rejectReasons && rule.rejectReasons.length" class="card card-pad" style="margin-top:18px">
+          <div class="card-title"><span class="bar"></span>常见驳回原因（{{ rule.rejectReasons.length }}）</div>
+          <div class="muted tiny" style="margin-bottom:10px;line-height:1.8">以下为该类情形在实务中被退回的常见原因，来自规则版本登记，提交前请逐条自查。</div>
+          <div v-for="(r, i) in rule.rejectReasons" :key="i" style="padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px;line-height:1.8">
+            <span class="muted mono" style="margin-right:10px">{{ String(i + 1).padStart(2, '0') }}</span>{{ r }}
           </div>
         </div>
 
@@ -99,6 +164,15 @@
           <div v-if="rule.ruleVersion" class="card card-pad" style="margin-bottom:12px">当前匹配：{{rule.ruleVersion.title}} · v{{rule.ruleVersion.version}}<p class="muted">{{rule.ruleVersion.authority_match}} · {{rule.ruleVersion.effective_from}} 起生效</p><a :href="rule.ruleVersion.source_url" target="_blank" rel="noopener noreferrer">查看规则来源</a></div>
           <el-collapse v-if="data.diagnosisHistory?.length" style="margin-bottom:14px"><el-collapse-item title="历史诊断快照（保留当时事实及规则）"><div v-for="h in data.diagnosisHistory" :key="h.id" style="margin:10px 0"><strong>{{h.created_at}}</strong><pre style="white-space:pre-wrap;overflow-wrap:anywhere">{{JSON.stringify(h.content,null,2)}}</pre><span class="muted tiny">{{h.digest}}</span></div></el-collapse-item></el-collapse>
           <el-alert v-for="(w, i) in rule.warnings" :key="i" :title="w.text" :type="w.level === 'bad' ? 'error' : w.level" :closable="false" show-icon style="margin-bottom:10px" />
+        </div>
+
+        <!-- 免责声明（第四层中的界面层）：结论只在平台内有效，导出与对外使用另见 PDF 页脚 -->
+        <div class="card card-pad disclaimer" style="margin-top:18px">
+          <div class="card-title"><span class="bar"></span>使用说明与免责声明</div>
+          <p>一、本平台是自助辅助工具，<strong>不能提交信用修复申请</strong>。信用修复申请的唯一受理渠道是「信用中国」网站以及作出决定的市场监督管理部门；平台不代办、不代提交、不承诺办理结果。</p>
+          <p>二、诊断结论依据企业自行登记的事实与平台登记的规则版本自动计算，<strong>不构成行政机关的认定</strong>。事实登记不全或登记错误，结论会随之出错；最终是否受理、是否修复，以受理机关的决定为准。</p>
+          <p>三、平台生成的材料为草稿模板，需企业核对后自行签署、自行提交；平台不代替企业作出承诺，也不对材料内容承担法律责任。</p>
+          <p>四、如平台判断与官方口径不一致，<strong>以官方口径为准</strong>，请通过「信用中国」或受理机关公开渠道复核。</p>
         </div>
       </el-tab-pane>
 
@@ -176,19 +250,29 @@
         <MonitoringPanel :case-id="caseId" :kase="data.case" :enterprise="data.enterprise" @changed="reload" />
       </el-tab-pane>
 
-      <!-- 凭证 -->
-      <el-tab-pane label="数字凭证" name="cert">
+      <!-- 办理进度记录（原「数字凭证」：平台自制文件不具行政效力，不作修复证明） -->
+      <el-tab-pane label="办理进度记录" name="cert">
+        <el-alert type="warning" :closable="false" show-icon style="margin-bottom:16px">
+          <template #title>本页生成的是「办理进度记录」，不是修复凭证，也不具行政效力</template>
+          <div class="tiny" style="line-height:2">
+            只有行政机关出具的《信用修复决定书》或移出决定，才能证明失信信息已完成修复。
+            平台这份记录只说明「企业在什么时间、就哪一条失信信息、走到了哪一步」，用于内部留痕、向银行或招标方说明办理过程。
+          </div>
+          <div class="tiny" style="line-height:2">
+            请勿把它当作已修复证明对外出示。对方要核实是否真的修复，应以「信用中国」公示状态或机关出具的正式文书为准。
+          </div>
+        </el-alert>
         <div style="display:grid;grid-template-columns:1fr 340px;gap:18px">
           <div class="card card-pad">
             <div class="spread" style="margin-bottom:14px">
-              <div class="card-title" style="margin:0"><span class="bar"></span>信用修复状态凭证</div>
-              <el-button type="primary" size="small" :icon="Postcard" :loading="issuing" @click="issue">签发新凭证</el-button>
+              <div class="card-title" style="margin:0"><span class="bar"></span>信用修复办理进度记录</div>
+              <el-button type="primary" size="small" :icon="Postcard" :loading="issuing" @click="issue">生成记录</el-button>
             </div>
-            <el-empty v-if="!certs.length" description="尚未签发凭证" :image-size="90" />
+            <el-empty v-if="!certs.length" description="尚未生成办理进度记录" :image-size="90" />
             <div v-for="c in certs" :key="c.code" class="cert-card" style="margin-bottom:16px">
               <div class="spread">
                 <div>
-                  <div class="muted tiny" style="color:#8FA9BE">凭证编号</div>
+                  <div class="muted tiny" style="color:#8FA9BE">记录编号</div>
                   <div class="code">{{ c.code }}</div>
                 </div>
                 <div class="cert-qr"><canvas :ref="el => setQr(el, c)"></canvas></div>
@@ -196,28 +280,31 @@
               <div class="kv">
                 <div class="k">企业</div><div>{{ data.enterprise.name }}</div>
                 <div class="k">决定机关</div><div>{{ data.case.authority }}</div>
-                <div class="k">签发日期</div><div>{{ fmtc(c.issued_at) }}</div>
-                <div class="k">有效期至</div><div>{{ c.valid_until }}</div>
+                <div class="k">生成日期</div><div>{{ fmtc(c.issued_at) }}</div>
+                <div class="k">核对有效期至</div><div>{{ c.valid_until }}</div>
                 <div class="k">内容摘要</div><div class="mono" style="word-break:break-all">{{ c.digest.slice(0, 32) }}…</div>
               </div>
               <div style="margin-top:16px" class="row">
-                <el-button size="small" @click="openVerify(c.code)">验真页</el-button>
+                <el-button size="small" @click="openVerify(c.code)">核对页</el-button>
                 <el-button size="small" @click="downloadCert(c.code)">下载 PDF</el-button>
-                <el-button v-if="c.status==='valid'" size="small" type="danger" @click="revoke(c.code)">撤销</el-button>
-                <el-tag size="small">{{c.status}}</el-tag>
+                <el-button v-if="c.status==='valid'" size="small" type="danger" @click="revoke(c.code)">作废</el-button>
+                <el-tag size="small">{{ {valid:'有效',revoked:'已作废',expired:'已过期'}[c.status] || c.status }}</el-tag>
               </div>
             </div>
           </div>
           <div class="card card-pad">
-            <div class="card-title"><span class="bar"></span>这张凭证能做什么</div>
+            <div class="card-title"><span class="bar"></span>这份记录能做什么、不能做什么</div>
             <div style="font-size:13px;line-height:1.9;color:#33475b">
-              <p style="margin-top:0">交给银行、招标方或合作方，对方扫码即可看到：</p>
-              <p>· 修复的是哪一条失信信息</p>
+              <p style="margin-top:0"><strong>能做的</strong>：说明企业在哪一条失信信息上走到了哪一步、依据的是哪份决定和哪份材料，供内部归档、向银行或招标方说明办理过程。</p>
+              <p>· 记录的是哪一条失信信息</p>
               <p>· 由哪个机关、依据哪份决定作出</p>
-              <p>· 凭证内容是否被篡改（摘要重算）</p>
-              <p>· 是否已被签发方撤销</p>
+              <p>· 记录内容是否被改动（摘要重算）</p>
+              <p>· 是否已被企业作废</p>
+              <p style="margin-top:12px"><strong>不能做的</strong>：</p>
+              <p>· 不能证明失信信息已完成修复，只有机关的修复决定或移出决定能证明</p>
+              <p>· 不能被当作征信报告、资信证明或投标资格证明使用</p>
               <p class="muted" style="font-size:12px;margin-top:14px">
-                凭证采用链式存证：每条凭证记录前一条的摘要，形成可追溯的哈希链。平台只证明「数据与存证一致」，不替代行政机关的决定。
+                记录采用链式存证：每条记录写入前一条的摘要，形成可追溯的哈希链。平台只证明「页面内容与留存的记录一致」，<strong>不替代行政机关的决定</strong>。
               </p>
             </div>
           </div>
@@ -251,6 +338,24 @@
       <el-form-item label="义务履行完成日">
         <el-date-picker v-model="factForm.obligation_at" type="date" value-format="YYYY-MM-DD" placeholder="缴款 / 补报完成日期" style="width:100%" />
       </el-form-item>
+      <!-- 107 号令第七条：较低数额罚款 = 从轻/减轻阶次 + 5 万元以下，两者缺一即不成立 -->
+      <el-form-item v-if="data?.case?.type === 'penalty'" label="罚款金额（元）">
+        <el-input v-model="factForm.fine_amount" placeholder="决定书载明的数额；未处罚款可留空" style="width:100%">
+          <template #append>元</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item v-if="data?.case?.type === 'penalty'" label="处罚裁量阶次">
+        <el-select v-model="factForm.discretion" placeholder="未登记（待确认）" style="width:100%">
+          <el-option value="lighter" label="从轻处罚" />
+          <el-option value="mitigated" label="减轻处罚" />
+          <el-option value="normal" label="一般（适中）处罚" />
+          <el-option value="heavier" label="从重处罚" />
+          <el-option :value="null" label="未登记（待确认）" />
+        </el-select>
+      </el-form-item>
+      <div v-if="data?.case?.type === 'penalty'" class="muted tiny" style="line-height:1.8;margin:-6px 0 14px 150px">
+        裁量阶次须按决定书载明的「从轻／减轻／一般／从重」填写。仅罚 3 万元但阶次为「一般」，依法仍属一般失信，不能按轻微处理。
+      </div>
       <el-form-item label="整改是否完成">
         <el-select v-model="factForm.rectified" placeholder="未登记" style="width:100%">
           <el-option :value="1" label="已完成" />
@@ -292,7 +397,9 @@ import { api } from '../api.js'
 const route = useRoute()
 const router = useRouter()
 const data = ref(null)
-const tab = ref(route.query.tab || 'diagnose')
+// 可切换的页签；只有 URL 显式带了合法 tab（如看板快捷卡）才沿用，否则一律落在「智能诊断」
+const TAB_NAMES = ['diagnose', 'docs', 'evidence', 'progress', 'sync', 'cert', 'share']
+const tab = ref(TAB_NAMES.includes(route.query.tab) ? route.query.tab : 'diagnose')
 const activeDoc = ref('apply')
 const aiOn = ref(false)
 const polishing = ref(false)
@@ -312,15 +419,19 @@ const now = new Date().toISOString()
 const caseId = computed(() => route.params.id)
 const rule = computed(() => data.value?.rule || { conditions: [], materials: [], basis: [], warnings: [], score: 0 })
 
-const statusText = computed(() => ({
-  needs_review:'待复核适用规则', eligible: '可申请', not_yet: `还需 ${rule.value.waitDays || 0} 天`,
-  pending_facts: '待补充事实', blocked: '暂不符合'
-}[rule.value.status] || (rule.value.eligible ? '可申请' : '待确认')))
+const statusText = computed(() => {
+  // 轻微失信是「到期由机关停止公示」，不需要企业申请，不能再显示「可申请」
+  if (rule.value.autoStopOnly) return rule.value.eligible || rule.value.applyFrom ? '无需申请' : '待核实'
+  return {
+    needs_review:'待复核适用规则', eligible: '可申请', not_yet: `还需 ${rule.value.waitDays || 0} 天`,
+    pending_facts: '待补充事实', blocked: '暂不符合'
+  }[rule.value.status] || (rule.value.eligible ? '可申请' : '待确认')
+})
 
 // —— 补充事实
 const factsVisible = ref(false)
 const savingFacts = ref(false)
-const factForm = ref({ obligation_at: '', rectified: null, rectify_at: '', no_new_similar: null })
+const factForm = ref({ obligation_at: '', rectified: null, rectify_at: '', no_new_similar: null, removed_date: '', fine_amount: '', discretion: null })
 
 function openFacts() {
   const c = data.value?.case || {}
@@ -329,7 +440,9 @@ function openFacts() {
     rectified: c.rectified === 1 ? 1 : c.rectified === 0 ? 0 : null,
     rectify_at: c.rectify_at || '',
     no_new_similar: c.no_new_similar === 1 ? 1 : c.no_new_similar === 0 ? 0 : null,
-    removed_date:c.removed_date||''
+    removed_date:c.removed_date||'',
+    fine_amount: c.fine_amount == null ? '' : String(Number(c.fine_amount)),
+    discretion: c.discretion || null
   }
   factsVisible.value = true
 }
@@ -479,11 +592,11 @@ async function issue() {
     certs.value = list.items
     await nextTick()
     drawQrs()
-    ElMessage.success('凭证已签发')
+    ElMessage.success('办理进度记录已生成（不具行政效力，不作修复证明）')
   } catch (e) { ElMessage.error(e.message) } finally { issuing.value = false }
 }
 
-async function revoke(code){try{const {value}=await ElMessageBox.prompt('请填写撤销原因','撤销凭证');await api.revokeCert(code,value);await reload();ElMessage.success('凭证已撤销')}catch(e){if(e!=='cancel'&&e!=='close')ElMessage.error(e.message)}}
+async function revoke(code){try{const {value}=await ElMessageBox.prompt('请填写作废原因','作废办理进度记录');await api.revokeCert(code,value);await reload();ElMessage.success('记录已作废')}catch(e){if(e!=='cancel'&&e!=='close')ElMessage.error(e.message)}}
 function openVerify(code) { window.open(`/verify?code=${code}`, '_blank') }
 function downloadCert(code) { window.open(`/api/pdf/cert?code=${code}`, '_blank') }
 
@@ -499,4 +612,7 @@ onMounted(async () => {
 .case-tabs :deep(.el-tabs__header) { margin-bottom: 18px; }
 .case-tabs :deep(.el-tabs__item) { font-size: 14px; }
 .case-tabs :deep(.el-tabs__content) { min-height: 430px; }
+.disclaimer p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.9; color: #4A5A6A; }
+.disclaimer p:last-child { margin-bottom: 0; }
+.disclaimer strong { color: #0F2A44; }
 </style>

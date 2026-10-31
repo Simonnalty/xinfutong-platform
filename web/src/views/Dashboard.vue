@@ -134,7 +134,7 @@ const healthHint = computed(() => {
 const quick = computed(() => [
   { t: '智能诊断', d: '判定失信等级、可申请日与材料清单', icon: 'FirstAidKit', go: () => goCase(cases.value[0]) },
   { t: '同步监测', d: '巡检第三方平台是否已同步修复结果', icon: 'Monitor', go: () => goCase(cases.value[0], 'sync') },
-  { t: '数字凭证', d: '生成可扫码核验的修复状态凭证', icon: 'Postcard', go: () => goCase(cases.value[0], 'cert') },
+  { t: '办理进度记录', d: '把办理过程留成可核对的记录，不替代机关的修复决定', icon: 'Postcard', go: () => goCase(cases.value[0], 'cert') },
   { t: '合规知识库', d: '法规原文、办理指引与典型案例', icon: 'Reading', go: () => router.push('/app/knowledge') }
 ])
 
@@ -145,7 +145,8 @@ const progressColor = row => row.stage === 'repaired' ? '#1E8449' : row.progress
 
 function goCase(row, tab) {
   if (!row) return
-  router.push({ name: 'case', params: { id: row.id }, query: tab ? { tab } : {} })
+  // 从列表进事项一律落到「智能诊断」；只有快捷卡显式指定的页签才带 tab 参数
+  router.push({ name: 'case', params: { id: row.id }, query: { tab: tab || 'diagnose' } })
 }
 
 let loadVersion=0

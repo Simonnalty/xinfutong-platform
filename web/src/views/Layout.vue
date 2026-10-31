@@ -52,6 +52,16 @@
         </div>
       </header>
 
+      <!-- 全平台常驻提示：平台不是提交入口。这条必须一直在，不能做成可关闭的弹窗 -->
+      <div class="submit-notice">
+        <el-icon :size="15"><WarningFilled /></el-icon>
+        <span class="txt">
+          <strong>本平台不能提交信用修复申请。</strong>
+          唯一受理渠道是「信用中国」及作出决定的行政机关；平台只做等级判断、材料备料与进度记录，不代办、不代提交、不承诺结果。
+        </span>
+        <a class="link" href="https://www.creditchina.gov.cn" target="_blank" rel="noopener noreferrer">前往信用中国 →</a>
+      </div>
+
       <router-view v-slot="{ Component }">
         <component :is="Component" :key="$route.path" />
       </router-view>
@@ -103,3 +113,21 @@ onMounted(async () => {
   try { aiOn.value = (await api.aiStatus()).available } catch { aiOn.value = null }
 })
 </script>
+
+<style scoped>
+.submit-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 22px;
+  background: #FFF8E6;
+  border-bottom: 1px solid #F0DFB8;
+  color: #7A5A18;
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+.submit-notice .txt { flex: 1; }
+.submit-notice strong { color: #8A5A0B; }
+.submit-notice .link { color: #8A5A0B; text-decoration: none; white-space: nowrap; font-weight: 500; }
+.submit-notice .link:hover { text-decoration: underline; }
+</style>

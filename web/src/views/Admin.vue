@@ -10,7 +10,7 @@
     <div class="kpi-grid" style="margin-bottom:18px">
       <div class="card kpi"><div class="label">入驻企业</div><div class="value">{{ stats.enterprises || 0 }}</div><div class="foot">家</div></div>
       <div class="card kpi"><div class="label">失信案件</div><div class="value">{{ stats.cases || 0 }}</div><div class="foot">已修复 {{ stats.repaired || 0 }} 件</div></div>
-      <div class="card kpi"><div class="label">签发凭证</div><div class="value">{{ stats.certificates || 0 }}</div><div class="foot">被扫码 {{ stats.scans || 0 }} 次</div></div>
+      <div class="card kpi"><div class="label">进度记录</div><div class="value">{{ stats.certificates || 0 }}</div><div class="foot">被核对 {{ stats.scans || 0 }} 次</div></div>
       <div class="card kpi"><div class="label">AI 调用</div><div class="value">{{ stats.aiCalls || 0 }}</div><div class="foot">次文书润色</div></div>
     </div>
 

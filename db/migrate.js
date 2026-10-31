@@ -17,7 +17,11 @@ module.exports = async function migrate({ all, one, run }) {
     rectified: 'TINYINT NULL',
     rectify_at: 'DATE NULL',
     no_new_similar: 'TINYINT NULL',
-    facts_updated_at: 'DATETIME NULL'
+    facts_updated_at: 'DATETIME NULL',
+    // 107 号令第七条：较低数额罚款 = 「从轻/减轻的裁量阶次」+「经营主体 5 万元以下」
+    // 两个条件同时成立。只登记金额会把 3 万元的一般阶次罚款误判成轻微。
+    fine_amount: 'DECIMAL(12,2) NULL',
+    discretion: 'VARCHAR(16) NULL'                     // lighter|mitigated|normal|heavier
   };
   for (const [name, ddl] of Object.entries(wanted)) {
     if (!have.has(name)) await run(`ALTER TABLE cases ADD COLUMN ${name} ${ddl}`);

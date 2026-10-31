@@ -1,8 +1,24 @@
 node_modules/
 dist/
 .env
+.env.test
 *.log
 db/*.sqlite
 database/
 .venv/
 __pycache__/
+
+# 本地 Agent 工作记忆：含数据库口令等明文凭据，绝不入库
+.workbuddy/
+
+# 数据库实体文件与导出（建库脚本 db/*.sql 要提交，数据本身不提交）
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+db/backup/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini

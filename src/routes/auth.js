@@ -20,11 +20,15 @@ module.exports = function register(r) {
     setCookie(res, config.session.cookie, token, {
       maxAge: Math.floor((expires.getTime() - Date.now()) / 1000)
     });
-    return { user };
+    // 小程序等无法使用 cookie 的客户端，显式声明 x-client: miniapp 时在响应体返回令牌，
+    // 后续请求用 Authorization: Bearer <token>。网页端不返回，保持 httpOnly cookie 的防窃取特性。
+    const wantToken = String(req.headers['x-client'] || '').toLowerCase() === 'miniapp';
+    return wantToken ? { user, token } : { user };
   });
 
-  r.post('/api/auth/logout', async ({ cookies, res, user, ip }) => {
-    await auth.logout(cookies[config.session.cookie]);
+  r.post('/api/auth/logout', async ({ cookies, res, user, ip, req }) => {
+    const bearer = (/^Bearer\s+(\S+)$/i.exec(req.headers.authorization || '') || [])[1];
+    await auth.logout(bearer || cookies[config.session.cookie]);
     setCookie(res, config.session.cookie, '', { maxAge: 0 });
     if (user) await auth.audit(user.id, 'logout', 'user', String(user.id), ip);
     return { byebye: true };

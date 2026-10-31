@@ -134,7 +134,7 @@ test('documents preserve immutable fact fields, sanitize content, retain version
     const file=await fetch(base+`/api/${format}/doc?case=${k.id}&key=apply`,{headers:{cookie}});
     assert.equal(file.status,200,await (file.status===200?Promise.resolve(''):file.text()));
     const bytes=Buffer.from(await file.arrayBuffer());assert.ok(bytes.subarray(0,magic.length).equals(Buffer.from(magic)));
-    require('node:fs').writeFileSync(`/tmp/xft-material.${format==='word'?'docx':'pdf'}`,bytes);
+    require('node:fs').writeFileSync(require('node:path').join(require('node:os').tmpdir(),`xft-material.${format==='word'?'docx':'pdf'}`),bytes);
   }
   await docs.reset(k.id,'apply');
   assert.equal((await request(`/api/cases/${k.id}/docs/apply/versions`,'GET',undefined,cookie)).body.items.length,3);
@@ -235,7 +235,12 @@ test('rules require reviewed applicable version, clamp calendar months, and reta
   await isolated.db.run("INSERT INTO rule_versions (rule_key,version,title,case_type,level,authority_match,source_url,effective_from,effective_until,review_status,review_note,definition) VALUES ('test',1,'隔离测试规则','penalty','general','市场监管','https://example.com/test-rule','2025-01-01','2026-12-31','reviewed','仅测试，不代表法规',?)",[JSON.stringify({months:6,reviewDays:15,materials:['apply','promise']})]);
   ev=await rules.evaluate(kase,'2026-10-31');assert.equal(ev.eligible,true);assert.equal(ev.applyFrom,'2025-07-31');assert.equal(ev.ruleVersion.version,1);
   assert.equal((await rules.evaluate({...kase,authority:'测试税务局'},'2026-10-31')).eligible,false);
-  assert.equal((await rules.evaluate({...kase,type:'blacklist'},'2026-10-31')).materials.length,0);
+  // L2 类型：提供参考材料清单，但不输出任何判定结论
+  const l2=await rules.evaluate({...kase,type:'blacklist'},'2026-10-31');
+  assert.ok(l2.materials.length>0);assert.equal(l2.status,'needs_review');assert.equal(l2.eligible,false);assert.equal(l2.applyFrom,null);
+  // L3 类型（法院失信被执行人）不属于行政修复路径，不给材料也不给结论
+  const l3=await rules.evaluate({...kase,type:'court'},'2026-10-31');
+  assert.equal(l3.materials.length,0);assert.equal(l3.status,'needs_review');
   assert.equal((await rules.evaluate(kase,'2027-01-01')).eligible,false);
   const cookie=await account('13900009013');
   const ent=(await request('/api/enterprises','POST',{name:'规则快照企业',credit_code:'91430100MA4L000078'},cookie)).body.enterprise;
@@ -392,4 +397,39 @@ test('unsupported types have no generic documents and catalog templates never as
  await require('../db/catalog')(isolated.db);
  const p=(await request(`/api/enterprises/${e.id}/cases`,'POST',{type:'penalty',level:'serious',event:'未知事实事项',authority:'测试局',doc_no:'边界1号',listed_date:'2025-01-01'},cookie)).body.case;
  const built=await docs.build(p.id);assert.ok(built.docs.plan);assert.ok(!built.docs.promise.html.includes('已如实履行'));assert.ok(built.docs.apply.html.includes('【待补充'));
+});
+
+// 107 号令第七条：「较低数额罚款」是两个条件同时成立（从轻/减轻阶次 + 5 万元以下）。
+// 只按金额判等级会把「3 万元、一般阶次」误判成轻微，可申请日随之算错，所以要在接口层挡住。
+test('minor level requires lenient discretion stage and 50k cap together, otherwise verdict is withheld',async()=>{
+ const cookie=await account('13900009031');
+ const e=(await request('/api/enterprises','POST',{name:'等级核实企业',credit_code:'91430100MA4L000183'},cookie)).body.enterprise;
+ await isolated.db.run(`INSERT INTO rule_versions (rule_key,version,title,case_type,level,authority_match,source_url,effective_from,review_status,review_note,definition,created_by)
+   VALUES ('t-minor-107',1,'测试轻微规则','penalty','minor','市场监督管理局','https://example.invalid','2020-01-01','reviewed','测试用规则',?,1)`,
+   [JSON.stringify({months:3,reviewDays:7,autoStopOnly:true,materials:['apply'],basis:[]})]);
+ const k=(await request(`/api/enterprises/${e.id}/cases`,'POST',{type:'penalty',level:'minor',event:'测试轻微事项',authority:'湘潭市市场监督管理局',listed_date:'2026-01-01',fine_amount:30000,discretion:'normal'},cookie)).body.case;
+ assert.equal(Number(k.fine_amount),30000);
+ assert.equal(k.discretion,'normal');
+ const r=(await request(`/api/cases/${k.id}`,'GET',undefined,cookie)).body.rule;
+ assert.equal(r.levelCheck.state,'conflict');
+ assert.equal(r.eligible,false);
+ assert.equal(r.status,'needs_review');
+ assert.ok(r.blockers.some(b=>b.kind==='level_conflict'));
+ // 补登履行、整改事实后，冲突仍然优先于日期与条件，不给可申请日
+ await request(`/api/cases/${k.id}/facts`,'PATCH',{obligation_at:'2026-01-10',rectified:1,rectify_at:'2026-01-12',no_new_similar:1},cookie);
+ assert.equal((await request(`/api/cases/${k.id}`,'GET',undefined,cookie)).body.rule.status,'needs_review');
+ // 改成从轻阶次，两个要件同时成立，结论恢复
+ const ok=(await request(`/api/cases/${k.id}/facts`,'PATCH',{discretion:'lighter'},cookie)).body.rule;
+ assert.equal(ok.levelCheck.state,'ok');
+ assert.ok(!ok.blockers.some(b=>b.kind==='level_conflict'));
+ assert.equal(ok.autoStopOnly,true);
+ // 超过 5 万元上限同样不成立
+ const over=(await request(`/api/cases/${k.id}/facts`,'PATCH',{fine_amount:60000},cookie)).body.rule;
+ assert.equal(over.levelCheck.state,'conflict');
+ assert.equal(over.status,'needs_review');
+ // 非法阶次不得写入
+ assert.equal((await request(`/api/cases/${k.id}/facts`,'PATCH',{discretion:'whatever'},cookie)).status,400);
+ const fresh=await isolated.db.one('SELECT fine_amount,discretion FROM cases WHERE id=?',[k.id]);
+ assert.equal(Number(fresh.fine_amount),60000);
+ assert.equal(fresh.discretion,'lighter');
 });

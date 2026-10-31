@@ -1,8 +1,8 @@
 'use strict';
 const db=require('../db'),cert=require('./cert'),{sha256}=require('../crypto'),{randomUUID,randomBytes}=require('node:crypto'),v=require('./validation');
 async function create(caseId,input,user){
- const c=await cert.get(input.code);if(!c||c.case_id!==caseId)throw new Error('请选择当前事项的凭证');
- if((await cert.verify(c.code)).state!=='valid')throw new Error('仅有效的平台状态凭证可以创建分享包');
+ const c=await cert.get(input.code);if(!c||c.case_id!==caseId)throw new Error('请选择当前事项的办理进度记录');
+ if((await cert.verify(c.code)).state!=='valid')throw new Error('仅有效状态的办理进度记录可以创建分享包');
  if(!['financing','tender'].includes(input.purpose))throw new Error('请选择融资或投标用途');
  if(!Number.isInteger(input.days)||input.days<1||input.days>30)throw new Error('分享有效期须为1至30天');
  const recipient=v.text(input.recipient,'接收单位',200),token=randomBytes(32).toString('hex'),id=randomUUID(),expires=Date.now()+input.days*86400000;

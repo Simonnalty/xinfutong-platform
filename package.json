@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "test": "node --test tests/platform.test.js"
+    "test": "node --env-file-if-exists=.env.test --test tests/platform.test.js"
   },
   "dependencies": {
     "docx": "^9.15.0",

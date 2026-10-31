@@ -25,7 +25,9 @@ function createRouter() {
   async function dispatch(req, res, url) {
     const path = url.pathname;
     const cookies = parseCookies(req);
-    const user = await auth.resolve(cookies[config.session.cookie]);
+    // 会话令牌来源：优先 Authorization: Bearer（小程序等无 cookie 客户端），其次 cookie（网页端）
+    const bearer = (/^Bearer\s+(\S+)$/i.exec(req.headers.authorization || '') || [])[1];
+    const user = await auth.resolve(bearer || cookies[config.session.cookie]);
     const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').toString().split(',')[0].trim();
 
     for (const r of routes) {
