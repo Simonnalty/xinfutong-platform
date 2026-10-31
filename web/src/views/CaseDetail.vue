@@ -27,6 +27,7 @@
               </div>
               <div class="center" style="margin-top:14px">
                 <el-button type="primary" plain size="small" :loading="diagnosing" @click="rediagnose">重新诊断</el-button>
+                <el-button size="small" @click="openFacts">补充事实</el-button>
               </div>
             </div>
             <div>
@@ -43,8 +44,8 @@
                 </div>
                 <div>
                   <div class="muted tiny">状态</div>
-                  <div style="font-size:18px;font-weight:600" :style="{ color: rule.eligible ? 'var(--ok)' : 'var(--warn)' }">
-                    {{ rule.eligible ? '可申请' : `还需 ${rule.waitDays} 天` }}
+                  <div style="font-size:18px;font-weight:600" :style="{ color: rule.status === 'eligible' ? 'var(--ok)' : rule.status === 'blocked' ? 'var(--bad)' : 'var(--warn)' }">
+                    {{ statusText }}
                   </div>
                 </div>
                 <div>
@@ -55,8 +56,8 @@
 
               <div class="cond-list">
                 <div class="cond" v-for="c in rule.conditions" :key="c.key">
-                  <el-icon :size="18" :color="c.pass ? '#1E8449' : '#B9770E'">
-                    <component :is="c.pass ? 'CircleCheckFilled' : 'WarningFilled'" />
+                  <el-icon :size="18" :color="c.state === 'met' ? '#1E8449' : c.state === 'unmet' ? '#B03A2E' : '#B9770E'">
+                    <component :is="c.state === 'met' ? 'CircleCheckFilled' : c.state === 'unmet' ? 'CircleCloseFilled' : 'QuestionFilled'" />
                   </el-icon>
                   <div>
                     <div class="name">{{ c.name }}</div>
@@ -64,6 +65,11 @@
                   </div>
                 </div>
               </div>
+
+              <el-alert v-if="rule.blockers && rule.blockers.length" type="warning" :closable="false" show-icon style="margin-top:14px">
+                <template #title>当前阻塞项（{{ rule.blockers.length }}）</template>
+                <div v-for="(b, i) in rule.blockers" :key="i" style="font-size:13px;line-height:1.9">· {{ b.text }}</div>
+              </el-alert>
             </div>
           </div>
         </div>
@@ -132,6 +138,19 @@
 
       <!-- 进度 -->
       <el-tab-pane label="办理进度" name="progress">
+        <div class="card card-pad" style="margin-bottom:18px">
+          <div class="spread" style="margin-bottom:12px">
+            <div class="card-title" style="margin:0"><span class="bar"></span>当前阶段：{{ data.stage?.label }}</div>
+            <div style="display:flex;gap:8px">
+              <el-button v-for="a in (data.stage?.allowed || [])" :key="a.to" type="primary" plain size="small"
+                :loading="advancing" @click="advance(a.to)">标记为{{ a.label }}</el-button>
+            </div>
+          </div>
+          <el-progress :percentage="data.stage?.progress || 0" :stroke-width="10" />
+          <div class="muted tiny" style="margin-top:8px">
+            阶段只能按流程推进，跳步会被服务端拒绝；进入「已提交」要求诊断结论为可申请。
+          </div>
+        </div>
         <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
           <div class="card card-pad">
             <div class="card-title"><span class="bar"></span>流转记录</div>
@@ -242,6 +261,37 @@
   </div>
 
   <div v-else class="page"><el-skeleton :rows="8" animated /></div>
+  <!-- 补充事实：诊断结论只依据这里登记的事实 -->
+  <el-dialog v-model="factsVisible" title="补充案件事实" width="520px">
+    <el-alert type="info" :closable="false" show-icon style="margin-bottom:14px"
+      title="诊断结论只依据这里登记的事实。未登记的项目会显示为「待确认」，不会默认通过。" />
+    <el-form label-width="150px">
+      <el-form-item label="义务履行完成日">
+        <el-date-picker v-model="factForm.obligation_at" type="date" value-format="YYYY-MM-DD" placeholder="缴款 / 补报完成日期" style="width:100%" />
+      </el-form-item>
+      <el-form-item label="整改是否完成">
+        <el-select v-model="factForm.rectified" placeholder="未登记" style="width:100%">
+          <el-option :value="1" label="已完成" />
+          <el-option :value="0" label="未完成" />
+          <el-option :value="null" label="未登记（待确认）" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="整改完成日">
+        <el-date-picker v-model="factForm.rectify_at" type="date" value-format="YYYY-MM-DD" placeholder="整改复查通过日期" style="width:100%" />
+      </el-form-item>
+      <el-form-item label="近12个月无新增同类">
+        <el-select v-model="factForm.no_new_similar" placeholder="未登记" style="width:100%">
+          <el-option :value="1" label="无新增（符合）" />
+          <el-option :value="0" label="有新增（不符合）" />
+          <el-option :value="null" label="未核查（待确认）" />
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="factsVisible = false">取消</el-button>
+      <el-button type="primary" :loading="savingFacts" @click="saveFacts">保存并重新诊断</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -273,6 +323,55 @@ const qrEls = new Map()
 const now = new Date().toISOString()
 const caseId = computed(() => route.params.id)
 const rule = computed(() => data.value?.rule || { conditions: [], materials: [], basis: [], warnings: [], score: 0 })
+
+const statusText = computed(() => ({
+  eligible: '可申请', not_yet: `还需 ${rule.value.waitDays || 0} 天`,
+  pending_facts: '待补充事实', blocked: '暂不符合'
+}[rule.value.status] || (rule.value.eligible ? '可申请' : '待确认')))
+
+// —— 补充事实
+const factsVisible = ref(false)
+const savingFacts = ref(false)
+const factForm = ref({ obligation_at: '', rectified: null, rectify_at: '', no_new_similar: null })
+
+function openFacts() {
+  const c = data.value?.case || {}
+  factForm.value = {
+    obligation_at: c.obligation_at || '',
+    rectified: c.rectified === 1 ? 1 : c.rectified === 0 ? 0 : null,
+    rectify_at: c.rectify_at || '',
+    no_new_similar: c.no_new_similar === 1 ? 1 : c.no_new_similar === 0 ? 0 : null
+  }
+  factsVisible.value = true
+}
+
+async function saveFacts() {
+  savingFacts.value = true
+  try {
+    await api.facts(caseId.value, factForm.value)
+    ElMessage.success('事实已更新，诊断结论已重新计算')
+    factsVisible.value = false
+    await load()
+  } catch (e) { ElMessage.error(e.message) } finally { savingFacts.value = false }
+}
+
+// —— 阶段推进
+const advancing = ref(false)
+async function advance(to) {
+  let note = ''
+  if (to === 'rejected') {
+    try {
+      const r = await ElMessageBox.prompt('请填写退回原因（企业需要知道补正什么）', '退回补正', { inputPlaceholder: '例如：整改说明缺少复查意见' })
+      note = r.value
+    } catch { return }
+  }
+  advancing.value = true
+  try {
+    await api.stage(caseId.value, to, note)
+    ElMessage.success('阶段已更新')
+    await load()
+  } catch (e) { ElMessage.error(e.message) } finally { advancing.value = false }
+}
 const docs = computed(() => data.value?.docs || [])
 const currentDoc = computed(() => docs.value.find(d => d.key === activeDoc.value))
 

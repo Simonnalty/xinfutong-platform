@@ -85,6 +85,23 @@ async function login(phone) {
   const adminAll = await req('/api/cases/XF-2026-000298', { cookie: admin });
   ok('运营可读任意企业案件', adminAll.status === 200, String(adminAll.status));
 
+
+  console.log('\n[8] 状态机：非法跳转与前置条件');
+  const illegal = await req('/api/cases/XF-2026-000437/stage', { method: 'POST', cookie: ent, body: { to: 'draft' } });
+  ok('审核中不能直接变草稿（400）', illegal.status === 400, String(illegal.status));
+  const staffAdvance = await req('/api/cases/XF-2026-000437/stage', { method: 'POST', cookie: staff, body: { to: 'repaired' } });
+  ok('只读成员不能推进阶段（403）', staffAdvance.status === 403, String(staffAdvance.status));
+  const d1 = await req('/api/cases/XF-2026-000352/stage', { method: 'POST', cookie: admin, body: { to: 'diagnosed' } });
+  ok('草稿 → 已诊断', d1.status === 200, JSON.stringify(d1.data).slice(0, 80));
+  const d2 = await req('/api/cases/XF-2026-000352/stage', { method: 'POST', cookie: admin, body: { to: 'materials_ready' } });
+  ok('已诊断 → 材料就绪', d2.status === 200, JSON.stringify(d2.data).slice(0, 80));
+  const d3 = await req('/api/cases/XF-2026-000352/stage', { method: 'POST', cookie: admin, body: { to: 'submitted' } });
+  ok('条件不满足时禁止提交（400）', d3.status === 400 && /不满足提交条件/.test(d3.data.error || ''), JSON.stringify(d3.data).slice(0, 120));
+  const conn2 = await mysql.createConnection({ host: config.db.host, port: config.db.port, user: config.db.user, password: config.db.password, database: config.db.database });
+  await conn2.execute("UPDATE cases SET stage = 'draft', progress = 0 WHERE id = 'XF-2026-000352'");
+  await conn2.execute("DELETE FROM timeline_events WHERE case_id = 'XF-2026-000352' AND action LIKE '状态变更%'");
+  await conn2.end();
+
   console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
   process.exit(fail ? 1 : 0);
 })().catch(e => { console.error(e); process.exit(1); });

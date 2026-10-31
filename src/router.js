@@ -20,6 +20,7 @@ function createRouter() {
   const post = (p, h, o) => add('POST', p, h, o);
   const put = (p, h, o) => add('PUT', p, h, o);
   const del = (p, h, o) => add('DELETE', p, h, o);
+  const patch = (p, h, o) => add('PATCH', p, h, o);
 
   async function dispatch(req, res, url) {
     const path = url.pathname;
@@ -51,7 +52,7 @@ function createRouter() {
     return false;
   }
 
-  return { add, get, post, put, del, dispatch, setCookie };
+  return { add, get, post, put, patch, del, dispatch, setCookie };
 }
 
 module.exports = { createRouter };

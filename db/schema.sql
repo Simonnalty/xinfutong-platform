@@ -94,6 +94,11 @@ CREATE TABLE IF NOT EXISTS cases (
   apply_from DATE NULL,
   due_date DATE NULL,
   closed_at DATETIME NULL,
+  obligation_at DATE NULL,                          -- 义务履行/缴款完成日
+  rectified TINYINT NULL,                           -- 整改是否完成：1 是 / 0 否 / NULL 未知
+  rectify_at DATE NULL,
+  no_new_similar TINYINT NULL,                      -- 近12个月无新增同类：1/0/NULL
+  facts_updated_at DATETIME NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   KEY idx_case_ent (enterprise_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

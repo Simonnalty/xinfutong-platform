@@ -35,6 +35,8 @@ export const api = {
   polish: (id, key) => request(`/api/cases/${id}/docs/${key}/polish`, { method: 'POST' }),
   docCheck: (id) => request(`/api/cases/${id}/doc-check`, { method: 'POST' }),
   rescan: (id) => request(`/api/cases/${id}/rescan`, { method: 'POST' }),
+  facts: (id, body) => request(`/api/cases/${id}/facts`, { method: 'PATCH', body }),
+  stage: (id, to, note) => request(`/api/cases/${id}/stage`, { method: 'POST', body: { to, note } }),
   channels: (id) => request(`/api/cases/${id}/channels`),
   objectionPreview: (id, channel) => request(`/api/cases/${id}/objection/preview?channel=${channel}`),
   sendObjection: (id, channel) => request(`/api/cases/${id}/objection`, { method: 'POST', body: { channel } }),

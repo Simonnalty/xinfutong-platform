@@ -7,6 +7,7 @@ const db = require('../db.js');
 const auth = require('../services/auth.js');
 const rules = require('../services/rules.js');
 const diagnose = require('../services/diagnose.js');
+const stage = require('../services/stage.js');
 const docs = require('../services/docs.js');
 
 async function guard(user, caseId) {
@@ -67,6 +68,7 @@ module.exports = function register(r) {
       case: { ...kase, levelLabel: levelLabel(kase.level) },
       enterprise: ent,
       rule: { ...evald, basis: diagnose.BASIS[kase.type] || diagnose.BASIS.penalty },
+      stage: await stage.info(kase),
       docs: Object.entries(built.docs).map(([key, d]) => ({ key, documentKey: key, ...d })),
       channels: await db.all('SELECT * FROM case_channels WHERE case_id = ? ORDER BY sort', [params.id]),
       tasks: await db.all('SELECT * FROM tasks WHERE case_id = ? ORDER BY id', [params.id]),
@@ -118,5 +120,30 @@ module.exports = function register(r) {
     const status = ['todo', 'doing', 'done'].includes(body.status) ? body.status : 'done';
     await db.run('UPDATE tasks SET status = ? WHERE id = ?', [status, t.id]);
     return { task: { ...t, status } };
+  }, { auth: true });
+
+  // 补充/修正案件事实：义务履行、整改、无新增同类失信
+  r.patch('/api/cases/:id/facts', async ({ user, params, body, ip }) => {
+    const kase = await guardWrite(user, params.id);
+    const toDate = v => (v === null || v === undefined || String(v).trim() === '' ? null : String(v).slice(0, 10));
+    const toBool = v => (v === null || v === undefined || v === '' ? null : (Number(v) ? 1 : 0));
+    await db.run(
+      `UPDATE cases SET obligation_at = ?, rectified = ?, rectify_at = ?, no_new_similar = ?, facts_updated_at = NOW() WHERE id = ?`,
+      [toDate(body.obligation_at), toBool(body.rectified), toDate(body.rectify_at), toBool(body.no_new_similar), params.id]);
+    await db.run('INSERT INTO timeline_events (case_id, at, actor, action, detail) VALUES (?, NOW(), ?, ?, ?)',
+      [params.id, user.name || '企业', '更新案件事实', '登记履行、整改与新增失信情况']);
+    await auth.audit(user.id, 'facts', params.id, '更新履行/整改/新增失信事实', ip);
+    const today = new Date().toISOString().slice(0, 10);
+    const fresh = await db.one('SELECT * FROM cases WHERE id = ?', [params.id]);
+    const evald = await rules.evaluate(fresh, today);
+    return { case: fresh, rule: { ...evald, basis: diagnose.BASIS[kase.type] || diagnose.BASIS.penalty } };
+  }, { auth: true });
+
+  // 推进案件阶段
+  r.post('/api/cases/:id/stage', async ({ user, params, body, ip }) => {
+    await guardWrite(user, params.id);
+    const r2 = await stage.advance(params.id, String(body.to || ''), { user, note: body.note, ip });
+    const fresh = await db.one('SELECT * FROM cases WHERE id = ?', [params.id]);
+    return { ...r2, stage: await stage.info(fresh) };
   }, { auth: true });
 };

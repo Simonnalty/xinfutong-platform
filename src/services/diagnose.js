@@ -28,9 +28,11 @@ async function run(caseId) {
   const ev = await rules.evaluate(kase, today);
 
   const warnings = [];
-  if (!ev.eligible) warnings.push({ level: 'warn', text: `最短公示期未满，预计 ${ev.applyFrom} 后方可申请（还需 ${ev.waitDays} 天）。` });
+  for (const b of ev.blockers) {
+    warnings.push({ level: b.kind === 'unmet' ? 'bad' : b.kind === 'unknown' ? 'warn' : 'warn', text: b.text });
+  }
+  if (ev.eligible) warnings.push({ level: 'info', text: `三项条件均已满足，${ev.applyFrom} 起可提交申请，法定办理时限 ${ev.reviewDays} 个工作日。` });
   if (kase.type === 'penalty') warnings.push({ level: 'info', text: '行政处罚类修复需附缴款凭证与整改复查意见，缺一将被退回。' });
-  if (!kase.removed_date && kase.type === 'abnormal') warnings.push({ level: 'bad', text: '尚未取得移出决定，需先完成补报并公示。' });
   warnings.push({ level: 'info', text: '信用修复不收取任何费用，任何声称「内部渠道包过」的均为诈骗。' });
 
   const result = {
@@ -39,6 +41,8 @@ async function run(caseId) {
     levelLabel: ev.level.label,
     applyFrom: ev.applyFrom,
     eligible: ev.eligible,
+    status: ev.status,
+    blockers: ev.blockers,
     waitDays: ev.waitDays,
     conditions: ev.conditions,
     materials: ev.materials,
