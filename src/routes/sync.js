@@ -103,8 +103,9 @@ module.exports = function register(r) {
     });
     if (res.ok) {
       const after = await docs.save(params.id, params.key, res.html, { source: 'ai', userId: user.id });
+      const ti = res.usage?.prompt_tokens || 0, to = res.usage?.completion_tokens || 0;
       await db.run('INSERT INTO usage_logs (subject_type, subject_id, kind, tokens_in, tokens_out, cost) VALUES (?,?,?,?,?,?)',
-        ['user', user.id, 'ai_doc', res.usage?.prompt_tokens || 0, res.usage?.completion_tokens || 0, 0.02]);
+        ['user', user.id, 'ai_doc', ti, to, Math.round(((ti * 2 + to * 8) / 1e6) * 10000) / 10000]);
       await auth.audit(user.id, 'ai_polish', `${params.id}/${params.key}`, 'AI 润色', ip);
       return { ok: true, degraded: false, docs: Object.entries(after.docs).map(([key, d]) => ({ key, ...d })) };
     }
