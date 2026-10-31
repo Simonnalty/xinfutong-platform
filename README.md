@@ -1,107 +1,85 @@
-# 信复通 v2 · 民营企业信用修复 SaaS 平台
+# 信复通 · 民营企业信用修复 SaaS 平台
 
-面向民营企业的信用修复自助平台：诊断失信等级 → 生成合规材料 → 跟踪办理进度 → 监测多平台同步 → 生成法律异议函 → 出具可扫码核验的数字凭证。
+企业自行建档 → 记录事实与证据 → 配置规则诊断 → 编辑材料 → 登记实际办理进度 → 核录渠道差异 → 生成异议草稿 → 签发平台状态说明 → 融资／投标用途分享。
 
-> 本平台不代办、不承诺结果、不替代行政机关作出决定。演示数据均为构造数据。
+平台辅助企业自行办理，官方决定由主管机关作出。平台状态说明记录企业提供并人工核录的材料，不代表官方认证、银行授信或招标方采信。
 
 ## 技术栈
 
 | 层 | 选型 |
 | --- | --- |
-| 后端 | Node 20+ / `node:http` + 自建路由，唯一 npm 依赖 `mysql2` |
-| 数据库 | MySQL 8 / MariaDB 10.6+，24 张表 |
-| 前端 | Vue 3 + Element Plus + Vite（组件化、按角色路由） |
-| 文书 | 槽位模板（LOCK/GEN/DER）+ DeepSeek 润色（服务端代理）+ reportlab 生成 PDF |
-| 存证 | SHA-256 摘要 + HMAC 签名 + 前序摘要链 |
+| 前端 | Vue 3、Vue Router、Element Plus、Vite、ECharts、qrcode |
+| 服务端 | Node.js 20+、node:http、自建路由与服务模块 |
+| 数据库 | MySQL 8 / MariaDB 10.6+；事务、持久任务、附件二进制存储 |
+| 文书 | 槽位模板、sanitize-html、docx、Python ReportLab；可选 DeepSeek 兼容接口润色 |
+| 记录核验 | SHA-256、HMAC 签名、不可变快照、前序摘要、到期与撤销检查 |
+| 验证 | node:test + 临时独立数据库的 HTTP 集成测试；浏览器人工流程验收 |
 
-## 目录
+## Windows 本地运行
 
-```
-app/
-├── server.js            装配：静态资源 + API + SPA history 回退
-├── src/
-│   ├── config.js        配置（.env）
-│   ├── db.js            连接池 / 建表 / 种子
-│   ├── http.js          JSON、Cookie、静态文件、PDF 输出
-│   ├── router.js        正则路由 + 鉴权中间件
-│   ├── crypto.js        scrypt 口令、随机 token
-│   ├── ai.js            DeepSeek 代理 + 锁定事实校验
-│   ├── services/        auth / rules / diagnose / docs / checks / cert
-│   └── routes/          auth / workspace / sync / admin
-├── db/schema.sql        24 张表
-├── db/seed.js           演示数据（6 企业 / 5 案件 / 3 账号）
-├── tools/gen_pdf.py     文书与凭证 PDF（reportlab，中文字体）
-└── web/                 Vue 3 前端（dist 已构建，可直接跑）
-```
-
-## 数据库
-
-本机演示用的 MariaDB 是**便携版**，数据和二进制都放在项目里，方便整体拷走：
-
-| 内容 | 位置 |
-| --- | --- |
-| 数据文件（158MB，勿提交 git） | `/home/simon/项目/信复通/database/mysql-data` |
-| 启动 / 停止脚本 | `database/start-db.sh`、`database/stop-db.sh` |
-| 服务端二进制（1.2GB，未纳入项目） | `/home/simon/mariadb` |
-| 连接信息 | `127.0.0.1:3306`，库 `xinfutong_v2`，账号 `xft` |
-
-```bash
-bash database/start-db.sh    # 启动
-bash database/stop-db.sh     # 停止
-```
-
-正式部署到云服务器时用系统的 `mariadb-server`，不需要这套便携版。
+复制到 Windows 后，按 [Windows 操作说明](windows/README.md) 安装本机运行环境和数据库。首次运行 `windows/setup.bat`，配置 `.env`；开发分别运行前后端脚本，演示可运行根目录 `start.bat`。不要搬 Linux 依赖和数据库目录。
 
 ## 启动
 
-前置：Node 20+、MariaDB/MySQL 已启动（本机用 `database/start-db.sh`）、Python3 + reportlab（PDF 功能需要）。
+先准备数据库和具有建表权限的应用账号；数据库应预先建立。复制 `env.example` 为 `.env` 并填写本地配置，文件不提交 Git。
 
 ```bash
-cp env.example .env        # 改数据库账号、AI 密钥、签名密钥
-npm install
-npm start                  # http://127.0.0.1:8790
+npm ci
+python3 -m pip install -r tools/requirements.txt
+cd web
+npm ci
+npm run build
+cd ..
+npm start
 ```
 
-首次启动会自动建表并灌入演示数据（`enterprises` 为空时触发）。
+默认访问 `http://127.0.0.1:8790`。开发前端可在 `web/` 执行 `npm run dev`。
 
-前端二次开发：
+- `PYTHON`：安装了 ReportLab 的 Python 可执行文件。
+- `XFT_PUBLIC_BASE_URL`：接收方能访问的 HTTPS 站点地址，用于 PDF 二维码；本机默认地址无法供手机远程访问。
+- `XFT_SIGN_KEY`：固定随机签名密钥。更换会影响旧凭证核验；应与数据库一起保护和备份。
+- `XFT_DEMO_SEED=1`：仅在企业表为空时初始化虚构演示账号和企业。默认不创建演示业务数据；普通新账号可自行注册、建档。运营账号由部署管理员另行配置。
+- `AI_API_KEY`：可选；不配置或调用失败会保留当前草稿，使用模板和人工编辑。
+- `XFT_FONT_DIR`：可选中文字体目录，支持 simhei.ttf、simsun.ttc、simkai.ttf；缺字体时使用 ReportLab 中文 CID 字体。PDF 分享说明包含二维码，不加仿官方印章。
+
+结构迁移只负责表结构，不会重新授予已撤销的企业成员或机构权限。启动会新增中性材料模板版本，不会覆盖企业已保存的文书。
+
+## 当前功能
+
+- 企业负责人建企业、建事项和编辑档案；成员只读、机构明确授权，撤销立即生效。
+- 证据上传、下载、人工核录、归档、摘要；原始文件仅授权账号可访问，单文件不超过 4 MB。
+- 诊断按已复核规则版本匹配类型、等级、机关和有效期；缺规则或事实时明确提示待核对；保存事实、规则、结果的历史快照。
+- 材料人工编辑、事实字段锁定、一致性校验、历史查看与恢复、PDF / Word 导出。待填写内容和事实冲突会阻止导出；未支持类型不套用通用模板。
+- 任务负责人、日期、依赖、回执和历史；提交、受理、退回、已修复按前置条件流转。
+- 模拟 / 人工核录 / 授权接口适配器区分展示；定时任务持久化、租约防重复、失败重试、暂停。
+- 异议函依据具体事项差异和官方材料生成，支持补充说明及版本、PDF、提交回执、答复、催办站内提醒与复核关闭；不会自动发送。
+- 平台状态凭证绑定签发快照，支持摘要、签名、到期、撤销、依据材料归档后失效，公开页只展示最小必要信息。
+- 融资 / 投标分享期限与接收单位、二维码、PDF 附件目录、撤销；公开链接不提供原始附件。
+- 机构工作台按授权展示企业、事项和逾期任务，支持协作权限范围内的批量复查与成员管理。
+- 运营维护来源及复核状态的知识条目；企业检索已复核内容、配置站内政策 / 复查 / 逾期提醒，个人已读状态独立。
+
+## 接入边界
+
+仓库没有配置真实第三方数据授权适配器，人工核录不会自动访问第三方；模拟或失败记录不能证明真实同步。规则、知识库均需要运营按可靠来源复核配置，没有预置经过核验的现行法规规则。没有对接真实银行授信、投标系统、短信或邮件。用途分享用于接收方自行核对材料。
+
+后续增强项和本轮实际验证见 [平台建设状态](docs/平台建设状态-2026-10-31.md)。原始需求和早期设计中描述的“自动发送”“银行直接采信”等，不代表当前已接入。
+
+## 测试与隔离验收
 
 ```bash
-cd web && npm install && npm run dev   # http://127.0.0.1:5180，/api 代理到 8790
-npm run build                          # 产物到 web/dist，后端自动服务
+npm test
 ```
 
-### 演示账号（密码均为 `xft2026`）
+测试通过本机管理 socket 建立随机独立数据库及账号，测试结束删除；不修改业务库。管理入口用 `XFT_TEST_DB_SOCKET` / `XFT_TEST_DB_ADMIN` / `XFT_TEST_DB_ADMIN_PASSWORD` 配置，PDF 测试需要可用的 `PYTHON`。
 
-| 手机号 | 角色 | 说明 |
-| --- | --- | --- |
-| 13907320001 | 企业 | 湖南恒基建材有限公司，1 条轻微失信 |
-| 13907320002 | 机构 | 园区服务中心，可批量查看企业 |
-| 18600000000 | 运营 | 规则参数、机构、审计日志 |
+```bash
+node tools/qa-server.js --isolated
+```
 
-## 主要接口
+仅用于本机浏览器 QA，在 8791 启动独立临时库，使用虚构种子账号；正常 SIGINT / SIGTERM 时清理。测试服务不运行后台巡检。异常强制终止后需管理人员检查 `xft_test_` 临时库和用户并清理。
 
-| 方法 | 路径 | 说明 |
-| --- | --- | --- |
-| POST | `/api/auth/login` | 手机号 + 口令，下发 HttpOnly Cookie |
-| GET | `/api/enterprises/:id/overview` | 工作台：KPI、失信事项、时间线 |
-| GET | `/api/cases/:id` | 案件详情 + 规则判定 + 文书清单 + 渠道 |
-| POST | `/api/cases/:id/diagnose` | 重新诊断并落库 |
-| GET/POST | `/api/cases/:id/docs[/:key]` | 取/存文书（存后进 case_docs） |
-| POST | `/api/cases/:id/docs/:key/polish` | AI 润色（校验锁定事实后落库） |
-| POST | `/api/cases/:id/rescan` | 多源渠道巡检，产出差异 |
-| POST | `/api/cases/:id/objection` | 生成并发送法律异议函 |
-| POST | `/api/cases/:id/certificates` | 签发数字凭证（哈希链 + 签名） |
-| GET | `/api/verify/:code` | 公开核验，返回 valid/revoked/tampered |
-| GET | `/api/pdf/doc`、`/api/pdf/cert` | 文书 / 凭证 PDF |
-| GET | `/api/admin/{rules,orgs,audit,stats}` | 运营后台 |
+本机便携数据库的启停脚本位于项目上一级 `database/`。不要运行旧的业务库测试脚本作为本轮回归。
 
-## 规则参数
+## 数据备份
 
-`rule_params` 表集中管理法定参数（轻微 3 / 一般 6 / 严重 12 / 特别严重 36 个月、15 个工作日办理时限等），运营后台可直接改，不必改代码。
-
-**这些是演示默认值，正式使用前须由法律专业人员依据现行法规逐条校准。**
-
-## 许可
-
-课程项目，未授权商用。
+部署时使用 `mariadb-dump` / `mysqldump`，包含全部表、BLOB 附件与触发器；账号凭据通过权限为 0600 的客户端配置传入，不放命令行。业务运行时使用 `--single-transaction --hex-blob`，备份保存在仓库之外并限制读取权限。数据库、签名密钥及必要环境配置一起备份；恢复应先在独立库完成校验，再切换业务连接。本轮没有进行业务库恢复演练。

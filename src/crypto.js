@@ -38,4 +38,9 @@ function hmac(text, key) {
   return crypto.createHmac('sha256', key).update(String(text)).digest('hex');
 }
 
-module.exports = { hashPassword, verifyPassword, newToken, sha256, hmac };
+function stable(value) {
+  if(Array.isArray(value))return '['+value.map(stable).join(',')+']';
+  if(value && typeof value==='object')return '{'+Object.keys(value).sort().filter(k=>value[k]!==undefined).map(k=>JSON.stringify(k)+':'+stable(value[k])).join(',')+'}';
+  return JSON.stringify(value);
+}
+module.exports = { stable, hashPassword, verifyPassword, newToken, sha256, hmac };

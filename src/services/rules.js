@@ -20,7 +20,8 @@ const MATERIAL_TITLES = {
 const MATERIALS = {
   minor: ['apply', 'promise', 'rectify', 'auth', 'list'],
   general: ['apply', 'promise', 'rectify', 'auth', 'list'],
-  serious: ['apply', 'promise', 'rectify', 'auth', 'list', 'plan']
+  serious: ['apply', 'promise', 'rectify', 'auth', 'list', 'plan'],
+  severe: ['apply', 'promise', 'rectify', 'auth', 'list', 'plan']
 };
 
 let cache = null;
@@ -38,7 +39,11 @@ function invalidate() { cache = null; }
 
 function addMonths(dateStr, months) {
   const d = new Date(dateStr + 'T00:00:00Z');
+  const day=d.getUTCDate();
+  d.setUTCDate(1);
   d.setUTCMonth(d.getUTCMonth() + months);
+  const last=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,0)).getUTCDate();
+  d.setUTCDate(Math.min(day,last));
   return d.toISOString().slice(0, 10);
 }
 
@@ -57,23 +62,30 @@ function diffDays(a, b) {
  *  - 经营异常名录类：移出之日即满足（补报义务已履行）
  *  - 行政处罚类：最短公示期 = 决定作出日 + 分级月数
  */
-async function applyFrom(kase) {
-  const p = await params();
-  const months = Number(p[`min_months.${kase.level}`] || LEVELS[kase.level]?.months || 6);
-  if (kase.type === 'abnormal' && kase.removed_date) return kase.removed_date;
-  if (kase.type === 'abnormal') return null;
-  return kase.listed_date ? addMonths(kase.listed_date, months) : null;
+async function match(kase,today) {
+  if(!['penalty','abnormal'].includes(kase.type))return null;
+  const rows=await db.all("SELECT * FROM rule_versions WHERE case_type=? AND level=? AND effective_from<=? AND (effective_until IS NULL OR effective_until>=?) ORDER BY rule_key,version DESC",[kase.type,kase.level,today,today]);
+  const latest=new Map();for(const r of rows)if(!latest.has(r.rule_key))latest.set(r.rule_key,r);
+  const applicable=[...latest.values()].filter(r=>r.review_status==='reviewed'&&kase.authority?.includes(r.authority_match));
+  // Multiple matching rules require explicit review instead of arbitrary selection.
+  if(applicable.length!==1)return null;
+  const r=applicable[0];r.definition=typeof r.definition==='string'?JSON.parse(r.definition):r.definition;return r;
+}
+async function applyFrom(kase,today=new Date().toISOString().slice(0,10),selected) {
+  const r=selected||await match(kase,today);if(!r)return null;
+  if(kase.type==='abnormal')return kase.removed_date||null;
+  return kase.listed_date?addMonths(kase.listed_date,r.definition.months):null;
 }
 
 async function evaluate(kase, today) {
-  const p = await params();
-  const from = await applyFrom(kase);
+  const selected=await match(kase,today);
+  const from = await applyFrom(kase,today,selected);
 
   // 三态：met 已满足 / unmet 明确不满足 / unknown 事实缺失
   const cond = (key, name, state, note) => ({ key, name, state, pass: state === 'met', note });
 
   let obligation;
-  if (kase.removed_date) obligation = cond('obligation', '已履行相关义务', 'met', `已于 ${kase.removed_date} 移出经营异常名录`);
+  if (kase.type==='abnormal' && kase.removed_date) obligation = cond('obligation', '已履行相关义务', 'met', `已于 ${kase.removed_date} 移出经营异常名录`);
   else if (kase.obligation_at) obligation = cond('obligation', '已履行相关义务', 'met', `义务履行完成日 ${kase.obligation_at}`);
   else obligation = cond('obligation', '已履行相关义务', 'unknown', kase.type === 'penalty' ? '缺少缴款凭证或履行证明' : '尚未取得移出决定');
 
@@ -93,9 +105,9 @@ async function evaluate(kase, today) {
   const dateOk = Boolean(from && String(from).slice(0, 10) <= today);
   const unmet = conditions.filter(c => c.state === 'unmet');
   const unknown = conditions.filter(c => c.state === 'unknown');
-  const eligible = dateOk && unmet.length === 0 && unknown.length === 0;
+  const eligible = Boolean(selected) && dateOk && unmet.length === 0 && unknown.length === 0;
 
-  const status = eligible ? 'eligible'
+  const status = !selected ? 'needs_review' : eligible ? 'eligible'
     : unmet.length ? 'blocked'
     : !dateOk ? 'not_yet'
     : 'pending_facts';
@@ -104,8 +116,9 @@ async function evaluate(kase, today) {
   const score = Math.round(total / conditions.length * 70 + (dateOk ? 30 : 10));
 
   const blockers = [];
+  if(!selected)blockers.push({kind:'rule',text:'未找到唯一、已复核且在有效期内的适用规则；请核对事项类型、决定机关和规则版本，暂不判断可申请。'});
   if (!dateOk && from) blockers.push({ kind: 'date', text: `最短公示期未满，${from} 后方可申请${kase.type === 'penalty' ? '' : '（以移出日期起算）'}` });
-  if (!from) blockers.push({ kind: 'date', text: '缺少列入日期，无法计算最短公示期' });
+  if (!from && selected) blockers.push({ kind: 'date', text: kase.type==='abnormal'?'尚未登记移出日期，需核对办理路径':'缺少列入日期，无法计算最短公示期' });
   for (const c of conditions) {
     if (c.state === 'unmet') blockers.push({ kind: 'unmet', text: c.note });
     if (c.state === 'unknown') blockers.push({ kind: 'unknown', text: c.note });
@@ -120,9 +133,10 @@ async function evaluate(kase, today) {
     conditions,
     blockers,
     score,
-    reviewDays: Number(p.review_days || 15),
-    materials: (MATERIALS[kase.level] || MATERIALS.general).map(key => ({ key, title: MATERIAL_TITLES[key] || key }))
+    ruleVersion:selected,
+    reviewDays:selected?.definition.reviewDays??null,
+    materials:(selected?.definition.materials||(['penalty','abnormal'].includes(kase.type)?MATERIALS[kase.level]||[]:[])).map(key=>({key,title:MATERIAL_TITLES[key]||key}))
   };
 }
 
-module.exports = { LEVELS, MATERIALS, MATERIAL_TITLES, params, invalidate, applyFrom, evaluate, addMonths, addDays, diffDays };
+module.exports = { LEVELS, MATERIALS, MATERIAL_TITLES, params, invalidate, match, applyFrom, evaluate, addMonths, addDays, diffDays };

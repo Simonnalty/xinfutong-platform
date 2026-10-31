@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Windows: backend",
+      "type": "shell",
+      "command": "cmd.exe",
+      "args": ["/d", "/c", "windows\\start-backend.bat"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated" }
+    },
+    {
+      "label": "Windows: frontend",
+      "type": "shell",
+      "command": "cmd.exe",
+      "args": ["/d", "/c", "windows\\start-frontend.bat"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated" }
+    }
+  ]
+}

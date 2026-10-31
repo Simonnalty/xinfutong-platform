@@ -12,8 +12,12 @@ const { serveStatic, fail } = require('./src/http.js');
 const router = createRouter();
 require('./src/routes/auth.js')(router);
 require('./src/routes/workspace.js')(router);
+require('./src/routes/evidence.js')(router);
 require('./src/routes/sync.js')(router);
 require('./src/routes/admin.js')(router);
+require('./src/routes/collaboration.js')(router);
+require('./src/routes/compliance.js')(router);
+require('./src/routes/shares.js')(router);
 
 const WEB = path.join(__dirname, 'web', 'dist');
 
@@ -35,15 +39,17 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+let stopJobs=()=>{};
 db.ready()
   .then(() => server.listen(config.server.port, config.server.host, () => {
     console.log(`信复通 v2 · http://${config.server.host}:${config.server.port}`);
     console.log(`数据库: ${config.db.host}:${config.db.port}/${config.db.database}`);
     console.log(`AI: ${config.ai.apiKey ? '已配置 ' + config.ai.model : '未配置（模板模式）'}`);
+    stopJobs=require('./src/services/jobs').start();
   }))
   .catch(err => {
     console.error('[db] 启动失败：', err.message);
     process.exit(1);
   });
 
-process.on('SIGTERM', async () => { await db.close(); process.exit(0); });
+process.on('SIGTERM', async () => { stopJobs(); server.close(); await db.close(); process.exit(0); });

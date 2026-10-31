@@ -50,7 +50,7 @@
                 </div>
                 <div>
                   <div class="muted tiny">法定办理时限</div>
-                  <div style="font-size:18px;font-weight:600">{{ rule.reviewDays }} 个工作日</div>
+                  <div style="font-size:18px;font-weight:600">{{ rule.reviewDays ? rule.reviewDays + ' 个工作日（参考）' : '待核对适用规则' }}</div>
                 </div>
               </div>
 
@@ -96,6 +96,8 @@
 
         <div class="card card-pad" style="margin-top:18px">
           <div class="card-title"><span class="bar"></span>风险提示</div>
+          <div v-if="rule.ruleVersion" class="card card-pad" style="margin-bottom:12px">当前匹配：{{rule.ruleVersion.title}} · v{{rule.ruleVersion.version}}<p class="muted">{{rule.ruleVersion.authority_match}} · {{rule.ruleVersion.effective_from}} 起生效</p><a :href="rule.ruleVersion.source_url" target="_blank" rel="noopener noreferrer">查看规则来源</a></div>
+          <el-collapse v-if="data.diagnosisHistory?.length" style="margin-bottom:14px"><el-collapse-item title="历史诊断快照（保留当时事实及规则）"><div v-for="h in data.diagnosisHistory" :key="h.id" style="margin:10px 0"><strong>{{h.created_at}}</strong><pre style="white-space:pre-wrap;overflow-wrap:anywhere">{{JSON.stringify(h.content,null,2)}}</pre><span class="muted tiny">{{h.digest}}</span></div></el-collapse-item></el-collapse>
           <el-alert v-for="(w, i) in rule.warnings" :key="i" :title="w.text" :type="w.level === 'bad' ? 'error' : w.level" :closable="false" show-icon style="margin-bottom:10px" />
         </div>
       </el-tab-pane>
@@ -109,13 +111,13 @@
               <div class="t">{{ d.title }}</div>
               <div class="s">
                 <span v-if="d.status === 'template'">模板 · 未定稿</span>
-                <span v-else-if="d.status === 'ai'">AI 润色 · 已定稿</span>
-                <span v-else>手工修改 · 已定稿</span>
+                <span v-else-if="d.status === 'ai'">AI 润色 · 已保存草稿</span>
+                <span v-else>手工修改 · 已保存草稿</span>
               </div>
             </div>
             <el-divider style="margin:14px 0" />
             <el-button size="small" style="width:100%;margin-bottom:8px" :loading="checking" @click="doCheck">跨文书一致性校验</el-button>
-            <el-alert v-if="checkResult" :title="`校验通过，一致率 ${checkResult.score} 分`" :type="checkResult.score >= 90 ? 'success' : 'warning'" :closable="false" show-icon />
+            <el-alert v-if="checkResult" :title="`校验${checkResult.valid ? '通过' : '未通过'}，参考分 ${checkResult.score}`" :type="checkResult.valid ? 'success' : 'warning'" :closable="false" show-icon />
           </div>
 
           <div class="card card-pad">
@@ -128,7 +130,7 @@
               </div>
             </div>
             <el-alert v-if="!aiOn" title="未配置 AI 密钥，当前为模板文本。配置后可使用「AI 润色」生成更贴合企业情况的表述。" type="info" :closable="false" show-icon style="margin-bottom:14px" />
-            <div class="paper" v-html="currentDoc?.html"></div>
+            <DocumentEditor :case-id="caseId" :enterprise-id="data.case.enterprise_id" :doc="currentDoc" @saved="data.docs=$event;checkResult=null" />
             <div class="muted tiny" style="margin-top:12px;line-height:1.8">
               带 <span style="border-bottom:1px solid #C9A227">金色下划线</span> 的字段为事实锁定槽位，AI 与人工均不可修改，导出时作为书面事实保留。
             </div>
@@ -136,6 +138,9 @@
         </div>
       </el-tab-pane>
 
+      <el-tab-pane label="证据附件" name="evidence">
+        <EvidencePanel :case-id="caseId" :enterprise-id="data.case.enterprise_id" @changed="reload" />
+      </el-tab-pane>
       <!-- 进度 -->
       <el-tab-pane label="办理进度" name="progress">
         <div class="card card-pad" style="margin-bottom:18px">
@@ -148,7 +153,7 @@
           </div>
           <el-progress :percentage="data.stage?.progress || 0" :stroke-width="10" />
           <div class="muted tiny" style="margin-top:8px">
-            阶段只能按流程推进，跳步会被服务端拒绝；进入「已提交」要求诊断结论为可申请。
+            阶段只能按流程推进，跳步会被服务端拒绝；提交需满足诊断条件，提交、受理与退回需关联实际回执；修复需官方结果材料及移出日期。
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
@@ -162,44 +167,13 @@
               </el-timeline-item>
             </el-timeline>
           </div>
-          <div class="card card-pad">
-            <div class="card-title"><span class="bar"></span>任务拆解</div>
-            <div v-for="t in data.tasks" :key="t.id" class="spread" style="padding:10px 0;border-bottom:1px dashed var(--line)">
-              <div style="display:flex;align-items:center;gap:10px">
-                <el-checkbox :model-value="t.status === 'done'" @change="v => toggleTask(t, v)" />
-                <div>
-                  <div style="font-size:14px" :style="{ textDecoration: t.status === 'done' ? 'line-through' : 'none', color: t.status === 'done' ? '#9AA5B1' : '' }">{{ t.name }}</div>
-                  <div class="muted tiny">{{ t.owner }} · 截止 {{ t.due_date }}</div>
-                </div>
-              </div>
-              <el-tag size="small" :type="t.status === 'done' ? 'success' : t.status === 'doing' ? 'warning' : 'info'" effect="plain">{{ taskLabel(t.status) }}</el-tag>
-            </div>
-          </div>
+          <TaskPanel :case-id="caseId" :enterprise-id="data.case.enterprise_id" :tasks="data.tasks" :events="data.taskEvents" @changed="reload" />
         </div>
       </el-tab-pane>
 
       <!-- 同步监测 -->
       <el-tab-pane label="同步监测" name="sync">
-        <div class="card card-pad">
-          <div class="spread" style="margin-bottom:8px">
-            <div class="card-title" style="margin:0"><span class="bar"></span>多源渠道核验</div>
-            <el-button type="primary" plain size="small" :loading="scanning" :icon="Monitor" @click="doRescan">立即巡检</el-button>
-          </div>
-          <div class="muted tiny" style="margin-bottom:12px">
-            最近一次巡检：{{ data.channels[0]?.last_checked_at || '未巡检' }} · 数据来源：演示模拟源
-          </div>
-          <div class="chan" v-for="c in data.channels" :key="c.id">
-            <div class="ico">{{ c.channel_name.slice(0, 1) }}</div>
-            <div class="grow">
-              <div class="name">{{ c.channel_name }}</div>
-              <div class="note">{{ c.note }}</div>
-            </div>
-            <el-tag :type="stateType(c.state)" effect="light" size="small">
-              <span class="tag-dot" :class="'dot-' + c.state"></span>{{ stateLabel(c.state) }}
-            </el-tag>
-            <el-button v-if="c.state === 'bad' || c.state === 'warn'" size="small" text type="primary" @click="openObjection(c)">生成异议函</el-button>
-          </div>
-        </div>
+        <MonitoringPanel :case-id="caseId" :kase="data.case" :enterprise="data.enterprise" @changed="reload" />
       </el-tab-pane>
 
       <!-- 凭证 -->
@@ -229,6 +203,8 @@
               <div style="margin-top:16px" class="row">
                 <el-button size="small" @click="openVerify(c.code)">验真页</el-button>
                 <el-button size="small" @click="downloadCert(c.code)">下载 PDF</el-button>
+                <el-button v-if="c.status==='valid'" size="small" type="danger" @click="revoke(c.code)">撤销</el-button>
+                <el-tag size="small">{{c.status}}</el-tag>
               </div>
             </div>
           </div>
@@ -247,6 +223,7 @@
           </div>
         </div>
       </el-tab-pane>
+      <el-tab-pane label="融资／投标分享" name="share"><SharePanel :enterprise-id="data.case.enterprise_id" :case-id="caseId" :certificates="certs"/></el-tab-pane>
     </el-tabs>
 
     <!-- 异议函 -->
@@ -255,12 +232,17 @@
       <div class="paper" style="max-height:50vh;overflow:auto" v-html="objHtml"></div>
       <template #footer>
         <el-button @click="objOpen = false">关闭</el-button>
-        <el-button type="primary" :loading="sending" @click="sendObjection">发送异议函</el-button>
+        <el-button type="primary" :loading="sending" @click="sendObjection">保存异议草稿</el-button>
       </template>
     </el-dialog>
   </div>
 
   <div v-else class="page"><el-skeleton :rows="8" animated /></div>
+  <el-dialog v-model="stageDialog" title="登记实际办理回执" width="min(580px,94vw)">
+    <el-alert title="请先上传本事项对应的提交、受理或退回回执，再登记实际办理情况。" type="info" :closable="false" style="margin-bottom:14px" />
+    <el-form label-position="top"><el-form-item label="关联回执"><el-select v-model="stageForm.evidence_id" style="width:100%"><el-option v-for="f in stageReceipts" :key="f.id" :label="f.filename" :value="f.id" /></el-select></el-form-item><el-form-item label="办理 / 补正说明"><el-input v-model="stageForm.note" type="textarea" maxlength="500" /></el-form-item></el-form>
+    <template #footer><el-button @click="stageDialog=false">取消</el-button><el-button type="primary" :loading="advancing" @click="saveStage">保存办理记录</el-button></template>
+  </el-dialog>
   <!-- 补充事实：诊断结论只依据这里登记的事实 -->
   <el-dialog v-model="factsVisible" title="补充案件事实" width="520px">
     <el-alert type="info" :closable="false" show-icon style="margin-bottom:14px"
@@ -279,6 +261,7 @@
       <el-form-item label="整改完成日">
         <el-date-picker v-model="factForm.rectify_at" type="date" value-format="YYYY-MM-DD" placeholder="整改复查通过日期" style="width:100%" />
       </el-form-item>
+      <el-form-item label="官方登记移出日期"><el-date-picker v-model="factForm.removed_date" type="date" value-format="YYYY-MM-DD" placeholder="以官方修复结果材料为准" style="width:100%" /></el-form-item>
       <el-form-item label="近12个月无新增同类">
         <el-select v-model="factForm.no_new_similar" placeholder="未登记" style="width:100%">
           <el-option :value="1" label="无新增（符合）" />
@@ -295,9 +278,14 @@
 </template>
 
 <script setup>
+import TaskPanel from '../components/TaskPanel.vue'
+import MonitoringPanel from '../components/MonitoringPanel.vue'
+import DocumentEditor from '../components/DocumentEditor.vue'
+import EvidencePanel from '../components/EvidencePanel.vue'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import SharePanel from '../components/SharePanel.vue'
 import QRCode from 'qrcode'
 import { api } from '../api.js'
 
@@ -325,7 +313,7 @@ const caseId = computed(() => route.params.id)
 const rule = computed(() => data.value?.rule || { conditions: [], materials: [], basis: [], warnings: [], score: 0 })
 
 const statusText = computed(() => ({
-  eligible: '可申请', not_yet: `还需 ${rule.value.waitDays || 0} 天`,
+  needs_review:'待复核适用规则', eligible: '可申请', not_yet: `还需 ${rule.value.waitDays || 0} 天`,
   pending_facts: '待补充事实', blocked: '暂不符合'
 }[rule.value.status] || (rule.value.eligible ? '可申请' : '待确认')))
 
@@ -340,7 +328,8 @@ function openFacts() {
     obligation_at: c.obligation_at || '',
     rectified: c.rectified === 1 ? 1 : c.rectified === 0 ? 0 : null,
     rectify_at: c.rectify_at || '',
-    no_new_similar: c.no_new_similar === 1 ? 1 : c.no_new_similar === 0 ? 0 : null
+    no_new_similar: c.no_new_similar === 1 ? 1 : c.no_new_similar === 0 ? 0 : null,
+    removed_date:c.removed_date||''
   }
   factsVisible.value = true
 }
@@ -351,27 +340,24 @@ async function saveFacts() {
     await api.facts(caseId.value, factForm.value)
     ElMessage.success('事实已更新，诊断结论已重新计算')
     factsVisible.value = false
-    await load()
+    await reload()
   } catch (e) { ElMessage.error(e.message) } finally { savingFacts.value = false }
 }
 
 // —— 阶段推进
-const advancing = ref(false)
-async function advance(to) {
-  let note = ''
-  if (to === 'rejected') {
-    try {
-      const r = await ElMessageBox.prompt('请填写退回原因（企业需要知道补正什么）', '退回补正', { inputPlaceholder: '例如：整改说明缺少复查意见' })
-      note = r.value
-    } catch { return }
+const advancing=ref(false),stageDialog=ref(false),stageForm=ref({}),stageReceipts=ref([])
+async function advance(to){
+  if(['submitted','reviewing','rejected'].includes(to)){
+    try{stageReceipts.value=(await api.evidence(caseId.value)).items.filter(f=>f.kind==='receipt'&&!f.archived);stageForm.value={to,note:'',evidence_id:null};stageDialog.value=true}catch(e){ElMessage.error(e.message)}
+    return
   }
-  advancing.value = true
-  try {
-    await api.stage(caseId.value, to, note)
-    ElMessage.success('阶段已更新')
-    await load()
-  } catch (e) { ElMessage.error(e.message) } finally { advancing.value = false }
+  await commitStage(to,'',null)
 }
+async function commitStage(to,note,evidenceId){
+  advancing.value=true
+  try{await api.stage(caseId.value,to,note,evidenceId);stageDialog.value=false;ElMessage.success('阶段和依据已登记');await reload()}catch(e){ElMessage.error(e.message)}finally{advancing.value=false}
+}
+function saveStage(){return commitStage(stageForm.value.to,stageForm.value.note,stageForm.value.evidence_id)}
 const docs = computed(() => data.value?.docs || [])
 const currentDoc = computed(() => docs.value.find(d => d.key === activeDoc.value))
 
@@ -383,7 +369,7 @@ const taskLabel = s => ({ todo: '待办', doing: '进行中', done: '已完成' 
 const docStatus = key => {
   const d = docs.value.find(x => x.key === key)
   if (!d) return '未生成'
-  return d.status === 'template' ? '模板' : '已定稿'
+  return d.status === 'template' ? '模板' : '已保存草稿'
 }
 
 async function reload() {
@@ -417,7 +403,7 @@ async function polish() {
   polishing.value = true
   try {
     const r = await api.polish(caseId.value, activeDoc.value)
-    if (r.ok) {
+    if (!r.degraded) {
       data.value.docs = r.docs
       ElMessage.success('AI 润色完成，已保存定稿')
     } else ElMessage.warning(r.reason || 'AI 不可用，已保留模板')
@@ -426,23 +412,26 @@ async function polish() {
 
 async function resetDoc() {
   try {
-    await ElMessageBox.confirm('将丢弃当前修改，恢复为系统模板，确定？', '恢复模板')
+    await ElMessageBox.confirm('恢复系统模板会新增版本，现有记录仍保留，确定？', '恢复模板')
     const r = await api.resetDoc(caseId.value, activeDoc.value)
     data.value.docs = r.docs
     ElMessage.success('已恢复模板')
   } catch (e) { if (e !== 'cancel') ElMessage.error(e.message) }
 }
 
-function exportPdf() {
+async function exportPdf() {
+  try { const r=await api.docCheck(caseId.value,activeDoc.value);checkResult.value=r.check;
+    if(!r.check.valid){ElMessage.warning('校验未通过，请先补齐材料并纠正事实字段');return}
+  } catch(e){ElMessage.error(e.message);return}
   window.open(`/api/pdf/doc?case=${caseId.value}&key=${activeDoc.value}`, '_blank')
 }
 
 async function doCheck() {
   checking.value = true
   try {
-    const r = await api.docCheck(caseId.value)
+    const r = await api.docCheck(caseId.value,activeDoc.value)
     checkResult.value = r.check
-    ElMessage.success(`一致性校验 ${r.check.score} 分`)
+    ElMessage[r.check.valid?'success':'warning'](`校验${r.check.valid?'通过':'未通过'}：${r.check.issues.length} 项事实问题，${r.check.missing.length} 份待完善材料`)
   } catch (e) { ElMessage.error(e.message) } finally { checking.value = false }
 }
 
@@ -476,7 +465,7 @@ async function sendObjection() {
   sending.value = true
   try {
     await api.sendObjection(caseId.value, objChannel.value.channel_code)
-    ElMessage.success('异议函已生成并记录，等待平台答复（承诺 3 个工作日）')
+    ElMessage.success('异议草稿已生成，尚未实际提交')
     objOpen.value = false
     await reload()
   } catch (e) { ElMessage.error(e.message) } finally { sending.value = false }
@@ -494,6 +483,7 @@ async function issue() {
   } catch (e) { ElMessage.error(e.message) } finally { issuing.value = false }
 }
 
+async function revoke(code){try{const {value}=await ElMessageBox.prompt('请填写撤销原因','撤销凭证');await api.revokeCert(code,value);await reload();ElMessage.success('凭证已撤销')}catch(e){if(e!=='cancel'&&e!=='close')ElMessage.error(e.message)}}
 function openVerify(code) { window.open(`/verify?code=${code}`, '_blank') }
 function downloadCert(code) { window.open(`/api/pdf/cert?code=${code}`, '_blank') }
 

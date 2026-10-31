@@ -36,7 +36,7 @@ function createRouter() {
       r.keys.forEach((k, i) => { params[k] = decodeURIComponent(m[i + 1]); });
       if (r.auth && !user) return fail(res, 401, '请先登录');
       try {
-        const body = req.method === 'POST' || req.method === 'PUT' ? await readBody(req) : {};
+        const body = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) ? await readBody(req, r.bodyLimit) : {};
         const out = await r.handler({ req, res, url, params, body, user, ip, cookies });
         if (res.writableEnded) return true;
         if (out === undefined) return json(res, 200, { ok: true });

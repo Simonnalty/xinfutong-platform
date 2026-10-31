@@ -25,6 +25,7 @@ loadEnv(path.join(__dirname, '..', '.env'));
 const env = process.env;
 
 module.exports = {
+  demoSeed: env.XFT_DEMO_SEED === '1',
   db: {
     host: env.DB_HOST || '127.0.0.1',
     port: Number(env.DB_PORT || 3306),
@@ -46,6 +47,7 @@ module.exports = {
     ttlDays: Number(env.SESSION_TTL_DAYS || 7),
     cookie: 'xft_sid'
   },
+  publicBaseUrl: (env.XFT_PUBLIC_BASE_URL || `http://127.0.0.1:${env.PORT_V2 || env.PORT || 8790}`).replace(/\/+$/, ''),
   python: env.PYTHON || 'python3',
   signKey: env.XFT_SIGN_KEY || 'xinfutong-dev-key'
 };

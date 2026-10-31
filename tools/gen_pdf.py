@@ -42,7 +42,11 @@ HAVE_HEI = _font('Hei', 'simhei.ttf')
 HAVE_SONG = _font('Song', 'simsun.ttc', sub=0)
 HAVE_KAI = _font('Kai', 'simkai.ttf')
 
-BODY_FONT = 'Song' if HAVE_SONG else ('Hei' if HAVE_HEI else 'Helvetica')
+if not HAVE_SONG and not HAVE_HEI:
+    from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+    pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
+
+BODY_FONT = 'Song' if HAVE_SONG else ('Hei' if HAVE_HEI else 'STSong-Light')
 TITLE_FONT = 'Hei' if HAVE_HEI else BODY_FONT
 
 INK = colors.HexColor('#0F2A44')
@@ -179,6 +183,18 @@ def build(data, out):
             txt = clean_inline(inner)
             if txt:
                 flow.append(Paragraph(txt, style))
+
+    if data.get('qrUrl'):
+        from reportlab.graphics.barcode.qr import QrCodeWidget
+        from reportlab.graphics.shapes import Drawing
+        q = QrCodeWidget(data['qrUrl'])
+        x0, y0, x1, y1 = q.getBounds()
+        size = 100
+        drawing = Drawing(size, size, transform=[size/(x1-x0), 0, 0, size/(y1-y0), 0, 0])
+        drawing.add(q)
+        flow.append(Spacer(1, 8))
+        flow.append(drawing)
+        flow.append(Paragraph('扫码查看当前有效状态', st['meta']))
 
     if data.get('seal'):
         flow.append(Spacer(1, 10))

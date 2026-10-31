@@ -2,8 +2,6 @@
 /*
  * 同步监测、异议、凭证、验真、PDF、AI 润色。
  */
-const { spawn } = require('node:child_process');
-const path = require('node:path');
 const db = require('../db.js');
 const auth = require('../services/auth.js');
 const checks = require('../services/checks.js');
@@ -19,21 +17,6 @@ async function guard(user, caseId) {
   return k;
 }
 
-function genPdf(payload) {
-  return new Promise((resolve, reject) => {
-    const py = spawn('python3', [path.join(__dirname, '..', '..', 'tools', 'gen_pdf.py')]);
-    const out = [];
-    const err = [];
-    py.stdout.on('data', c => out.push(c));
-    py.stderr.on('data', c => err.push(c));
-    py.on('close', code => {
-      if (code !== 0) return reject(new Error('PDF 生成失败：' + Buffer.concat(err).toString().slice(0, 300)));
-      resolve(Buffer.concat(out));
-    });
-    py.stdin.write(JSON.stringify(payload));
-    py.stdin.end();
-  });
-}
 
 async function guardWrite(user, caseId) {
   const k = await guard(user, caseId);
@@ -43,7 +26,15 @@ async function guardWrite(user, caseId) {
   return k;
 }
 
+const genPdf=require('../services/pdf');
+
 module.exports = function register(r) {
+  r.get('/api/cases/:id/schedule', async ({user,params}) => {
+    await guard(user,params.id);return {job:await require('../services/jobs').get(params.id)};
+  },{auth:true});
+  r.post('/api/cases/:id/schedule', async ({user,params,body}) => {
+    await guardWrite(user,params.id);return {job:await require('../services/jobs').configure(params.id,body,user)};
+  },{auth:true});
   // 巡检
   r.post('/api/cases/:id/rescan', async ({ user, params }) => {
     await guardWrite(user, params.id);
@@ -56,7 +47,32 @@ module.exports = function register(r) {
     return await checks.latest(params.id);
   }, { auth: true });
 
+  r.post('/api/cases/:id/channels/record', async ({user,params,body}) => {
+    await guardWrite(user,params.id);return checks.record(params.id,body,user);
+  }, {auth:true});
+  r.get('/api/cases/:id/objections', async ({user,params}) => {
+    await guard(user,params.id);
+    const items=await db.all('SELECT * FROM objections WHERE case_id=? ORDER BY id DESC',[params.id]);
+    for(const item of items){
+      item.events=await db.all('SELECT * FROM objection_events WHERE objection_id=? ORDER BY id',[item.id]);
+      item.revisions=await db.all('SELECT * FROM objection_revisions WHERE objection_id=? ORDER BY version DESC',[item.id]);
+      item.followup=await db.one('SELECT remind_date FROM objection_followups WHERE objection_id=?',[item.id]);
+    }
+    return {items};
+  }, {auth:true});
+  r.post('/api/objections/:id/transition', async ({user,params,body}) => ({objection:await checks.transition(Number(params.id),body,user)}),{auth:true});
+
+  r.post('/api/objections/:id/supplement', async ({user,params,body})=>({objection:await checks.supplement(Number(params.id),body,user)}),{auth:true});
+  r.post('/api/objections/:id/followup', async ({user,params,body})=>({followup:await checks.followup(Number(params.id),body,user)}),{auth:true});
   // 异议函
+  r.get('/api/objections/:id/pdf', async ({user,params,res}) => {
+    const row=await db.one('SELECT * FROM objections WHERE id=?',[params.id]);
+    if(!row)throw Object.assign(new Error('异议不存在'),{code:'NOT_FOUND'});
+    const kase=await guard(user,row.case_id);
+    const html=docs.clean(row.body_html).replace(/^\s*<h4>[\s\S]*?<\/h4>/,'');
+    const buf=await genPdf({title:'数据异议与更正函',subtitle:'请企业核对后自行提交，平台不会自动发送',html,docNo:kase.id,footer:'信复通 · 企业异议材料草稿',seal:false});
+    sendBuffer(res,buf,'application/pdf','数据异议与更正函.pdf');return {__raw:true};
+  },{auth:true});
   r.get('/api/cases/:id/objection/preview', async ({ user, params, url }) => {
     await guard(user, params.id);
     const channel = url.searchParams.get('channel') || 'qcc';
@@ -66,8 +82,8 @@ module.exports = function register(r) {
   r.post('/api/cases/:id/objection', async ({ user, params, body, ip }) => {
     await guardWrite(user, params.id);
     const channel = body.channel || 'qcc';
-    const out = await checks.createObjection(params.id, channel, body.html);
-    await auth.audit(user.id, 'objection_send', `${params.id}/${channel}`, '发送异议函', ip);
+    const out = await checks.createObjection(params.id, channel, body.html, user);
+    await auth.audit(user.id, 'objection_draft', `${params.id}/${channel}`, '生成异议函草稿', ip);
     return out;
   }, { auth: true });
 
@@ -83,7 +99,9 @@ module.exports = function register(r) {
   }, { auth: true });
 
   r.post('/api/certificates/:code/revoke', async ({ user, params, body, ip }) => {
-    if (user.role !== 'admin') { const e = new Error('仅平台运营可撤销'); e.code = 'FORBIDDEN'; throw e; }
+    const existing=await cert.get(params.code);
+    if(!existing)throw new Error('凭证不存在');
+    await guardWrite(user,existing.case_id);
     const c = await cert.revoke(params.code, body.reason);
     await auth.audit(user.id, 'cert_revoke', params.code, body.reason, ip);
     return { certificate: c };
@@ -117,7 +135,7 @@ module.exports = function register(r) {
       await auth.audit(user.id, 'ai_polish', `${params.id}/${params.key}`, 'AI 润色', ip);
       return { ok: true, degraded: false, docs: Object.entries(after.docs).map(([key, d]) => ({ key, ...d })) };
     }
-    return { ok: false, degraded: Boolean(res.degraded), reason: res.reason };
+    return { degraded: true, reason: res.reason || 'AI 暂不可用，已保留当前材料' };
   }, { auth: true });
 
   r.get('/api/ai/status', async () => ({ available: ai.available(), model: require('../config.js').ai.model }), { auth: true });
@@ -130,6 +148,8 @@ module.exports = function register(r) {
     const built = await docs.build(caseId);
     const d = built.docs[key];
     if (!d) throw new Error('文书不存在');
+    const validation = await docs.check(caseId, key);
+    if (!validation.valid) throw new Error('材料未通过校验，请补齐待填写内容并纠正锁定事实后再导出');
     const html = String(d.html).replace(/^\s*<h4>[\s\S]*?<\/h4>/, '');
     const buf = await genPdf({
       title: d.title, subtitle: `${built.enterprise.name} · 统一社会信用代码 ${built.enterprise.credit_code}`,
@@ -139,18 +159,34 @@ module.exports = function register(r) {
     return { __raw: true };
   }, { auth: true });
 
+  r.get('/api/word/doc', async ({ user, res, url }) => {
+    const caseId=url.searchParams.get('case'), key=url.searchParams.get('key');
+    await guard(user,caseId);
+    const built=await docs.build(caseId), d=built.docs[key];
+    if(!d) throw new Error('文书不存在');
+    if(!(await docs.check(caseId,key)).valid) throw new Error('材料未通过校验，请补齐待填写内容并纠正锁定事实后再导出');
+    const buf=await require('../services/word').generate({title:d.title,subtitle:built.enterprise.name,html:d.html.replace(/^\s*<h4>[\s\S]*?<\/h4>/,''),docNo:caseId});
+    sendBuffer(res,buf,'application/vnd.openxmlformats-officedocument.wordprocessingml.document',d.title+'.docx');
+    return {__raw:true};
+  }, {auth:true});
+
   // PDF：凭证
   r.get('/api/pdf/cert', async ({ user, res, url }) => {
     const code = url.searchParams.get('code');
+    const original=await cert.get(code);
+    if(!original)throw new Error('凭证不存在');
+    await guard(user,original.case_id);
     const v = await cert.verify(code);
-    if (v.state === 'notfound') throw new Error('凭证不存在');
-    const html = `<p>兹证明：<span class="lock">${v.enterprise.name}</span>（统一社会信用代码：<span class="lock">${v.enterprise.credit_code}</span>），就「${v.case.event}」（决定文号：${v.case.docNo}，决定机关：${v.case.authority}），已依法完成信用修复。</p>
-<p>截至本凭证签发之日，平台对多源渠道进行核验，各渠道同步状态见核验报告。扫描凭证二维码或访问验真页可核验真实性。</p>
-<div class="meta">凭证编号 ${code}　签发日期 ${v.certificate.issuedAt.slice(0, 10)}　有效期至 ${v.certificate.validUntil}</div>
-<p class="no-indent">内容摘要（SHA-256）：${v.certificate.digest}</p>
-<p class="no-indent">前序摘要：${v.certificate.prevHash}</p>`;
+    if(v.state!=='valid')throw new Error('凭证当前不可用于导出：'+v.message);
+    const esc=docs.esc;
+    const html=`<p>企业：${esc(v.enterprise.name)}；统一社会信用代码：${esc(v.enterprise.creditCode)}。</p>
+<p>事项：${esc(v.case.event)}；决定文号：${esc(v.case.docNo)}；决定机关：${esc(v.case.authority)}；企业登记移出日期：${esc(v.case.removedDate)}。</p>
+<p>本说明记录签发时企业提供且人工核录的官方材料摘要：${v.officialProof.digest}。未向行政机关联网验证，不替代官方决定、银行授信或招标方审核。</p>
+<p>渠道快照：${v.channels.map(c=>esc(c.name)+'（'+esc(c.provider)+'）：'+esc(c.state)).join('；')||'尚无核验记录'}。模拟、待核验或失败记录不能证明真实同步。</p>
+<p>凭证编号：${esc(code)}；签发日期：${esc(v.certificate.issuedAt)}；有效期至：${esc(v.certificate.validUntil)}；版本：${v.certificate.version}。</p>
+<p>内容摘要：${v.certificate.digest}</p>`;
     const buf = await genPdf({
-      title: '信用修复状态凭证', html, docNo: code, footer: '信复通 · 信用修复凭证', seal: true
+      title: '平台信用修复状态说明', html, docNo: code, qrUrl:require('../config').publicBaseUrl+'/verify?code='+encodeURIComponent(code), footer: '信复通 · 企业材料核录快照', seal: false
     });
     sendBuffer(res, buf, 'application/pdf', '信用修复状态凭证.pdf');
     return { __raw: true };

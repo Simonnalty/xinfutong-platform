@@ -4,3 +4,5 @@ dist/
 *.log
 db/*.sqlite
 database/
+.venv/
+__pycache__/

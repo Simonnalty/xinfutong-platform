@@ -54,58 +54,22 @@ async function logout(token) {
 }
 
 /** 当前账号能访问的企业 id 列表 */
-async function enterprisesOf(user) {
-  if (user.role === 'admin') {
-    return (await db.all('SELECT id, name, credit_code, legal, industry, region, scale FROM enterprises ORDER BY id'))
-      .map(e => ({ ...e, relation: 'admin' }));
-  }
-  if (user.role === 'org') {
-    return db.all(
-      `SELECT e.id, e.name, e.credit_code, e.legal, e.industry, e.region, e.scale,
-              'org' AS relation, oe.perm AS perm
-         FROM org_enterprises oe
-         JOIN org_members om ON om.org_id = oe.org_id
-         JOIN enterprises e ON e.id = oe.enterprise_id
-        WHERE om.user_id = ? AND oe.revoked_at IS NULL
-        ORDER BY e.id`, [user.id]);
-  }
-  return db.all(
-    `SELECT e.id, e.name, e.credit_code, e.legal, e.industry, e.region, e.scale, m.role AS relation
-       FROM enterprise_members m JOIN enterprises e ON e.id = m.enterprise_id
-      WHERE m.user_id = ? AND m.revoked_at IS NULL ORDER BY e.id`, [user.id]);
+async function enterprisesOf(user){
+ if(user.role==='admin')return (await db.all('SELECT id,name,credit_code,legal,industry,region,scale FROM enterprises ORDER BY id')).map(e=>({...e,relation:'admin'}));
+ const members=await db.all('SELECT e.id,e.name,e.credit_code,e.legal,e.industry,e.region,e.scale,m.role AS relation FROM enterprise_members m JOIN enterprises e ON e.id=m.enterprise_id WHERE m.user_id=? AND m.revoked_at IS NULL ORDER BY e.id',[user.id]);
+ if(user.role!=='org')return members;
+ const grants=await db.all("SELECT e.id,e.name,e.credit_code,e.legal,e.industry,e.region,e.scale,'org' AS relation,CASE WHEN MAX(oe.perm='write')=1 THEN 'write' ELSE 'read' END AS perm FROM org_enterprises oe JOIN org_members om ON om.org_id=oe.org_id JOIN orgs o ON o.id=oe.org_id AND o.status='active' JOIN enterprises e ON e.id=oe.enterprise_id WHERE om.user_id=? AND oe.revoked_at IS NULL GROUP BY e.id,e.name,e.credit_code,e.legal,e.industry,e.region,e.scale",[user.id]);
+ const map=new Map(grants.map(e=>[e.id,e]));for(const e of members){const g=map.get(e.id);if(e.relation==='owner'||!g)map.set(e.id,e)}return [...map.values()].sort((a,b)=>a.id-b.id);
 }
-
-async function canAccess(user, enterpriseId) {
-  if (user.role === 'admin') return true;
-  if (user.role === 'org') {
-    return Boolean(await db.one(
-      `SELECT 1 AS x FROM org_enterprises oe JOIN org_members om ON om.org_id = oe.org_id
-        WHERE om.user_id = ? AND oe.enterprise_id = ? AND oe.revoked_at IS NULL`,
-      [user.id, enterpriseId]));
-  }
-  return Boolean(await db.one(
-    'SELECT 1 AS x FROM enterprise_members WHERE user_id = ? AND enterprise_id = ? AND revoked_at IS NULL',
-    [user.id, enterpriseId]));
+async function canAccess(user,id){
+ if(!user)return false;if(user.role==='admin')return true;
+ if(await db.one('SELECT 1 FROM enterprise_members WHERE user_id=? AND enterprise_id=? AND revoked_at IS NULL',[user.id,id]))return true;
+ return user.role==='org'&&Boolean(await db.one("SELECT 1 FROM org_enterprises oe JOIN org_members om ON om.org_id=oe.org_id JOIN orgs o ON o.id=oe.org_id AND o.status='active' WHERE om.user_id=? AND oe.enterprise_id=? AND oe.revoked_at IS NULL",[user.id,id]));
 }
-
-/** 是否可对该企业执行写操作：企业侧仅 owner，机构需 write 授权，运营不受限 */
-async function canWrite(user, enterpriseId) {
-  if (!user) return false;
-  if (user.role === 'admin') return true;
-  if (user.role === 'enterprise') {
-    const m = await db.one(
-      'SELECT role FROM enterprise_members WHERE user_id = ? AND enterprise_id = ? AND revoked_at IS NULL',
-      [user.id, enterpriseId]);
-    return Boolean(m && m.role === 'owner');
-  }
-  if (user.role === 'org') {
-    const g = await db.one(
-      `SELECT oe.perm FROM org_enterprises oe JOIN org_members om ON om.org_id = oe.org_id
-        WHERE om.user_id = ? AND oe.enterprise_id = ? AND oe.revoked_at IS NULL`,
-      [user.id, enterpriseId]);
-    return Boolean(g && g.perm === 'write');
-  }
-  return false;
+async function canWrite(user,id){
+ if(!user)return false;if(user.role==='admin')return true;
+ if(await db.one("SELECT 1 FROM enterprise_members WHERE user_id=? AND enterprise_id=? AND role='owner' AND revoked_at IS NULL",[user.id,id]))return true;
+ return user.role==='org'&&Boolean(await db.one("SELECT 1 FROM org_enterprises oe JOIN org_members om ON om.org_id=oe.org_id JOIN orgs o ON o.id=oe.org_id AND o.status='active' WHERE om.user_id=? AND oe.enterprise_id=? AND oe.perm='write' AND oe.revoked_at IS NULL",[user.id,id]));
 }
 
 async function audit(actorId, action, target, detail, ip) {

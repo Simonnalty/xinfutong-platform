@@ -84,10 +84,11 @@ function ready() {
       await p.query(`CREATE DATABASE IF NOT EXISTS \`${config.db.database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
       await ensureSchema(p);
       const [{ n }] = (await p.query('SELECT COUNT(*) AS n FROM enterprises'))[0];
-      if (Number(n) === 0) {
+      if (Number(n) === 0 && config.demoSeed) {
         const seed = require('../db/seed.js');
         await seed({ all, one, run });
       }
+      await require('../db/catalog.js')({all,one,run});
       await require('../db/migrate.js')({ all, one, run });
     })().catch(err => { readyPromise = null; throw err; });
   }

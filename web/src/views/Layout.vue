@@ -53,7 +53,7 @@
       </header>
 
       <router-view v-slot="{ Component }">
-        <component :is="Component" :key="$route.fullPath" />
+        <component :is="Component" :key="$route.path" />
       </router-view>
     </div>
   </div>
@@ -75,6 +75,9 @@ const menus = computed(() => {
     { path: '/app/dashboard', label: '工作台', icon: 'HomeFilled' },
     { path: '/app/knowledge', label: '合规知识库', icon: 'Reading' }
   ]
+  base.push({path:'/app/notices',label:'合规提醒',icon:'Bell'})
+  base.push({ path:'/app/collaboration',label:'企业协作授权',icon:'Connection' })
+  if (['org','admin'].includes(store.user?.role)) base.push({path:'/app/organization',label:'机构工作台',icon:'OfficeBuilding'})
   if (store.user?.role === 'admin') base.push({ path: '/app/admin', label: '平台运营', icon: 'Setting' })
   return base
 })

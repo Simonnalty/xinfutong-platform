@@ -1,22 +1,30 @@
 <template>
-  <div class="page">
+  <div class="page" v-loading="loading">
     <div class="page-head">
       <div>
         <h1>{{ ent?.name || '工作台' }}</h1>
-        <div class="sub">
+        <div v-if="ent" class="sub">
           统一社会信用代码 {{ ent?.credit_code }} · {{ ent?.industry }} · {{ ent?.region }}
         </div>
       </div>
       <div class="row">
         <el-button :icon="Refresh" @click="load">刷新</el-button>
-        <el-button type="primary" :icon="Plus" @click="goCase(cases[0])" :disabled="!cases.length">进入案件</el-button>
+        <el-button v-if="canCreate" @click="openEnterprise(null)">新增企业</el-button>
+        <el-button v-if="ent && canWrite" @click="openEnterprise(ent)">编辑档案</el-button>
+        <el-button v-if="ent && canWrite" type="primary" :icon="Plus" @click="showCase=true">新建事项</el-button>
       </div>
     </div>
 
+    <el-alert v-if="loadError" :title="loadError" type="error" show-icon :closable="false" style="margin-bottom:18px" />
+    <el-empty v-if="!store.enterpriseId && !loading" description="先建立企业档案，再登记需要修复的事项">
+      <el-button v-if="canCreate" type="primary" @click="openEnterprise(null)">建立第一家企业</el-button>
+      <div v-else>请联系企业负责人授予访问权限</div>
+    </el-empty>
+    <template v-if="store.enterpriseId">
     <div class="kpi-grid" style="margin-bottom:18px">
       <div class="card kpi accent">
-        <div class="label">信用修复健康度</div>
-        <div class="value">{{ health }}<span style="font-size:16px">/100</span></div>
+        <div class="label">事项办理参考分</div>
+        <div class="value">{{ summary.total ? health : '—' }}<span style="font-size:16px">/100</span></div>
         <div class="foot">{{ healthHint }}</div>
       </div>
       <div class="card kpi">
@@ -58,7 +66,7 @@
             <template #default="{ row }">{{ stageLabel(row.stage) }}</template>
           </el-table-column>
         </el-table>
-        <el-empty v-if="!cases.length" description="暂无失信记录" :image-size="80" />
+        <el-empty v-if="!cases.length" description="尚未登记修复事项" :image-size="80" />
       </div>
 
       <div class="card card-pad">
@@ -85,16 +93,26 @@
         </div>
       </div>
     </div>
+    </template>
+    <EnterpriseDialog v-model="showEnterprise" :enterprise="editingEnterprise" @saved="load" />
+    <CaseCreateDialog v-model="showCase" :enterprise-id="store.enterpriseId" @saved="createdCase" />
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '../api.js'
-import { store } from '../store.js'
+import { store, currentEnterprise } from '../store.js'
+import EnterpriseDialog from '../components/EnterpriseDialog.vue'
+import CaseCreateDialog from '../components/CaseCreateDialog.vue'
 
 const router = useRouter()
+const loading=ref(false),loadError=ref(''),showEnterprise=ref(false),showCase=ref(false),editingEnterprise=ref(null)
+const canCreate=computed(()=>['enterprise','admin'].includes(store.user?.role))
+const canWrite=computed(()=>{const e=currentEnterprise();return store.user?.role==='admin' || e?.relation==='owner' || (e?.relation==='org' && e?.perm==='write')})
+function openEnterprise(e){editingEnterprise.value=e;showEnterprise.value=true}
+function createdCase(c){goCase(c)}
 const ent = ref(null)
 const cases = ref([])
 const summary = ref({ total: 0, repaired: 0, active: 0, syncIssues: 0 })
@@ -110,7 +128,7 @@ const healthHint = computed(() => {
   const s = summary.value
   if (s.syncIssues) return `有 ${s.syncIssues} 个渠道未同步，建议发送异议`
   if (s.active) return '修复流程进行中，注意关键节点'
-  return '状态良好，继续保持按期公示'
+  return '暂无登记事项；参考分不代表官方信用评级'
 })
 
 const quick = computed(() => [
@@ -120,7 +138,7 @@ const quick = computed(() => [
   { t: '合规知识库', d: '法规原文、办理指引与典型案例', icon: 'Reading', go: () => router.push('/app/knowledge') }
 ])
 
-const stageMap = { draft: '待提交', submitted: '已提交', reviewing: '审核中', repaired: '已修复' }
+const stageMap = { draft: '草稿', diagnosed: '已诊断', materials_ready: '材料就绪', rejected: '已退回', submitted: '已提交', reviewing: '审核中', repaired: '已修复' }
 const stageLabel = s => stageMap[s] || s
 const fmt = s => String(s || '').replace('T', ' ').slice(0, 16)
 const progressColor = row => row.stage === 'repaired' ? '#1E8449' : row.progress < 40 ? '#B9770E' : '#1FA69B'
@@ -130,21 +148,24 @@ function goCase(row, tab) {
   router.push({ name: 'case', params: { id: row.id }, query: tab ? { tab } : {} })
 }
 
+let loadVersion=0
 async function load() {
-  if (!store.enterpriseId) return
-  const r = await api.overview(store.enterpriseId)
-  ent.value = r.enterprise
-  cases.value = r.cases
-  summary.value = r.summary
-  const first = r.cases[0]
-  if (first) {
-    const d = await api.caseDetail(first.id)
-    timeline.value = d.timeline.slice(-6).reverse()
-    todoCount.value = d.tasks.filter(t => t.status !== 'done').length
-  }
+  const version=++loadVersion,id=store.enterpriseId
+  ent.value=null;cases.value=[];timeline.value=[];todoCount.value=0
+  summary.value={total:0,repaired:0,active:0,syncIssues:0};loadError.value=''
+  if (!id){loading.value=false;return}
+  loading.value=true
+  try{
+    const r=await api.overview(id)
+    if(version!==loadVersion)return
+    ent.value=r.enterprise;cases.value=r.cases;summary.value=r.summary
+    timeline.value=r.timeline||[]
+    todoCount.value=r.todoCount||0
+  }catch(e){if(version===loadVersion)loadError.value=e.message}
+  finally{if(version===loadVersion)loading.value=false}
 }
+watch(()=>store.enterpriseId,load,{immediate:true})
 
-onMounted(load)
 </script>
 
 <style>

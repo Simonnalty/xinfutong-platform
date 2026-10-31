@@ -22,7 +22,7 @@
         </div>
       </div>
       <div style="font-size:12px;color:#6E8598">
-        本平台数据为演示数据 · 法规参数以属地主管部门口径为准
+        诊断需配置已复核规则 · 办理要求以主管部门公布口径为准
       </div>
     </div>
 
@@ -40,13 +40,6 @@
           <el-alert v-if="error" :title="error" type="error" :closable="false" show-icon style="margin-bottom:14px" />
           <el-button type="primary" size="large" style="width:100%" :loading="loading" @click="submit">登 录</el-button>
         </el-form>
-        <div class="demo-accounts">
-          演示账号（密码均为 <b>xft2026</b>）：<br />
-          企业端 <b>13907320001</b>（负责人 · 可写）<br />
-          机构端 <b>13907320002</b>（园区服务中心 · 只读）<br />
-          只读成员 <b>13907320003</b>（同企业 · 不可写）<br />
-          运营端 <b>18600000000</b>（平台运营）
-        </div>
         <div style="margin-top:18px;font-size:13px" class="muted">
           没有账号？<el-link type="primary" @click="registerOpen = true">注册企业账号</el-link>
         </div>
@@ -77,7 +70,7 @@ import { login } from '../store.js'
 
 const router = useRouter()
 const route = useRoute()
-const form = reactive({ phone: '13907320001', password: 'xft2026' })
+const form = reactive({ phone: '', password: '' })
 const loading = ref(false)
 const error = ref('')
 const registerOpen = ref(false)
@@ -85,10 +78,10 @@ const regLoading = ref(false)
 const reg = reactive({ phone: '', name: '', password: '' })
 
 const feats = [
-  { t: '智能诊断', d: '按失信类型与等级判定可申请日、所需材料与法定时限' },
+  { t: '智能诊断', d: '依据已复核规则和企业事实生成材料清单与办理提示' },
   { t: '材料工坊', d: '事实锁定、AI 只润色措辞，跨文书自动一致性校验' },
-  { t: '同步监测', d: '多源渠道巡检，差异定位并可一键生成数据异议函' },
-  { t: '数字凭证', d: '链式存证 + 扫码验真，银行与招标方可直接采信' }
+  { t: '同步监测', d: '区分人工核录与接入渠道，定位差异并生成异议草稿' },
+  { t: '数字凭证', d: '签名快照与扫码核验，为银行与招标方提供核对依据' }
 ]
 
 async function submit() {
