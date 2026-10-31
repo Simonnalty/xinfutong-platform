@@ -19,7 +19,10 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer,
                                 Table, TableStyle, Flowable)
 
-FONT_DIR = os.environ.get('XFT_FONT_DIR', '/home/simon/.local/share/fonts/win-zh')
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_LOCAL = os.path.join(_HERE, 'fonts')
+FONT_DIR = os.environ.get('XFT_FONT_DIR') or (
+    _LOCAL if os.path.isdir(_LOCAL) else '/home/simon/.local/share/fonts/win-zh')
 
 def _font(name, file, idx=0, sub=None):
     path = os.path.join(FONT_DIR, file)

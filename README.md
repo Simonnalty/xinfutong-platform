@@ -34,9 +34,27 @@ app/
 └── web/                 Vue 3 前端（dist 已构建，可直接跑）
 ```
 
+## 数据库
+
+本机演示用的 MariaDB 是**便携版**，数据和二进制都放在项目里，方便整体拷走：
+
+| 内容 | 位置 |
+| --- | --- |
+| 数据文件（158MB，勿提交 git） | `/home/simon/项目/信复通/database/mysql-data` |
+| 启动 / 停止脚本 | `database/start-db.sh`、`database/stop-db.sh` |
+| 服务端二进制（1.2GB，未纳入项目） | `/home/simon/mariadb` |
+| 连接信息 | `127.0.0.1:3306`，库 `xinfutong_v2`，账号 `xft` |
+
+```bash
+bash database/start-db.sh    # 启动
+bash database/stop-db.sh     # 停止
+```
+
+正式部署到云服务器时用系统的 `mariadb-server`，不需要这套便携版。
+
 ## 启动
 
-前置：Node 20+、MariaDB/MySQL 已启动、Python3 + reportlab（PDF 功能需要）。
+前置：Node 20+、MariaDB/MySQL 已启动（本机用 `database/start-db.sh`）、Python3 + reportlab（PDF 功能需要）。
 
 ```bash
 cp env.example .env        # 改数据库账号、AI 密钥、签名密钥
