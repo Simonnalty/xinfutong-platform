@@ -195,5 +195,47 @@ module.exports = async function seed({ all, one, run }) {
       [docKey, 1, title, JSON.stringify([]), body]);
   }
 
+
+  // 演示证据材料：回执用于推进「已提交/审核中」，官方结果用于登记「已修复」与生成办理进度记录。
+  // 内容是极简 PDF，仅证明流程可走通；真实使用时由企业上传原件并人工核录。
+  const crypto=require('node:crypto');
+  const miniPdf = (title) => Buffer.from(
+    '%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n'+
+    '2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n'+
+    '3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>endobj\n'+
+    '4 0 obj<</Length 62>>stream\nBT /F1 14 Tf 60 760 Td (' + title + ') Tj ET\nendstream endobj\n'+
+    '5 0 obj<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>endobj\n'+
+    'trailer<</Root 1 0 R>>\n%%EOF\n', 'latin1');
+
+  const EVIDENCE = [
+    ['seed-receipt-437', 'XF-2026-000437', 'receipt', '受理回执.pdf',
+      '湘潭市市场监督管理局', '2025-09-15', 'reviewed'],
+    ['seed-official-437', 'XF-2026-000437', 'official_result', '移出经营异常名录决定书.pdf',
+      '湘潭市市场监督管理局', '2025-09-15', 'reviewed']
+  ];
+  for (const [id, caseId, kind, filename, source, observed, review] of EVIDENCE) {
+    const buf = miniPdf(filename.replace(/\.pdf$/, ''));
+    const digest = crypto.createHash('sha256').update(buf).digest('hex');
+    await run(`INSERT INTO evidence_files
+      (id, case_id, kind, filename, media_type, byte_size, content, digest, source, observed_at,
+       uploaded_by, review_status, reviewed_by, reviewed_at, review_note)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?)`,
+      [id, caseId, kind, filename, 'application/pdf', buf.length, buf, digest, source, observed,
+       1, review, 3, '演示数据：已人工核录']);
+  }
+
+
+  // 演示案件的定稿材料：模板里的【待补充/待填写/待核对】占位已补成可提交文本。
+  // 不补的话材料一致性校验不通过、导出会被拦（这是产品规则，不是 bug）。
+  try {
+    const demoDocs = require('./demo-docs.json');
+    for (const d of demoDocs) {
+      await run(`INSERT INTO case_docs (case_id, doc_key, html, status, source, version, updated_by)
+                 VALUES (?,?,?,'final','manual',1,1)
+                 ON DUPLICATE KEY UPDATE html = VALUES(html)`,
+        ['XF-2026-000437', d.key, d.html]);
+    }
+  } catch (e) { /* 无定稿样本时跳过 */ }
+
   return { ok: true };
 };

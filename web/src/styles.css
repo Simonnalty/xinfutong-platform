@@ -241,3 +241,21 @@ a { color: var(--teal-dark); text-decoration: none; }
   .login-left { display: none; }
   .sidebar { display: none; }
 }
+
+.demo-accounts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.demo-item {
+  display: flex; flex-direction: column; gap: 2px; text-align: left; cursor: pointer;
+  padding: 9px 11px; border: 1px solid #E3E7EC; border-radius: 10px;
+  background: #FBFAF7; transition: all .15s; font-family: inherit;
+}
+.demo-item:hover { border-color: #1FA69B; background: #F2FBF9; transform: translateY(-1px); }
+.demo-item .role { font-size: 11px; color: #1FA69B; font-weight: 600; }
+.demo-item .phone { font-size: 13px; color: #0F2A44; font-weight: 600; letter-spacing: .3px; }
+.demo-item .name { font-size: 11px; color: #6E7A89; }
+
+@media (max-width: 980px) {
+  .page-head { flex-direction: column; align-items: stretch; gap: 12px; }
+  .page-head h1 { font-size: 19px; }
+  .page-head .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .page-head .row > * { margin-left: 0 !important; }
+}
