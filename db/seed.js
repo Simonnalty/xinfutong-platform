@@ -221,7 +221,9 @@ module.exports = async function seed({ all, one, run }) {
     ['seed-official-240', 'XF-2026-000240', 'official_result', '移出经营异常名录决定书.pdf',
       '湘潭市雨湖区市场监督管理局', '2024-08-01', 'reviewed'],
     ['seed-receipt-298', 'XF-2026-000298', 'receipt', '受理回执.pdf',
-      '湘潭市市场监督管理局', '2025-09-10', 'reviewed']
+      '湘潭市市场监督管理局', '2025-09-10', 'reviewed'],
+    ['seed-official-298', 'XF-2026-000298', 'official_result', '行政处罚信息修复决定书.pdf',
+      '湘潭市市场监督管理局', '2025-09-20', 'reviewed']
   ];
   for (const [id, caseId, kind, filename, source, observed, review] of EVIDENCE) {
     const buf = miniPdf(filename.replace(/\.pdf$/, ''));
