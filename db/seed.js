@@ -19,7 +19,7 @@ const ENTERPRISES = [
 const CASES = [
   ['XF-2026-000437', 1, 'abnormal', '未按规定期限公示 2024 年度报告', '湘潭市市场监督管理局', '潭市监信列〔2025〕0317 号', '2025-03-18', '2025-07-02', 'minor', 'reviewing', 62, '2025-10-02', '2026-11-12', null, null],
   ['XF-2026-000381', 2, 'penalty', '特种设备超期未检（起重机械）', '湘潭市市场监督管理局', '潭市监处罚〔2026〕0214 号', '2026-02-11', null, 'serious', 'draft', 30, '2027-02-11', '2027-05-11', 80000.00, 'normal'],
-  ['XF-2026-000352', 3, 'abnormal', '未按期报送 2024 年度报告', '湘潭市市场监督管理局', '潭市监信列〔2025〕0188 号', '2025-05-09', '2025-09-15', 'general', 'draft', 15, '2025-11-15', '2026-12-20', null, null],
+  ['XF-2026-000352', 3, 'abnormal', '未按期报送 2024 年度报告', '湘潭市市场监督管理局', '潭市监信列〔2025〕0188 号', '2025-05-09', null, 'general', 'draft', 15, '2025-11-15', '2026-12-20', null, null],
   // 演示「只按金额判等级会判错」：3 万元低于 5 万，但裁量阶次是一般，
   // 依 107 号令第七条不构成轻微失信，应按一般失信等满三个月再申请。
   ['XF-2026-000298', 4, 'penalty', '生产经营标注虚假生产日期的食品', '湘潭市市场监督管理局', '潭市监处罚〔2025〕0533 号', '2025-08-20', null, 'general', 'reviewing', 48, '2026-02-20', '2026-11-18', 30000.00, 'normal'],
@@ -164,6 +164,12 @@ module.exports = async function seed({ all, one, run }) {
   // 一般失信的演示案例：罚 3 万但裁量阶次为一般，条件满足后应「可申请」而非「自动停止」
   await run(`UPDATE cases SET obligation_at='2025-09-10', rectified=1, rectify_at='2025-09-20', no_new_similar=1
              WHERE id='XF-2026-000298'`);
+  // 已修复的历史案例：三项条件与移出日期都要有登记，否则结论会显示「待确认」
+  await run(`UPDATE cases SET obligation_at='2024-07-05', rectified=1, rectify_at='2024-07-18', no_new_similar=1
+             WHERE id='XF-2026-000240'`);
+  // 草稿状态的一般案例：仍在准备阶段，没有官方结果；「有新增同类失信」是它的阻塞点
+  await run(`UPDATE cases SET obligation_at='2025-07-20', rectified=1, rectify_at='2025-08-05', no_new_similar=0
+             WHERE id='XF-2026-000352'`);
 
   for (const ch of CHANNELS) {
     await run(`INSERT INTO case_channels (case_id, channel_code, channel_name, state, note, last_checked_at, sort)
@@ -211,7 +217,11 @@ module.exports = async function seed({ all, one, run }) {
     ['seed-receipt-437', 'XF-2026-000437', 'receipt', '受理回执.pdf',
       '湘潭市市场监督管理局', '2025-09-15', 'reviewed'],
     ['seed-official-437', 'XF-2026-000437', 'official_result', '移出经营异常名录决定书.pdf',
-      '湘潭市市场监督管理局', '2025-09-15', 'reviewed']
+      '湘潭市市场监督管理局', '2025-09-15', 'reviewed'],
+    ['seed-official-240', 'XF-2026-000240', 'official_result', '移出经营异常名录决定书.pdf',
+      '湘潭市雨湖区市场监督管理局', '2024-08-01', 'reviewed'],
+    ['seed-receipt-298', 'XF-2026-000298', 'receipt', '受理回执.pdf',
+      '湘潭市市场监督管理局', '2025-09-10', 'reviewed']
   ];
   for (const [id, caseId, kind, filename, source, observed, review] of EVIDENCE) {
     const buf = miniPdf(filename.replace(/\.pdf$/, ''));
