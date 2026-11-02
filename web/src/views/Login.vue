@@ -48,17 +48,7 @@
           没有账号？<el-link type="primary" @click="registerOpen = true">注册企业账号</el-link>
         </div>
 
-        <el-divider style="margin:22px 0 14px"><span style="font-size:12px;color:#6E7A89">演示账号 · 点一下登录</span></el-divider>
-        <div class="demo-accounts">
-          <button v-for="d in demos" :key="d.phone" class="demo-item" type="button" @click="quick(d)">
-            <span class="role">{{ d.role }}</span>
-            <span class="phone">{{ d.phone }}</span>
-            <span class="name">{{ d.name }}</span>
-          </button>
-        </div>
-        <div style="margin-top:10px;font-size:12px;color:#6E7A89">
-          统一密码 <code>xft2026</code> · 本平台数据为演示数据
-        </div>
+
       </div>
 
       <el-dialog v-model="registerOpen" title="注册企业账号" width="420px">
@@ -88,17 +78,6 @@ const router = useRouter()
 const route = useRoute()
 const form = reactive({ phone: '', password: '' })
 
-const demos = [
-  { role: '企业端', phone: '13907320001', name: '周立恒 · 恒基建材' },
-  { role: '机构端', phone: '13907320002', name: '李雨桐 · 园区服务中心' },
-  { role: '平台运营', phone: '18600000000', name: '平台运营' }
-]
-
-function quick(d) {
-  form.phone = d.phone
-  form.password = 'xft2026'
-  submit()
-}
 const loading = ref(false)
 const error = ref('')
 const registerOpen = ref(false)
