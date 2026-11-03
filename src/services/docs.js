@@ -35,7 +35,7 @@ async function build(caseId,today,{templatesOnly=false}={}) {
 const DOC_TITLES={apply:'信用修复申请书',promise:'守信承诺书',rectify:'整改情况说明',auth:'授权委托书',list:'材料目录与证明清单',plan:'整改计划书'};
 // Compare every locked slot to its current authoritative template, including count and order.
 const locks = html => [...html.matchAll(/<span\b([^>]*)>([\s\S]*?)<\/span>/g)].filter(m=>/class="lock"/.test(m[1])).map(m=>({field:m[1].match(/data-field="(\w+)"/)?.[1],value:m[2].replace(/\s+/g,'')}));
-async function check(caseId,docKey) {
+async function evaluateCheck(caseId,docKey) {
   const {docs}=await build(caseId), expected=(await build(caseId,undefined,{templatesOnly:true})).docs;
   const issues=[],missing=[];let locked=0;
   if(!Object.keys(docs).length)issues.push({type:'unsupported',message:'当前事项没有可用模板，请核对适用范围'});
@@ -50,7 +50,13 @@ async function check(caseId,docKey) {
     if(/\{\{|【待(?:补充|填写|核对)/.test(d.html))missing.push({doc:key,type:'unfinished',message:'尚有待填写内容'});
   }
   if(docKey&&!docs[docKey])throw new Error('文书不存在');
-  const result={valid:issues.length===0&&missing.length===0,issues,missing,locked,score:Math.max(0,100-issues.length*10-missing.length*5)};
+  return {valid:issues.length===0&&missing.length===0,issues,missing,locked,score:Math.max(0,100-issues.length*10-missing.length*5)};
+}
+async function summary(caseId) {
+  return evaluateCheck(caseId);
+}
+async function check(caseId,docKey) {
+  const result=await evaluateCheck(caseId,docKey);
   await db.run('INSERT INTO doc_checks (case_id,result,score) VALUES (?,?,?)',[caseId,JSON.stringify(result),result.score]);return result;
 }
 async function save(caseId,docKey,html,{source='manual',userId=null}={}) {
@@ -72,4 +78,4 @@ async function save(caseId,docKey,html,{source='manual',userId=null}={}) {
 async function reset(caseId,docKey,userId=null){const d=(await build(caseId,undefined,{templatesOnly:true})).docs[docKey];if(!d)throw new Error('文书不存在');return save(caseId,docKey,d.html,{source:'template',userId});}
 async function versions(caseId,docKey){return db.all('SELECT version,html,source,created_by,created_at FROM doc_versions WHERE case_id=? AND doc_key=? ORDER BY version DESC',[caseId,docKey]);}
 async function restore(caseId,docKey,version,userId){const d=await db.one('SELECT html FROM doc_versions WHERE case_id=? AND doc_key=? AND version=?',[caseId,docKey,version]);if(!d)throw new Error('历史版本不存在');return save(caseId,docKey,d.html,{source:'restore',userId});}
-module.exports={build,check,save,reset,versions,restore,load,context,render,cn,esc,clean,DOC_TITLES};
+module.exports={build,check,summary,save,reset,versions,restore,load,context,render,cn,esc,clean,DOC_TITLES};

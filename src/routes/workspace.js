@@ -81,6 +81,7 @@ module.exports = function register(r) {
       case: { ...kase, levelLabel: levelLabel(kase.level) },
       enterprise: ent,
       rule: { ...evald, basis: (evald.basis && evald.basis.length) ? evald.basis : (evald.ruleVersion?[{law:evald.ruleVersion.title,text:evald.ruleVersion.review_note,url:evald.ruleVersion.source_url}]:[]) },
+      materialCheck: await docs.summary(params.id),
       diagnosisHistory:await db.all('SELECT id,content,digest,created_at FROM diagnosis_snapshots WHERE case_id=? ORDER BY id DESC LIMIT 10',[params.id]),
       stage: await stage.info(kase),
       docs: Object.entries(built.docs).map(([key, d]) => ({ key, documentKey: key, ...d })),

@@ -1,9 +1,9 @@
 <template>
-  <div class="page" v-loading="loading">
+  <div class="page organization-page" v-loading="loading">
     <div class="page-head"><div><h1>机构协作工作台</h1><div class="sub">查看获授权企业的信用事项、逾期任务和监测结果</div></div><el-button @click="load">刷新</el-button></div>
     <el-alert v-if="error" :title="error" type="warning" :closable="false"/>
     <template v-else>
-      <div class="kpi-grid" style="margin-bottom:18px"><div class="card kpi"><div class="label">授权企业</div><div class="value">{{ data.enterprises.length }}</div></div><div class="card kpi"><div class="label">信用事项</div><div class="value">{{ data.cases.length }}</div></div><div class="card kpi"><div class="label">逾期任务</div><div class="value">{{ data.cases.reduce((n,c)=>n+Number(c.overdue),0) }}</div></div></div>
+      <div class="kpi-grid organization-stats" style="margin-bottom:18px"><div class="card kpi"><div class="label">授权企业</div><div class="value">{{ data.enterprises.length }}</div></div><div class="card kpi"><div class="label">信用事项</div><div class="value">{{ data.cases.length }}</div></div><div class="card kpi"><div class="label">逾期任务</div><div class="value">{{ data.cases.reduce((n,c)=>n+Number(c.overdue),0) }}</div></div></div>
       <div class="card card-pad" style="margin-bottom:18px"><div class="spread"><h3>企业事项</h3><el-button type="primary" :loading="running" :disabled="!selected.length" @click="batch">批量复查（{{ selected.length }}）</el-button></div>
         <el-input v-model="search" placeholder="搜索企业或事项" clearable style="max-width:360px;margin:12px 0"/>
         <el-table :data="filtered" row-key="id" @selection-change="selected=$event"><el-table-column type="selection" width="45" :selectable="writable"/><el-table-column prop="enterprise_name" label="企业" min-width="180"/><el-table-column prop="event" label="事项" min-width="180"/><el-table-column label="进度" width="130"><template #default="{row}">{{stages[row.stage]||row.stage}}</template></el-table-column><el-table-column prop="overdue" label="逾期任务" width="100"/><el-table-column label="权限" width="90"><template #default="{row}">{{ writable(row)?'协作':'只读' }}</template></el-table-column><el-table-column label="操作" width="100"><template #default="{row}"><el-button text type="primary" @click="$router.push('/app/case/'+row.id)">查看事项</el-button></template></el-table-column></el-table>
@@ -31,3 +31,8 @@ async function membersLoad(){try{members.value=(await api.orgMembers(orgId.value
 async function memberChange(phone,revoked){if(revoked){try{await ElMessageBox.confirm('移除此机构成员？','移除成员',{type:'warning'})}catch{return}}try{await api.orgMember(orgId.value,{phone,revoked});memberOpen.value=false;await membersLoad();ElMessage.success('机构成员已更新')}catch(e){ElMessage.error(e.message)}}
 onMounted(load)
 </script>
+
+<style scoped>
+.organization-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 680px) { .organization-stats .kpi { border-top: 0; border-right: 1px solid var(--line); padding: 14px 10px; } .organization-stats .kpi:last-child { border-right: 0; } .organization-page :deep(.spread) { flex-wrap: wrap; } }
+</style>

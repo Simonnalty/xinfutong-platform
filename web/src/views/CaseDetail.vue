@@ -53,7 +53,7 @@
             <div>
               <div class="score-ring" :style="{ '--p': rule.score }">
                 <div class="num">{{ rule.score }}</div>
-                <div class="cap">材料完备度</div>
+                <div class="cap">诊断参考分</div>
               </div>
               <div class="center" style="margin-top:14px">
                 <el-button type="primary" plain size="small" :loading="diagnosing" @click="rediagnose">重新诊断</el-button>
@@ -102,6 +102,23 @@
               </el-alert>
             </div>
           </div>
+
+          <div class="case-metrics" aria-label="案件指标口径">
+            <div class="case-metric">
+              <span class="muted tiny">材料完备度</span>
+              <strong>{{ materialCheck?.score ?? '—' }}<small v-if="materialCheck"> / 100</small></strong>
+              <span class="muted tiny">{{ materialCheckLabel }}</span>
+            </div>
+            <div class="case-metric">
+              <span class="muted tiny">事项办理进度</span>
+              <strong>{{ data.stage?.progress ?? 0 }}<small>%</small></strong>
+              <span class="muted tiny">{{ data.stage?.label || '待建立' }}</span>
+            </div>
+            <div class="case-metric metric-note">
+              <span class="muted tiny">指标说明</span>
+              <span class="muted tiny">诊断参考分反映规则条件；材料完备度按文书校验；事项进度按实际流转阶段计算，三者口径不同。</span>
+            </div>
+          </div>
         </div>
 
         <!-- 等级核实：107 号令第七条的「较低数额罚款」是两个条件同时成立 -->
@@ -128,9 +145,10 @@
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:18px;margin-top:18px">
+        <div class="case-section-grid" style="--case-columns:1.2fr 1fr;margin-top:18px">
           <div class="card card-pad">
             <div class="card-title"><span class="bar"></span>{{ rule.support && !rule.support.autoJudgeable ? '材料参考清单' : '需要准备的材料' }}（{{ rule.materials.length }} 份）</div>
+            <div class="muted tiny material-summary">材料完备度 {{ materialCheck?.score ?? '—' }} / 100 · {{ materialCheckLabel }}；事项办理进度 {{ data.stage?.progress ?? 0 }}%，两项指标分别反映材料和流转状态。</div>
             <div v-for="(m, i) in rule.materials" :key="m.key" class="spread" style="padding:10px 0;border-bottom:1px dashed var(--line)">
               <div>
                 <span class="muted mono" style="margin-right:10px">{{ String(i + 1).padStart(2, '0') }}</span>
@@ -230,7 +248,7 @@
             阶段只能按流程推进，跳步会被服务端拒绝；提交需满足诊断条件，提交、受理与退回需关联实际回执；修复需官方结果材料及移出日期。
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
+        <div class="case-section-grid" style="--case-columns:1.3fr 1fr">
           <div class="card card-pad">
             <div class="card-title"><span class="bar"></span>流转记录</div>
             <el-timeline>
@@ -262,7 +280,7 @@
             请勿把它当作已修复证明对外出示。对方要核实是否真的修复，应以「信用中国」公示状态或机关出具的正式文书为准。
           </div>
         </el-alert>
-        <div style="display:grid;grid-template-columns:1fr 340px;gap:18px">
+        <div class="case-section-grid" style="--case-columns:minmax(0,1fr) 340px">
           <div class="card card-pad">
             <div class="spread" style="margin-bottom:14px">
               <div class="card-title" style="margin:0"><span class="bar"></span>信用修复办理进度记录</div>
@@ -272,7 +290,7 @@
             <div v-for="c in certs" :key="c.code" class="cert-card" style="margin-bottom:16px">
               <div class="spread">
                 <div>
-                  <div class="muted tiny" style="color:#8FA9BE">记录编号</div>
+                  <div class="muted tiny" style="color:#c1cfc4">记录编号</div>
                   <div class="code">{{ c.code }}</div>
                 </div>
                 <div class="cert-qr"><canvas :ref="el => setQr(el, c)"></canvas></div>
@@ -282,7 +300,7 @@
                 <div class="k">决定机关</div><div>{{ data.case.authority }}</div>
                 <div class="k">生成日期</div><div>{{ fmtc(c.issued_at) }}</div>
                 <div class="k">核对有效期至</div><div>{{ c.valid_until }}</div>
-                <div class="k">内容摘要</div><div class="mono" style="word-break:break-all">{{ c.digest.slice(0, 32) }}…</div>
+                <div class="k">记录数字指纹</div><div class="mono" style="word-break:break-all">{{ c.digest.slice(0, 32) }}…</div>
               </div>
               <div style="margin-top:16px" class="row">
                 <el-button size="small" @click="openVerify(c.code)">核对页</el-button>
@@ -294,7 +312,7 @@
           </div>
           <div class="card card-pad">
             <div class="card-title"><span class="bar"></span>这份记录能做什么、不能做什么</div>
-            <div style="font-size:13px;line-height:1.9;color:#33475b">
+            <div style="font-size:13px;line-height:1.9;color:var(--ink)">
               <p style="margin-top:0"><strong>能做的</strong>：说明企业在哪一条失信信息上走到了哪一步、依据的是哪份决定和哪份材料，供内部归档、向银行或招标方说明办理过程。</p>
               <p>· 记录的是哪一条失信信息</p>
               <p>· 由哪个机关、依据哪份决定作出</p>
@@ -479,10 +497,22 @@ const fmtc = s => String(s || '').slice(0, 10)
 const stateType = s => ({ ok: 'success', warn: 'warning', bad: 'danger', idle: 'info' }[s] || 'info')
 const stateLabel = s => ({ ok: '已同步', warn: '部分同步', bad: '未同步', idle: '待核验' }[s] || s)
 const taskLabel = s => ({ todo: '待办', doing: '进行中', done: '已完成' }[s] || s)
+const materialCheck = computed(() => data.value?.materialCheck || null)
+const materialCheckLabel = computed(() => {
+  const c = materialCheck.value
+  if (!c) return '尚未校验'
+  if (c.valid) return '材料校验通过'
+  const parts = []
+  if (c.missing?.length) parts.push(`${c.missing.length} 份待完善`)
+  if (c.issues?.length) parts.push(`${c.issues.length} 项需校正`)
+  return parts.join('，') || '待完善'
+})
 const docStatus = key => {
   const d = docs.value.find(x => x.key === key)
   if (!d) return '未生成'
-  return d.status === 'template' ? '模板' : '已保存草稿'
+  if (materialCheck.value?.missing?.some(item => item.doc === key)) return '待完善'
+  if (materialCheck.value?.issues?.some(item => item.doc === key)) return '需校正'
+  return d.status === 'template' ? '模板' : '已校验'
 }
 
 async function reload() {
@@ -497,7 +527,7 @@ async function reload() {
 function drawQrs() {
   for (const c of certs.value) {
     const el = qrEls.get(c.code)
-    if (el) QRCode.toCanvas(el, `${location.origin}/verify?code=${c.code}`, { width: 96, margin: 1 })
+    if (el) QRCode.toCanvas(el, `${location.origin}/verify?code=${c.code}`, { width: 128, margin: 4, color: { dark: '#000000ff', light: '#ffffffff' } })
   }
 }
 
@@ -609,10 +639,26 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.case-section-grid { display: grid; grid-template-columns: var(--case-columns); gap: 18px; }
+.case-section-grid > * { min-width: 0; }
+@media (max-width: 980px) {
+  .case-section-grid { grid-template-columns: minmax(0, 1fr); }
+}
 .case-tabs :deep(.el-tabs__header) { margin-bottom: 18px; }
 .case-tabs :deep(.el-tabs__item) { font-size: 14px; }
 .case-tabs :deep(.el-tabs__content) { min-height: 430px; }
-.disclaimer p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.9; color: #4A5A6A; }
+.case-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+.case-metric { min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 11px 12px; border-radius: 3px; background: #f1f3eb; }
+.case-metric strong { font-size: 22px; line-height: 1.15; color: var(--ink); }
+.case-metric strong small { font-size: 12px; font-weight: 500; color: var(--muted); }
+.case-metric.metric-note { justify-content: center; }
+.material-summary { margin: -4px 0 8px; line-height: 1.7; }
+.disclaimer p { margin: 0 0 8px; font-size: 12.5px; line-height: 1.9; color: var(--muted); }
 .disclaimer p:last-child { margin-bottom: 0; }
-.disclaimer strong { color: #0F2A44; }
+.disclaimer strong { color: var(--ink); }
+
+@media (max-width: 680px) {
+  .case-metrics { grid-template-columns: 1fr 1fr; }
+  .case-metric.metric-note { grid-column: 1 / -1; }
+}
 </style>

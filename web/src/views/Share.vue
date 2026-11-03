@@ -1,5 +1,5 @@
 <template>
- <main style="max-width:780px;margin:36px auto;padding:20px" v-loading="loading"><h1>信复通 · 企业用途材料核验</h1><el-alert v-if="error" :title="error" type="error" :closable="false"/>
+ <main class="share-page" v-loading="loading"><h1>信复通 · 企业用途材料核验</h1><el-alert v-if="error" :title="error" type="error" :closable="false"/>
  <template v-else-if="result"><el-alert :title="result.message" :type="result.state==='valid'?'info':'warning'" :closable="false" show-icon/>
  <template v-if="result.state==='valid'"><div class="card card-pad" style="margin-top:20px"><h2>{{ result.verification.enterprise.name }}</h2><p>统一社会信用代码：{{ result.verification.enterprise.creditCode }}</p><p>用途：{{ result.purpose==='financing'?'融资材料核对':'投标材料核对' }} · 接收单位：{{ result.recipient||'未指定' }}</p><p>分享有效期至：{{ new Date(result.expiresAt).toLocaleString() }}</p><h3>修复事项</h3><p>{{ result.verification.case.event }}</p><p>决定机关：{{ result.verification.case.authority }} · 决定文号：{{ result.verification.case.docNo }}</p><p>企业登记移出日期：{{ result.verification.case.removedDate }}</p><p class="muted">{{ result.verification.officialProof.reviewType }}</p><h3>生成时渠道快照</h3><el-table :data="result.verification.channels"><el-table-column prop="name" label="渠道"/><el-table-column label="来源"><template #default="{row}">{{ {mock:'演示数据',manual:'人工观察',authorized:'授权接口'}[row.provider]||row.provider }}</template></el-table-column><el-table-column prop="state" label="记录状态"/><el-table-column prop="checkedAt" label="观察时间"/></el-table><p class="muted">渠道状态仅代表生成时记录，演示、待核验或失败记录不能证明已真实同步。</p><h3>完整性核对</h3><p>记录版本：{{ result.verification.certificate.version }} · {{ result.verification.certificate.code }}</p><p style="overflow-wrap:anywhere">内容摘要：{{ result.verification.certificate.digest }}</p><p class="muted">本页是平台生成的办理进度记录，不替代官方决定，也不能证明失信信息已完成修复。接收方应到「信用中国」核对公示状态，并结合原始材料及自身审查要求作出判断。</p></div></template></template>
  </main>
@@ -11,3 +11,17 @@ import {api} from '../api.js'
 const route=useRoute(),result=ref(null),loading=ref(false),error=ref('')
 onMounted(async()=>{loading.value=true;try{result.value=(await api.publicShare(route.query)).result}catch(e){error.value=e.message}finally{loading.value=false}})
 </script>
+<style scoped>
+.share-page { max-width: 780px; margin: 36px auto; padding: 20px; }
+.share-page h1, .share-page h2, .share-page h3 { font-family: var(--serif); }
+.share-page .card { min-width: 0; }
+.share-page :deep(.el-table) { width: 100%; }
+.share-page p { overflow-wrap: anywhere; word-break: break-word; line-height: 1.8; }
+@media (max-width: 600px) {
+  .share-page { margin: 0 auto; padding: 16px 12px 28px; }
+  .share-page h1 { font-size: 21px; line-height: 1.35; }
+  .share-page .card-pad { padding: 14px 12px; }
+  .share-page :deep(.el-table) { font-size: 12px; }
+  .share-page :deep(.el-table__body-wrapper) { overflow-x: auto; }
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <router-view v-if="!store.loading" />
   <div v-else class="boot">
-    <div class="logo">信</div>
+    <div class="logo"><el-icon :size="30"><DocumentChecked /></el-icon></div>
     <div class="txt">信复通 · 正在加载</div>
   </div>
 </template>

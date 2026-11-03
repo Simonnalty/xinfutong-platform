@@ -143,6 +143,26 @@ test('documents preserve immutable fact fields, sanitize content, retain version
   assert.equal((await docs.check(k.id)).valid,true);
 });
 
+test('case detail exposes material completeness separately from diagnostic score and stage progress', async () => {
+  const cookie = await account('13900009032');
+  const e = (await request('/api/enterprises', 'POST', {
+    name: '材料进度口径企业', credit_code: '91430100MA4L000191'
+  }, cookie)).body.enterprise;
+  const k = (await request(`/api/enterprises/${e.id}/cases`, 'POST', {
+    type: 'penalty', level: 'general', event: '材料进度口径测试',
+    authority: '测试局', doc_no: '口径1号', listed_date: '2025-01-01'
+  }, cookie)).body.case;
+  const detail = await request(`/api/cases/${k.id}`, 'GET', undefined, cookie);
+  assert.equal(detail.status, 200);
+  assert.equal(typeof detail.body.rule.score, 'number');
+  assert.equal(typeof detail.body.stage.progress, 'number');
+  assert.equal(typeof detail.body.materialCheck.score, 'number');
+  assert.equal(typeof detail.body.materialCheck.valid, 'boolean');
+  assert.ok(Array.isArray(detail.body.materialCheck.missing));
+  assert.ok(Array.isArray(detail.body.materialCheck.issues));
+  assert.notEqual(detail.body.materialCheck.score, undefined);
+});
+
 test('manual monitoring matches enterprise and item, simulation cannot support objections, draft is never sent', async () => {
   const cookie=await account('13900009007');
   const e=(await request('/api/enterprises','POST',{name:'监测测试企业',credit_code:'91430100MA4L000043'},cookie)).body.enterprise;

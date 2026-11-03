@@ -3,11 +3,8 @@
     <div class="login-left">
       <div>
         <div class="brand" style="padding:0 0 40px">
-          <div class="logo" style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#1FA69B,#37C2B4);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px">信</div>
-          <div>
-            <div style="font-size:17px;font-weight:600;color:#fff;letter-spacing:1px">信复通</div>
-            <div style="font-size:11px;color:#7E96AD">Credit Restoration Platform</div>
-          </div>
+          <div class="logo"><el-icon :size="24"><DocumentChecked /></el-icon></div>
+          <div><div class="name">信复通</div><div class="slogan">民营企业信用修复平台</div></div>
         </div>
         <h1>让每一次信用修复<br />都有据可依、<em>有迹可循</em></h1>
         <p>
@@ -25,21 +22,22 @@
           </div>
         </div>
       </div>
-      <div style="font-size:12px;color:#6E8598">
+      <div class="muted tiny">
         诊断需配置已复核规则 · 办理要求以主管部门公布口径为准 · 平台结论不替代行政决定
       </div>
     </div>
 
     <div class="login-right">
       <div class="login-form">
-        <h2>登录</h2>
-        <p class="tip">使用手机号登录企业工作台</p>
+        <div class="brand login-mobile-brand"><div class="logo"><el-icon :size="24"><DocumentChecked /></el-icon></div><div><div class="name">信复通</div><div class="slogan">民营企业信用修复平台</div></div></div>
+        <h2>登录工作台</h2>
+        <p class="tip">企业、机构与运营账号使用各自手机号登录</p>
         <el-form :model="form" @submit.prevent="submit" label-position="top">
           <el-form-item label="手机号">
-            <el-input v-model="form.phone" size="large" placeholder="请输入手机号" :prefix-icon="Iphone" />
+            <el-input v-model="form.phone" size="large" placeholder="请输入手机号" autocomplete="username" :prefix-icon="Iphone" />
           </el-form-item>
           <el-form-item label="密码">
-            <el-input v-model="form.password" type="password" size="large" show-password placeholder="请输入密码" :prefix-icon="Lock" @keyup.enter="submit" />
+            <el-input v-model="form.password" type="password" size="large" show-password placeholder="请输入密码" autocomplete="current-password" :prefix-icon="Lock" @keyup.enter="submit" />
           </el-form-item>
           <el-alert v-if="error" :title="error" type="error" :closable="false" show-icon style="margin-bottom:14px" />
           <el-button type="primary" size="large" style="width:100%" :loading="loading" @click="submit">登 录</el-button>
