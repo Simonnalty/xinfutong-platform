@@ -42,6 +42,9 @@ const TYPES = [
   ['药品监督管理局', '药品监督管理局']
 ];
 
+// 只输入地区（不带机构）时，给这批常用机关作为默认候选
+const DEFAULTS = ['市场监督管理局', '生态环境局', '交通运输局', '应急管理局', '卫生健康委员会', '住房和城乡建设局'];
+
 /** 按地区层级取机构名：level 1 = 省级，其余用市县通名 */
 function typeName(entry, level) {
   const [local, prov, tpl] = entry;
@@ -123,14 +126,17 @@ async function list({ keyword = '' } = {}) {
     }
   }
 
-  if (stems.length) {
+  const useTypes = stems.length ? stems : DEFAULTS.map(t => TYPES.find(e => e[0] === t)).filter(Boolean);
+  if (useTypes.length) {
     const regions = await db().all(
       `SELECT code,name,level FROM regions
-        WHERE (?<>'' AND name LIKE ?)
+        WHERE ?<>'' AND level<=3
+          AND (name LIKE ? OR ? LIKE CONCAT('%', name, '%'))
+          AND name NOT LIKE '%镇' AND name NOT LIKE '%乡' AND name NOT LIKE '%街道'
         ORDER BY (name = ?) DESC, level ASC LIMIT 12`,
-      [regionKw, `%${regionKw}%`, regionKw]);
+      [regionKw, `%${regionKw}%`, regionKw, regionKw]);
     for (const r of regions) {
-      for (const entry of stems) {
+      for (const entry of useTypes) {
         const name = buildName(r.name, entry, r.level);
         if (seen.has(name)) continue;
         seen.add(name);
