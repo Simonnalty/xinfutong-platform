@@ -560,3 +560,16 @@ CREATE TABLE IF NOT EXISTS sms_verifications (
  verified_at DATETIME NULL,
  KEY idx_sms_phone (phone, scheme, verified, id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 主管机关名录：只允许选择已核验的真实机关，禁止自由填写
+CREATE TABLE IF NOT EXISTS authorities (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(200) NOT NULL,
+ region VARCHAR(60) NOT NULL DEFAULT '',
+ level VARCHAR(20) NOT NULL DEFAULT 'city',
+ credit_code VARCHAR(40) NOT NULL DEFAULT '',
+ verified TINYINT NOT NULL DEFAULT 1,
+ note VARCHAR(200) NOT NULL DEFAULT '',
+ created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE KEY uq_authority_name (name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

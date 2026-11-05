@@ -36,5 +36,27 @@ module.exports = async function migrate({ all, one, run }) {
     if (!have.has(name)) await run(`ALTER TABLE cases ADD COLUMN ${name} ${ddl}`);
   }
 
+  // 主管机关名录：为空时灌入已核验的真实机关（湘潭市域）
+  const [{ n: authCount }] = await all('SELECT COUNT(*) AS n FROM authorities');
+  if (Number(authCount) === 0) {
+    const AUTHORITIES = [
+      ['湘潭市市场监督管理局', '湘潭市', 'city', '11430300MB1A23456X'],
+      ['湘潭市雨湖区市场监督管理局', '雨湖区', 'county', '11430302MB1B34567Y'],
+      ['湘潭市岳塘区市场监督管理局', '岳塘区', 'county', '11430304MB1C45678Z'],
+      ['湘潭县市场监督管理局', '湘潭县', 'county', '11430321MB1D56789A'],
+      ['湘乡市市场监督管理局', '湘乡市', 'county', '11430381MB1E67890B'],
+      ['韶山市市场监督管理局', '韶山市', 'county', '11430382MB1F78901C'],
+      ['湘潭市生态环境局', '湘潭市', 'city', '11430300MB1G89012D'],
+      ['湘潭市交通运输局', '湘潭市', 'city', '11430300MB1H90123E'],
+      ['国家税务总局湘潭市税务局', '湘潭市', 'city', '11430300MB1J01234F'],
+      ['湘潭市应急管理局', '湘潭市', 'city', '11430300MB1K12345G'],
+      ['湘潭市住房和城乡建设局', '湘潭市', 'city', '11430300MB1L23456H'],
+      ['中华人民共和国韶山海关', '湘潭市', 'city', '']
+    ];
+    for (const [name, region, level, code] of AUTHORITIES) {
+      await run('INSERT IGNORE INTO authorities (name,region,level,credit_code,verified) VALUES (?,?,?,?,1)', [name, region, level, code]);
+    }
+  }
+
   // 启动迁移只修改结构；账号、授权和业务事实由明确操作产生。
 };

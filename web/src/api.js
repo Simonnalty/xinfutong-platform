@@ -35,6 +35,7 @@ export const api = {
   orgMember: (id,body)=>request(`/api/orgs/${id}/members`,{method:'POST',body}),
   createOrg: body=>request('/api/admin/orgs',{method:'POST',body}),
   enterprises: () => request('/api/enterprises'),
+  authorities: (q = '') => request(`/api/authorities?q=${encodeURIComponent(q)}`),
   createEnterprise: body => request('/api/enterprises', {method:'POST',body}),
   updateEnterprise: (id,body) => request(`/api/enterprises/${id}`, {method:'PATCH',body}),
   createCase: (id,body) => request(`/api/enterprises/${id}/cases`, {method:'POST',body}),

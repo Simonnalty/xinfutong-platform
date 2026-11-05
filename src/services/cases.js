@@ -4,11 +4,13 @@ const db=require('../db');
 const auth=require('./auth');
 const v=require('./validation');
 const caseTypes=require('./case-types');
+const authorities=require('./authorities');
 async function create(user,enterpriseId,input,ip) {
   if (!await auth.canWrite(user,enterpriseId)) throw v.forbidden('无权为该企业建立事项');
   if (!caseTypes.exists(input.type)) throw new Error('请选择有效事项类型');
   if (!['minor','general','serious','severe'].includes(input.level)) throw new Error('请选择有效事项等级');
-  const event=v.text(input.event,'事项描述',500,true),authority=v.text(input.authority,'主管机关',200,true),docNo=v.text(input.doc_no,'决定文号',120);
+  const event=v.text(input.event,'事项描述',500,true),docNo=v.text(input.doc_no,'决定文号',120);
+  const authority=(await authorities.lookup(input.authority)).name;
   const listed=v.date(input.listed_date,'列入/决定日期',true),due=v.date(input.due_date,'办理截止日期');
   const facts=v.facts(input);
   if (due && due<listed) throw new Error('办理截止日期不能早于列入日期');

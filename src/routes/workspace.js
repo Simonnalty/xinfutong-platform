@@ -11,6 +11,7 @@ const stage = require('../services/stage.js');
 const docs = require('../services/docs.js');
 const enterprises = require('../services/enterprises.js');
 const cases = require('../services/cases.js');
+const authorities = require('../services/authorities.js');
 const caseTypes = require('../services/case-types.js');
 const validation = require('../services/validation.js');
 const legal = require('../services/legal.js');
@@ -46,6 +47,7 @@ module.exports = function register(r) {
 
   r.post('/api/enterprises', async ({user,body,ip}) => ({enterprise: await enterprises.create(user,body,ip)}), {auth:true});
   r.patch('/api/enterprises/:id', async ({user,params,body,ip}) => ({enterprise: await enterprises.update(user,Number(params.id),body,ip)}), {auth:true});
+  r.get('/api/authorities', async ({ query }) => ({ items: await authorities.list({ keyword: query?.q || '' }) }), { auth: true });
   r.post('/api/enterprises/:id/cases', async ({user,params,body,ip}) => ({case: await cases.create(user,Number(params.id),body,ip)}), {auth:true});
 
   // 工作台：企业 + 案件列表 + 汇总

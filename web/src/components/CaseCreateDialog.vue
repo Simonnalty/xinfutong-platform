@@ -12,7 +12,16 @@
         <el-form-item label="记录等级（必填）"><el-select v-model="form.level"><el-option v-for="(label,value) in levels" :key="value" :label="label" :value="value" /></el-select></el-form-item>
       </div>
       <el-form-item label="事项描述（必填）"><el-input v-model="form.event" type="textarea" :rows="3" maxlength="500" show-word-limit placeholder="填写决定书或公示记录所记载的行为" /></el-form-item>
-      <el-form-item label="主管机关（必填）"><el-input v-model="form.authority" maxlength="200" /></el-form-item>
+      <el-form-item label="主管机关（必填，仅可选择已核验机关）">
+        <el-select v-model="form.authority" filterable placeholder="输入关键词搜索，如「雨湖区市场监督管理」" style="width:100%" :loading="authLoading">
+          <el-option v-for="a in authorities" :key="a.id" :label="a.name" :value="a.name">
+            <span>{{ a.name }}</span><span class="muted tiny" style="float:right">{{ a.region }}</span>
+          </el-option>
+        </el-select>
+        <div class="muted tiny" style="line-height:1.7;margin-top:4px">
+          名录由平台运营维护，只收录已核验主体。名单里没有的机关，需联系平台运营核验后加入。
+        </div>
+      </el-form-item>
       <el-form-item label="决定文号"><el-input v-model="form.doc_no" maxlength="120" placeholder="按原件填写，尚未取得可暂留空" /></el-form-item>
       <div class="archive-form-grid">
         <el-form-item label="列入 / 决定日期（必填）"><el-date-picker v-model="form.listed_date" type="date" value-format="YYYY-MM-DD" style="width:100%" /></el-form-item>
@@ -55,10 +64,17 @@ const props=defineProps({modelValue:Boolean,enterpriseId:Number})
 const emit=defineEmits(['update:modelValue','saved'])
 const form=reactive({}),saving=ref(false),error=ref('')
 const types=ref([])
+const authorities=ref([]),authLoading=ref(false)
+async function loadAuthorities(){
+  if(authLoading.value||authorities.value.length)return
+  authLoading.value=true
+  try{const r=await api.authorities();authorities.value=r.items||[]}catch(e){error.value=e.message}finally{authLoading.value=false}
+}
 const current=computed(()=>types.value.find(t=>t.code===form.type))
 const levels={minor:'轻微失信',general:'一般失信',serious:'严重失信',severe:'严重违法失信'}
 watch(()=>props.modelValue,async open=>{
   if(!open)return
+  loadAuthorities()
   Object.assign(form,{type:'penalty',level:'general',event:'',authority:'',doc_no:'',listed_date:null,due_date:null,fine_amount:'',discretion:null});error.value=''
   if(!types.value.length){try{types.value=(await api.caseTypes()).items}catch{types.value=[]}}
 })
