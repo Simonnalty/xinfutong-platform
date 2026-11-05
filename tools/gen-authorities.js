@@ -11,7 +11,13 @@ const batch = Number((process.argv.find(a => a.startsWith('--batch=')) || '--bat
 
 (async () => {
   await db.ready();
-  const regions = await db.all('SELECT r.code,r.name,r.level,p.name AS parent_name FROM regions r LEFT JOIN regions p ON r.parent=p.code WHERE r.level<=3');
+  const regions = await db.all(
+    'SELECT r.code,r.name,r.level,p.name AS parent_name FROM regions r '
+    + 'LEFT JOIN regions p ON r.parent=p.code '
+    + "WHERE r.level<=3 AND r.name NOT LIKE '%街道' AND r.name NOT LIKE '%镇' AND r.name NOT LIKE '%乡' "
+    + "AND (r.name NOT REGEXP '开发区|园区|工业区|农场|林场|牧场|矿区|风景区|旅游区|示范区|实验区|保税区|高新区|新区' "
+    + "OR r.name REGEXP '浦东新区|滨海新区|两江新区|西海岸新区|金普新区|江北新区|湘江新区|天府新区|贵安新区|滇中新区|哈尔滨新区|长春新区|雄安新区')"
+  );
   console.log('区划', regions.length);
 
   const rows = [];
