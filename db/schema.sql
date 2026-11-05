@@ -100,6 +100,15 @@ CREATE TABLE IF NOT EXISTS cases (
   no_new_similar TINYINT NULL,                      -- 近12个月无新增同类：1/0/NULL
   fine_amount DECIMAL(12,2) NULL,                   -- 罚款金额（元），决定书载明的数额
   discretion VARCHAR(16) NULL,                      -- 裁量阶次：lighter从轻/mitigated减轻/normal一般/heavier从重
+  -- 107 号令第八条细分：处罚种类、是否重点领域、限制期限届满日
+  penalty_type VARCHAR(32) NULL,                    -- warning|circular|fine|restrict_business|suspend_business|restrict_practice|lower_qualification|revoke_license|revoke_business_license|close_down|other
+  key_field TINYINT NULL,                           -- 是否属于食品/药品/医疗器械/化妆品/特种设备/重点工业产品领域：1/0/NULL
+  restrict_until DATE NULL,                         -- 行政处罚限制期限届满日（第八条第二项）
+  abnormal_reason VARCHAR(32) NULL,                 -- 经营异常列入原因：annual_report|publicity|name_change|address|other
+  -- 起算依据：决定作出日与实际公示日分别登记，不再只用一个「列入日期」
+  decision_date DATE NULL,
+  publicity_date DATE NULL,
+  start_basis VARCHAR(16) NULL,                     -- decision|publicity|listed
   facts_updated_at DATETIME NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   KEY idx_case_ent (enterprise_id)
@@ -179,7 +188,7 @@ CREATE TABLE IF NOT EXISTS case_docs (
   case_id VARCHAR(64) NOT NULL,
   doc_key VARCHAR(32) NOT NULL,
   html MEDIUMTEXT NOT NULL,
-  status VARCHAR(16) NOT NULL DEFAULT 'template',   -- template|polished|final|exported
+  status VARCHAR(16) NOT NULL DEFAULT 'template',   -- template|draft|final；与来源source分开
   source VARCHAR(16) NOT NULL DEFAULT 'template',   -- template|ai|manual
   version INT NOT NULL DEFAULT 1,
   updated_by INT NULL,
@@ -454,6 +463,21 @@ CREATE TABLE IF NOT EXISTS stage_events (
  KEY idx_stage_event (case_id,id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- 人工核实记录：对「待核实」的结构化判断，记录核实时的字段快照、结论和依据。
+-- 规则引擎只在快照与当前登记字段一致时采信，事实一变即自动失效，避免旧结论被继续沿用。
+CREATE TABLE IF NOT EXISTS case_verifications (
+ id BIGINT AUTO_INCREMENT PRIMARY KEY,
+ case_id VARCHAR(64) NOT NULL,
+ scope VARCHAR(30) NOT NULL,                       -- penalty_kind|abnormal_reason|dates|similar_history
+ conclusion VARCHAR(30) NOT NULL,                  -- confirmed|none|exists|not_applicable
+ detail JSON NULL,                                 -- 核实时的字段快照及回溯范围
+ note VARCHAR(500) NOT NULL,
+ evidence_id CHAR(36) NULL,
+ created_by INT NULL,
+ created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+ KEY idx_verify_case (case_id,scope,id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS knowledge_entries (
  id INT AUTO_INCREMENT PRIMARY KEY,
  category VARCHAR(20) NOT NULL,
@@ -523,4 +547,16 @@ CREATE TABLE IF NOT EXISTS objection_followups (
  objection_id INT PRIMARY KEY,
  remind_date DATE NULL,
  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS sms_verifications (
+ id BIGINT AUTO_INCREMENT PRIMARY KEY,
+ phone VARCHAR(20) NOT NULL,
+ code_hash CHAR(64) NOT NULL,
+ scheme VARCHAR(20) NOT NULL DEFAULT '',
+ sent_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ expires_at DATETIME NOT NULL,
+ verified TINYINT NOT NULL DEFAULT 0,
+ verified_at DATETIME NULL,
+ KEY idx_sms_phone (phone, scheme, verified, id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

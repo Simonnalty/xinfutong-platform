@@ -1,0 +1,755 @@
+[
+  {
+    "id": "S01",
+    "url": "https://www.gov.cn/zhengce/content/202506/content_7029483.htm",
+    "final_url": "https://www.gov.cn/zhengce/content/202506/content_7029483.htm",
+    "status": 200,
+    "title": "国务院办公厅印发《关于进一步完善信用修复制度的实施方案》的通知_社会信用体系建设_中国政府网",
+    "file": "source-01.txt",
+    "chars": 3281,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-01.html",
+        "bytes": 33653,
+        "sha256": "6ab2e5709561fd9ed5fae71081d9107441f38712f71191aef368134b1a2c9246"
+      },
+      {
+        "path": "source-01.txt",
+        "bytes": 9023,
+        "sha256": "92e36368e563dc29c3d487905e13e08e8202bc99cfdb256de792ae618e239563"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S02",
+    "url": "https://www.gov.cn/govweb/zhengce/202512/content_7050596.htm",
+    "final_url": "https://www.gov.cn/zhengce/202512/content_7050596.htm",
+    "status": 200,
+    "title": "市场监督管理信用修复管理办法_国家市场监督管理总局_中国政府网",
+    "file": "source-02.txt",
+    "chars": 6272,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-02.html",
+        "bytes": 51264,
+        "sha256": "e02829d8c43c131d34758a37fa867822b6448232e967369ff3f818174605adf3"
+      },
+      {
+        "path": "source-02.txt",
+        "bytes": 18064,
+        "sha256": "92ded6db383fd84d058cb2ec0fdaedf7c520597d45ac601c86dcdef9f1384bd3"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S03",
+    "url": "https://www.chinatax.gov.cn/chinatax/n810214/n810641/c102061/c102062/c5171873/content.html",
+    "final_url": "https://www.chinatax.gov.cn/chinatax/n810214/n810641/c102061/c102062/c5171873/content.html",
+    "status": 403,
+    "title": "403 Forbidden",
+    "file": "source-03.txt",
+    "chars": 156,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-03.html",
+        "bytes": 1687,
+        "sha256": "b00231ffc95ceb4d7077e443c807aedc15851f4a504fce0836c3cb90c89b6307"
+      },
+      {
+        "path": "source-03.txt",
+        "bytes": 158,
+        "sha256": "fbfaa2568df3a09d8b6026cf2a54cfd309d9ac385667be9d93e0836b4a49b67c"
+      }
+    ],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S04",
+    "url": "https://www.gov.cn/gongbao/2026/issue_12746/202605/content_7069427.html",
+    "final_url": "https://www.gov.cn/gongbao/2026/issue_12746/202605/content_7069427.html",
+    "status": 200,
+    "title": "中华人民共和国海关总署令（第282号）　　中华人民共和国海关注册登记和备案企业信用管理办法__2026年第14号国务院公报_中国政府网",
+    "file": "source-04.txt",
+    "chars": 6108,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-04.html",
+        "bytes": 50718,
+        "sha256": "c5093fc01016105b87bc6aca49cf6baace61a3c59a0dc3e6011bd9afac7a9867"
+      },
+      {
+        "path": "source-04.txt",
+        "bytes": 17432,
+        "sha256": "fd392ce3862cfb49ca0c0d433a3a6684aaca67275db184ddd17878ab32f2e318"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S05",
+    "url": "https://www.court.gov.cn/fabu/xiangqing/37172.html",
+    "final_url": "https://www.court.gov.cn/fabu/xiangqing/37172.html",
+    "status": 200,
+    "title": "权威发布 - 中华人民共和国最高人民法院",
+    "file": "source-05.txt",
+    "chars": 5422,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-05.html",
+        "bytes": 27305,
+        "sha256": "8c425a1c77f8d2ee4165cfc8acfdc23e1cd939352ce7d1b7eda06ab5977adb06"
+      },
+      {
+        "path": "source-05.txt",
+        "bytes": 15431,
+        "sha256": "5cbb879d9bbfa9b89ac1df59b1664a018d268d1587a90d02f6522c56350900ba"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S06",
+    "url": "https://scjgj.yancheng.gov.cn/art/2026/9/20/art_21470_4455305.html",
+    "final_url": "https://scjgj.yancheng.gov.cn/art/2026/9/20/art_21470_4455305.html",
+    "status": 403,
+    "title": "",
+    "file": "source-06.txt",
+    "chars": 105,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-06.html",
+        "bytes": 7382,
+        "sha256": "52b5d120d071616ca5d843a092cf97b90d9697921b2b933f5478d7bc6b7daf3f"
+      },
+      {
+        "path": "source-06.txt",
+        "bytes": 221,
+        "sha256": "45c490977103047ef1cc80d87fab40a161a1bfd7125be25d1fae04b8bf486927"
+      }
+    ],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S07",
+    "url": "https://www.jian.gov.cn/news-show-108206.html",
+    "final_url": "https://www.jian.gov.cn/news-show-108206.html",
+    "status": 200,
+    "title": "吉安市人民政府",
+    "file": "source-07.txt",
+    "chars": 1843,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-07.html",
+        "bytes": 23942,
+        "sha256": "48c53bc6b378c7f0ed97e7f06910b9710831621369a1abfa167b3b9d7481cbeb"
+      },
+      {
+        "path": "source-07.txt",
+        "bytes": 5073,
+        "sha256": "6b29c2d3a7d8bad47d7dc950c7d85d7718630ebdb4d2de10f46f561187098aed"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S08",
+    "url": "https://www.gsxt.gov.cn",
+    "final_url": "https://www.gsxt.gov.cn/",
+    "status": 521,
+    "title": "",
+    "file": "source-08.txt",
+    "chars": 0,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-08.html",
+        "bytes": 848,
+        "sha256": "9ca40e9f01b2049adc2850fd78b6bbc412d6402b62e6726fa0385da282576745"
+      },
+      {
+        "path": "source-08.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S09",
+    "url": "https://cpc.people.com.cn/BIG5/n1/2026/0404/c64387-40695215.html",
+    "final_url": "https://cpc.people.com.cn/BIG5/n1/2026/0404/c64387-40695215.html",
+    "status": 200,
+    "title": "企業信用修復要收費嗎（政策問答·回應關切） --新聞報道-中國共產黨新聞網",
+    "file": "source-09.txt",
+    "chars": 2490,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "media_reference_only",
+    "saved_files": [
+      {
+        "path": "source-09.html",
+        "bytes": 50182,
+        "sha256": "beda2097b8cc02b251bf76f43ef4eec90af7d3925528d6d00baa6ed4cb234230"
+      },
+      {
+        "path": "source-09.txt",
+        "bytes": 6435,
+        "sha256": "9831006c15945e05c257ef2779b5939fb74a15051db18904191ff4c0d8860019"
+      }
+    ],
+    "verification": "saved_not_relied_on_as_legal_basis"
+  },
+  {
+    "id": "S10",
+    "url": "https://www.cnr.cn/mspd/msyx/20260714/t20260714_527708969.shtml",
+    "final_url": "https://www.cnr.cn/mspd/msyx/20260714/t20260714_527708969.shtml",
+    "status": 200,
+    "title": "150元消除一条失信信息？信用修复黑灰产盯上企业端_央广网",
+    "file": "source-10.txt",
+    "chars": 3194,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "media_reference_only",
+    "saved_files": [
+      {
+        "path": "source-10.html",
+        "bytes": 21629,
+        "sha256": "64813966de22fb0a7ab4839cf1d43fba156f120fd393ac02f5f32e0e8d9c2457"
+      },
+      {
+        "path": "source-10.txt",
+        "bytes": 9246,
+        "sha256": "56a262bfe69b0cfe27d456a13dee77bdcd168a87747089ca73a6f5dd643d4fab"
+      }
+    ],
+    "verification": "saved_not_relied_on_as_legal_basis"
+  },
+  {
+    "id": "S11",
+    "url": "https://www.gov.cn/zhengce/202512/content_7050596.htm",
+    "final_url": "https://www.gov.cn/zhengce/202512/content_7050596.htm",
+    "status": 200,
+    "title": "市场监督管理信用修复管理办法_国家市场监督管理总局_中国政府网",
+    "file": "source-11.txt",
+    "chars": 6272,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-11.html",
+        "bytes": 51264,
+        "sha256": "e02829d8c43c131d34758a37fa867822b6448232e967369ff3f818174605adf3"
+      },
+      {
+        "path": "source-11.txt",
+        "bytes": 18064,
+        "sha256": "92ded6db383fd84d058cb2ec0fdaedf7c520597d45ac601c86dcdef9f1384bd3"
+      }
+    ],
+    "verification": "saved_not_relied_on_as_legal_basis"
+  },
+  {
+    "id": "S12",
+    "url": "https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202511/t20251126_1401911.html",
+    "status": 200,
+    "title": "中华人民共和国国家发展和改革委员会令 第36号",
+    "file": "source-12.txt",
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-12.html",
+        "bytes": 7011,
+        "sha256": "ab24e9e0e97bd6b2b1d43f875bb51cd535c8462bffef82f36f7b708ca0f0e79d"
+      },
+      {
+        "path": "source-12.txt",
+        "bytes": 787,
+        "sha256": "0770f60ddb8e248f7370b970090b0919b5927c4b91fab6064f98be8d4557a448"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S13",
+    "url": "https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202511/P020251126424276238205.pdf",
+    "status": 200,
+    "title": "信用修复管理办法（第36号令附件全文）",
+    "file": "source-13.txt",
+    "raw_file": "source-13.pdf",
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-13.pdf",
+        "bytes": 231264,
+        "sha256": "f0d5530504be5c81b6afcc2c2e69eb328733b9af8ecea55b6b85eca8401d60e0"
+      },
+      {
+        "path": "source-13.txt",
+        "bytes": 12832,
+        "sha256": "e7bd546135b339a3ef79c6d02c8e0f7a65d1fcb9fa5f9a1ab6b367eea846b085"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S14",
+    "url": "https://fgk.chinatax.gov.cn/zcfgk/c100011/c5192944/",
+    "final_url": "https://fgk.chinatax.gov.cn/zcfgk/c100011/c5192944/",
+    "status": 403,
+    "title": "403 Forbidden",
+    "file": "source-14.txt",
+    "chars": 117,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-14.html",
+        "bytes": 1648,
+        "sha256": "453bba9171af4a674af30a2041330fb6ffdba5b5ab2456f0b46f57da2ed7af3d"
+      },
+      {
+        "path": "source-14.txt",
+        "bytes": 119,
+        "sha256": "fe8f3869104e0ea97a4cd159d337d30fe9f2d34e42b0e23a87a06ca0a5b047f7"
+      }
+    ],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S15",
+    "url": "https://credit.lanzhou.gov.cn/377/156935.html",
+    "final_url": "https://credit.lanzhou.gov.cn/377/156935.html",
+    "status": 403,
+    "title": "403",
+    "file": "source-15.txt",
+    "chars": 74,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-15.html",
+        "bytes": 7063,
+        "sha256": "64017356a8e4ce7be25380b2ad065f1fe8e4679b4085b06f8ce6c9c8887f1cfb"
+      },
+      {
+        "path": "source-15.txt",
+        "bytes": 198,
+        "sha256": "ed07f33eef25246298fcbef88fd6a1650d42713ffe2ebfd77560bb345a30d283"
+      }
+    ],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S16",
+    "url": "https://scjg.hebei.gov.cn/info/120943",
+    "final_url": "https://scjg.hebei.gov.cn/info/120943",
+    "status": 403,
+    "title": "403",
+    "file": "source-16.txt",
+    "chars": 166,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-16.html",
+        "bytes": 7170,
+        "sha256": "c8256e87afc64e53584dd7609a10dd6032d4dd6917a1633701806e3cef88b11e"
+      },
+      {
+        "path": "source-16.txt",
+        "bytes": 290,
+        "sha256": "00a4565c69ba81e705cf986471d4a6b4eadfe4518645410e304b48f7fbe5f781"
+      }
+    ],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S17",
+    "url": "https://dgamr.dg.gov.cn/ywgz/xyjg/zlxz/content/post_4480321.html",
+    "final_url": "https://dgamr.dg.gov.cn/ywgz/xyjg/zlxz/content/post_4480321.html",
+    "status": 200,
+    "title": "市场监督管理信用修复申请表-东莞市市场监督管理局网站",
+    "file": "source-17.txt",
+    "chars": 618,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-17.html",
+        "bytes": 17272,
+        "sha256": "7bcc20952207d13b9c2ee52d4cf173985030e02de274372eebd470be6bf19542"
+      },
+      {
+        "path": "source-17.txt",
+        "bytes": 1524,
+        "sha256": "adc6ddec311081d506c0c72ba20984cb571c7b2d8a6b0a9213c77ae9377a883d"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S18",
+    "url": "https://www.penglai.gov.cn/art/2025/3/26/art_13635_2979769.html",
+    "final_url": "https://www.penglai.gov.cn/art/2025/3/26/art_13635_2979769.html",
+    "status": 200,
+    "title": "市场监管信用修复全国统一平台上线",
+    "file": "source-18.txt",
+    "chars": 462,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-18.html",
+        "bytes": 13051,
+        "sha256": "b13b1c23463bd32d53b5e11f942c859fba18dda4254d3f511697bf205e291a0f"
+      },
+      {
+        "path": "source-18.txt",
+        "bytes": 1276,
+        "sha256": "38b996fad66a7e33a64a60c5980e7752cfbcffde99b9fbdde791e233da30730c"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S19",
+    "url": "https://www.yueyang.gov.cn/web/2570/2580/2729/2730/content_1981214.html",
+    "final_url": "https://www.yueyang.gov.cn/web/2570/2580/2729/2730/content_1981214.html",
+    "status": 200,
+    "title": "《湖南省社会信用条例》全文",
+    "file": "source-19.txt",
+    "chars": 7355,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-19.html",
+        "bytes": 41584,
+        "sha256": "a05b36067169daacf1cba02dd4c8f416fd03d520a81e2bc26fa7ff683b05e5b0"
+      },
+      {
+        "path": "source-19.txt",
+        "bytes": 21252,
+        "sha256": "52b2de8b6e919723732999f446d85057ef17c1e212e8830430e3d622bc8d34e7"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S20",
+    "url": "https://gxj.xiangtan.gov.cn/12950/12954/content_1030407.html",
+    "final_url": "https://gxj.xiangtan.gov.cn/12950/12954/content_1030407.html",
+    "status": 200,
+    "title": "《湖南省社会信用条例》全文",
+    "file": "source-20.txt",
+    "chars": 7402,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-20.html",
+        "bytes": 46871,
+        "sha256": "9ed92cd20559847a3bd1b67c0a495d1ce123d66d78aa799293a2ab840322400a"
+      },
+      {
+        "path": "source-20.txt",
+        "bytes": 21403,
+        "sha256": "79b62358e5608e57a6f4d8be0e8a7786d3cf1bb6607b00dc4b416b67405e6e7b"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S21",
+    "url": "https://beijing.chinatax.gov.cn/bjswj/sszc/zxwj/202201/88495443ca3f4a7786e0820c249745df.shtml",
+    "error": "HTTPSConnectionPool(host='beijing.chinatax.gov.cn', port=443): Max retries exceeded with url: /bjswj/sszc/zxwj/202201/88495443ca3f4a7786e0820c249745df.shtml (Caused by ConnectTimeoutError(<HTTPSConnection(host='beijing.chinatax.gov.cn', port=443) at 0x77894a9e2350>, 'Connection to beijing.chinatax.gov.cn timed out. (connect timeout=22)'))",
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S22",
+    "url": "https://credit.ningbo.gov.cn/art/2024/8/23/art_1229562024_1790778.html",
+    "final_url": "https://credit.ningbo.gov.cn/art/2024/8/23/art_1229562024_1790778.html",
+    "status": 200,
+    "title": "[国家税务总局]关于《重大税收违法失信主体信息公布管理办法》的解读",
+    "file": "source-22.txt",
+    "chars": 2503,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-22.html",
+        "bytes": 17317,
+        "sha256": "9c357cc60f77549f58d70db5644cedb9e8f8139b67aa60b19dc49eb0595f7627"
+      },
+      {
+        "path": "source-22.txt",
+        "bytes": 7255,
+        "sha256": "57a4fce1787a39eedfe890819af532e8b3b185279d98942b917e6371a47d402c"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S23",
+    "url": "https://sichuan.chinatax.gov.cn/art/2021/12/31/art_8805_226932.html",
+    "error": "HTTPSConnectionPool(host='sichuan.chinatax.gov.cn', port=443): Max retries exceeded with url: /art/2021/12/31/art_8805_226932.html (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1082)')))",
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S24",
+    "url": "https://hunan.gov.cn/hnszf/xxgk/wjk/szbm/szfzsjg_19847/scjdglj/gfxwj_19835/202609/t20260909_34059869.html",
+    "error": "HTTPSConnectionPool(host='hunan.gov.cn', port=443): Max retries exceeded with url: /hnszf/xxgk/wjk/szbm/szfzsjg_19847/scjdglj/gfxwj_19835/202609/t20260909_34059869.html (Caused by SSLError(SSLError(1, '[SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1082)')))",
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S25",
+    "url": "https://amr.hunan.gov.cn/amr/zwx/xxgkmlx/zcfgx/gfxwjx/202609/t20260922_34070319.html",
+    "error": "HTTPSConnectionPool(host='amr.hunan.gov.cn', port=443): Max retries exceeded with url: /amr/zwx/xxgkmlx/zcfgx/gfxwjx/202609/t20260922_34070319.html (Caused by SSLError(SSLError(1, '[SSL: BAD_ECPOINT] bad ecpoint (_ssl.c:1082)')))",
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S26",
+    "url": "https://xygx.fgw.gxzf.gov.cn/detail.do?channelId=bzgf&contentId=11d57a45de01466388a68a509cac02e8",
+    "error": "HTTPSConnectionPool(host='xygx.fgw.gxzf.gov.cn', port=443): Max retries exceeded with url: /detail.do?channelId=bzgf&contentId=11d57a45de01466388a68a509cac02e8 (Caused by SSLError(SSLError(1, '[SSL: UNSAFE_LEGACY_RENEGOTIATION_DISABLED] unsafe legacy renegotiation disabled (_ssl.c:1082)')))",
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S27",
+    "url": "https://credit.ningbo.gov.cn/art/2022/1/17/art_1229562018_1732537.html",
+    "final_url": "https://credit.ningbo.gov.cn/art/2022/1/17/art_1229562018_1732537.html",
+    "status": 200,
+    "title": "[国家税务总局]重大税收违法失信主体信息公布管理办法",
+    "file": "source-27.txt",
+    "chars": 4758,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-27.html",
+        "bytes": 26023,
+        "sha256": "dcdc8ba0159fb57a27857192d9e45835d2f1dc73f0a050acc9b0eddd48451168"
+      },
+      {
+        "path": "source-27.txt",
+        "bytes": 13608,
+        "sha256": "a3794563c4d7dd79f5e599822fc231af18a1f118d27ef3cd849c67a06e723b95"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S28",
+    "url": "https://www.fuding.gov.cn/ztzl/zwgkbzhgfhjsgz/bzml/ssgl/ssflfghgfxwj/202305/t20230529_1761682.htm",
+    "error": "HTTPSConnectionPool(host='www.fuding.gov.cn', port=443): Max retries exceeded with url: /ztzl/zwgkbzhgfhjsgz/bzml/ssgl/ssflfghgfxwj/202305/t20230529_1761682.htm (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1082)')))",
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S29",
+    "url": "http://www.hunan.gov.cn/hnszf/xxgk/wjk/szbm/szfzsjg_19847/scjdglj/gfxwj_19835/202609/t20260909_34059869.html",
+    "final_url": "http://www.hunan.gov.cn/hnszf/xxgk/wjk/szbm/szfzsjg_19847/scjdglj/gfxwj_19835/202609/t20260909_34059869.html",
+    "status": 200,
+    "title": "湖南省市场监督管理局关于推动实施经营主体信用修复“即申即享”工作机制的通知-湖南省人民政府门户网站",
+    "file": "source-29.txt",
+    "chars": 1029,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-29.html",
+        "bytes": 28092,
+        "sha256": "307725b89b10f55b2ac256f4805f4c9040564322f723aba00845885c2ee4d694"
+      },
+      {
+        "path": "source-29.txt",
+        "bytes": 2312,
+        "sha256": "304d44474b0b786bc3c0007f1a7e1862dcf05821d0dd08c0efdf06f9a202a6d3"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S30",
+    "url": "http://amr.hunan.gov.cn/amr/zwx/xxgkmlx/tzggx/202609/t20260922_34070319.html",
+    "final_url": "http://amr.hunan.gov.cn/amr/zwx/xxgkmlx/tzggx/202609/t20260922_34070319.html",
+    "status": 200,
+    "title": "湖南省市场监督管理局关于推动实施经营主体信用修复“即申即享”工作机制的通知",
+    "file": "source-30.txt",
+    "chars": 2930,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-30.html",
+        "bytes": 47763,
+        "sha256": "49073d27a6d0bba3d734f6b2ee6faa9f17ff8d5a73dcaec67a4d2b11af16ddbf"
+      },
+      {
+        "path": "source-30.txt",
+        "bytes": 7748,
+        "sha256": "83cb8a5a14e3a1888ab9cb8b8f7ed9cb1251475a283e1db5ce7ffb559431b2cb"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S31",
+    "url": "https://www.gov.cn/xinwen/2021-08/20/content_5632486.htm",
+    "final_url": "https://www.gov.cn/xinwen/2021-08/20/content_5632486.htm",
+    "status": 404,
+    "title": "中国政府网",
+    "file": "source-31.txt",
+    "chars": 573,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-31.html",
+        "bytes": 15556,
+        "sha256": "2d49402cf1ca284b33a64dd41a06cb36315b3c7e5b6a55fd8ebb1989719c56a7"
+      },
+      {
+        "path": "source-31.txt",
+        "bytes": 1303,
+        "sha256": "47c7a5f04bf2745c7614c312651d79396b6f53d3a959edbae2f0305f090b6fcd"
+      }
+    ],
+    "verification": "not_verified_access_failed"
+  },
+  {
+    "id": "S32",
+    "url": "https://www.gov.cn/zhengce/content/202409/content_6977766.htm",
+    "final_url": "https://www.gov.cn/zhengce/content/202409/content_6977766.htm",
+    "status": 200,
+    "title": "网络数据安全管理条例_信息产业（含电信）_中国政府网",
+    "file": "source-32.txt",
+    "chars": 10919,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-32.html",
+        "bytes": 71724,
+        "sha256": "0e5afcdfd4d18e04258a874d1a280a4e339c750068ca7e640e606b515143e40d"
+      },
+      {
+        "path": "source-32.txt",
+        "bytes": 31395,
+        "sha256": "0f905266df48388ab332e11808690f452e13d5aa2a3c496f50a1ee1396fd0af2"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S33",
+    "url": "http://www.npc.gov.cn/npc/c2/c30834/202108/t20210820_313088.html",
+    "final_url": "http://www.npc.gov.cn/npc/c2/c30834/202108/t20210820_313088.html",
+    "status": 200,
+    "title": "中华人民共和国个人信息保护法_中国人大网",
+    "file": "source-33.txt",
+    "chars": 9494,
+    "collected_on": "2026-11-03",
+    "body_used_for_report": true,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "source-33.html",
+        "bytes": 42748,
+        "sha256": "23eeb747cb57b852929e30906c51b5816095dc43977868543a4bce5b3540b429"
+      },
+      {
+        "path": "source-33.txt",
+        "bytes": 27810,
+        "sha256": "1d09d6719992fb0882dde963c85b399c7dbc33a55176d1f3e2dcd312556f3c5d"
+      }
+    ],
+    "verification": "body_read_for_scoped_findings"
+  },
+  {
+    "id": "S34",
+    "url": "https://dgamr.dg.gov.cn/attachment/0/379/379928/4480321.doc",
+    "status": 200,
+    "title": "东莞市场监管信用修复申请表（官方附件；尚未逐字段审阅）",
+    "file": "官方样表-东莞市场监管信用修复申请表.doc",
+    "bytes": 26624,
+    "mime": "application/msword",
+    "use": "download_only_not_field_reviewed",
+    "collected_on": "2026-11-03",
+    "body_used_for_report": false,
+    "source_type": "official_site_response",
+    "saved_files": [
+      {
+        "path": "官方样表-东莞市场监管信用修复申请表.doc",
+        "bytes": 26624,
+        "sha256": "502dc19b66f678553bc6db43b8ceffc0a1e3481a680e65078961e40dd285037d"
+      }
+    ],
+    "verification": "attachment_download_verified_only"
+  }
+]

@@ -1,0 +1,9 @@
+数据异议与更正函（待提交草稿）
+致：${esc(ch.channel_name)}
+申请企业：${esc(e.name)}，统一社会信用代码：${esc(e.credit_code)}。
+请核对事项：${esc(k.event)}；决定文号：${esc(k.doc_no)}；作出机关：${esc(k.authority)}。
+企业提供并人工核录的官方材料为「${esc(proof.filename)}」，材料日期 ${esc(proof.observed_at)}，摘要 ${proof.digest}。
+企业于 ${esc(payload.observedAt||'快照记录时间')} 在 ${esc(payload.sourceUrl||'授权接口')} 观察到：${esc(ch.note)}。请结合所附官方材料核实是否存在信息更新不一致，并按贵平台纠错流程处理、告知结果。
+附件目录：官方修复结果材料、上述渠道核录记录。处理期限以适用规则和平台受理答复为准。
+${esc(e.name)}（确认后签章）
+${docs.cn(new Date().toISOString().slice(0,10))}

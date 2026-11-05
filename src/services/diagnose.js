@@ -34,7 +34,7 @@ async function run(caseId) {
   // 轻微失信：公示期满由机关停止公示，不需要企业申请。
   // 这里必须把「无需申请」讲明白，否则等于让企业去做一件法律上不必做的事。
   if (ev.autoStopOnly) {
-    warnings.push({ level: 'warn', text: `本情形属轻微失信：公示期满三个月由作出决定的机关停止公示，企业无需提交信用修复申请。${ev.applyFrom ? `按登记日期推算，预计停止公示日 ${ev.applyFrom}；` : ''}请在「信用中国」核对公示状态，若届满仍未停止，再向作出决定的机关反映。` });
+    warnings.push({ level: 'warn', text: `如经核实属于仅受通报批评或仅受较低数额罚款的情形，公示期满三个月由机关停止公示，无需申请；仅受警告的行政处罚信息不予公示。请核对处罚种类、公示状态及适用规定。${ev.applyFrom ? `按登记日期推算参考日期 ${ev.applyFrom}，起算依据尚须核实。` : ''}` });
   } else if (ev.eligible) {
     warnings.push({ level: 'info', text: `三项条件均已满足，${ev.applyFrom} 起可提交申请，规则配置办理参考时限 ${ev.reviewDays} 个工作日（以受理机关告知为准）。` });
   }
@@ -54,6 +54,12 @@ async function run(caseId) {
     materials: ev.materials,
     levelCheck: ev.levelCheck || null,
     autoStopOnly: Boolean(ev.autoStopOnly),
+    noPublicity: Boolean(ev.noPublicity),
+    classification: ev.classification || null,
+    dateInfo: ev.dateInfo || null,
+    verification: ev.verification || null,
+    requiredEvidence: ev.requiredEvidence || [],
+    otherPenalties: ev.otherPenalties || 0,
     rejectReasons: ev.rejectReasons || [],
     basis: (ev.basis && ev.basis.length) ? ev.basis : (ev.ruleVersion?[{law:ev.ruleVersion.title,text:ev.ruleVersion.review_note,url:ev.ruleVersion.source_url}]:[]),
     ruleVersion:ev.ruleVersion,

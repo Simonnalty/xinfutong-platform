@@ -28,7 +28,7 @@ const props=defineProps({caseId:String,enterpriseId:Number})
 const emit=defineEmits(['changed'])
 const items=ref([]),error=ref(''),loading=ref(false),uploading=ref(false),file=ref(null),fileInput=ref(null)
 const form=reactive({kind:'payment',source:'',observed_at:null})
-const kinds={payment:'缴款或履行证明',rectification:'整改材料',receipt:'办理回执',official_result:'官方修复结果',other:'其他证明'}
+const kinds={subject:'申请人主体资格文件',payment:'缴款或履行证明',rectification:'整改材料',receipt:'办理回执',official_result:'官方修复结果',other:'其他证明'}
 const writable=computed(()=>{const e=store.enterprises.find(e=>e.id===props.enterpriseId);return store.user?.role==='admin'||e?.relation==='owner'||e?.perm==='write'})
 function selectFile(e){file.value=e.target.files[0]||null}
 async function load(){loading.value=true;error.value='';try{items.value=(await api.evidence(props.caseId)).items}catch(e){error.value=e.message}finally{loading.value=false}}

@@ -4,7 +4,15 @@ const db=require('../db');
 const auth=require('./auth');
 const v=require('./validation');
 const META='id,case_id,kind,filename,media_type,byte_size,digest,source,observed_at,uploaded_by,review_status,reviewed_by,reviewed_at,review_note,archived,archived_at,created_at';
-const KINDS={payment:'缴款或履行证明',rectification:'整改材料',receipt:'办理回执',official_result:'官方修复结果',other:'其他证明'};
+const KINDS={
+  subject:'申请人主体资格文件',payment:'缴款或履行证明',rectification:'整改材料',receipt:'办理回执',
+  official_result:'官方修复结果',other:'其他证明',
+  // 经营异常列入原因对应的专项证明（107 号令第十二条），不能互相替代
+  annual_report:'补报年报及公示证明',publicity:'信息公示义务履行证明',name_change:'名称变更登记证明',
+  address:'住所变更或重新取得联系证明',
+  // 处罚决定书/移出决定书：用于核实严重处罚种类、限制期限及同类历史对照
+  decision:'行政处罚决定书/移出决定书'
+};
 async function guard(user,caseId,write=false) {
   const k=await db.one('SELECT * FROM cases WHERE id=?',[caseId]);
   if(!k)throw Object.assign(new Error('事项不存在'),{code:'NOT_FOUND'});

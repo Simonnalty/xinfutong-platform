@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-11-03T13:52:51.297454+08:00",
+  "scope": "只读核查已有公开内容快照和本地资料；未连接业务数据库或公网服务器",
+  "snapshot_counts": {
+    "knowledge_entries": 18,
+    "rule_versions": 5,
+    "doc_templates": 11,
+    "rule_params": 12
+  },
+  "schema_tables": 44,
+  "schema_columns": 359,
+  "latest_template_versions": {
+    "apply": 2,
+    "promise": 2,
+    "rectify": 2,
+    "auth": 2,
+    "list": 2,
+    "plan": 2
+  },
+  "sources_total": 34,
+  "sources_body_used_for_report": 17,
+  "source_verification_counts": {
+    "body_read_for_scoped_findings": 17,
+    "not_verified_access_failed": 13,
+    "saved_not_relied_on_as_legal_basis": 3,
+    "attachment_download_verified_only": 1
+  },
+  "source_saved_files_hash_verified": 55,
+  "original_archive_sha256": "597fa1135c5e4a4654a6f35300eafb895f4d9795e5160fe72221b7d20268945f",
+  "original_archive_matches_user_file": true,
+  "removed_excel_absent": [
+    "信复通-法学院人工审核表.xlsx",
+    "信复通-法学院首轮审核版.xlsx"
+  ],
+  "exported_tables": [
+    "knowledge_entries",
+    "rule_versions",
+    "doc_templates",
+    "rule_params"
+  ],
+  "zip_crc_and_contents_verified": true,
+  "business_database_written": false,
+  "application_code_changed_by_packager": false,
+  "legal_code_fixes_implemented": false,
+  "zip_members": 125
+}

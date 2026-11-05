@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title>403</title>
+    <style>
+     	html, body {
+     		margin: 0;
+     		padding: 0;
+     		background: #f7f7f7;
+    	}
+    	.wrap{
+    		width: 100%;
+    		position: relative;
+    		margin: auto;
+    		text-align: center;
+    		margin-top: 6.5%;
+    	}
+		.wrap img{
+			max-width: 1000px;
+		}
+    	.content{
+    		margin-top: -5%;
+    		margin-bottom: 43px;
+    	}
+    	.content p.title{
+    		font-size: 25px;
+    		color: #444;
+    	}
+    	.content .reason{
+    		font: 16px;
+    		color: #999;
+    		line-height: 12px;
+    		text-align: left;
+    		margin-left: 43%;
+    	}
+    	span.line{
+    		display: inline-block;
+    		content: "";
+    		
+    	}
+    	.footer{
+    		width: 55%;
+    		border-top: 2px solid #e3e3e3;
+    		margin: auto;
+    	}
+    	.footer p{
+    		font: 16px;
+    		color: #999;
+    		line-height: 15px;
+    		text-align: left;
+    		padding: 0 20px;
+    	}
+		.footer p span{
+			line-height:20px;
+			white-space: normal; 
+		}
+      </style>
+ </head>
+
+<body>
+    <div class="wrap" style="display: none;">
+    	<img src="https://error.websaas.cn/img/403s.png" >
+		<div class="content">
+    		<p class="title">当前访问疑似攻击行为，已被网站管理员设置为拦截</p>
+		</div>
+		<span class="line"></span>
+    	<div class="footer">
+			<p>【当前网址】<a class="url" style="color: #1e80ff;"></a></p>
+			<p>【客户端特征】<span class="user_agent"></span></p>
+			<p>【客户端IP】<span id="client_ip"></span></p>
+			<p>【当前时间】<span class="now"></span></p>
+    		<p style="text-align: center;">我是网站管理员，<span id="callBack" style="color: #1e80ff;cursor: pointer;">我要处理此异常</span></p>
+    	</div>
+    </div>
+	<script src="https://custompages.websaas.cn/sha1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/jscript">
+		let wrap = document.getElementsByClassName('wrap')[0]
+		let host = window.location.href
+		var demoFlag = false
+		var imgFlag = false
+		var timeOut = 2000
+		function requestConfig() {
+		    const xhr1 = new XMLHttpRequest()
+		    xhr1.open('get','https://custompages.websaas.cn/7bef9456-a3a9-4306-a9ca-5cadc03f6879.js',true)
+		    xhr1.setRequestHeader('XWD-Token', 'waduxawe124asdx');
+		    xhr1.onreadystatechange = function(){
+                if(xhr1.readyState == 4){
+					demoFlag = true
+                    if((xhr1.status>=200&&xhr1.status<300)||xhr1.status==0){
+                        if(xhr1.responseText.length>0){
+                            eval(xhr1.responseText)
+                            if(jsonData[403].length == 0){
+                            	showDefault()
+                            }else{
+                            	for (let i = 0,num=0; i < jsonData[403].length; i++) {
+                            	    const element = jsonData[403][i];
+                                    if(element['target']&&host.includes(element['host'])){
+                                        CheckStatus(element['target'])
+                                        xhr1.onreadystatechange = null;
+                                        return
+                                    } 
+                                    if(jsonData[403].length-1 == num){
+                                        showDefault()
+                                    }
+                            		num++   
+                            	}
+                            }
+                        }else{
+                            showDefault();
+                        }
+                    }else{
+                        showDefault();
+                    }
+                }
+		        
+		    }
+		    xhr1.send()
+			timeOutFn(xhr1)
+		}
+		requestConfig();
+		
+		function CheckStatus(target){
+			let link = target
+		    const xhr2 = new XMLHttpRequest()
+		    xhr2.onreadystatechange = function() {
+		            if (xhr2.readyState === 4) {
+						imgFlag = true
+		                if (xhr2.status === 200) {
+		                    window.location.href = target
+		                    xhr2.onreadystatechange = null;
+		                } else {
+		                    showDefault();
+		                }
+		            }
+		    };
+		    xhr2.open("HEAD",link,true)
+		    xhr2.send()
+			timeOutFn(xhr2,true)
+		}
+		function showDefault() {
+			setTimeout(()=>{
+				wrap.style.display='block'
+			},500)
+			
+		}
+		function timeOutFn(xhr,second){
+			if(demoTime){clearTimeout(demoTime)}
+			var demoTime = setTimeout(()=>{
+				if(!demoFlag||(second&&!imgFlag)){
+					xhr.onreadystatechange = null;
+					xhr.abort()
+					showDefault()
+				}
+			},timeOut)
+		}
+
+		function urlCode(str) {
+		    var result = "";
+		    for (var i = 0; i < str.length; i++)
+		        if (str != "") {
+		            result += '&#' + str.charCodeAt(i) + ';';
+		        }
+		    return result;
+		}
+		Date.prototype.format = function(format) {
+		    var o = {
+		        "M+": this.getMonth() + 1,
+		        "d+": this.getDate(),
+		        "h+": this.getHours(),
+		        "m+": this.getMinutes(),
+		        "s+": this.getSeconds(),
+		        "q+": Math.floor((this.getMonth() + 3) / 3),
+		        "S": this.getMilliseconds()
+		    };
+		    if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
+		        (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+		    for (var k in o)
+		        if (new RegExp("(" + k + ")").test(format))
+		            format = format.replace(RegExp.$1,
+		                RegExp.$1.length == 1 ? o[k] :
+		                ("00" + o[k]).substr(("" + o[k]).length));
+		    return format;
+		};
+		var url = document.URL;
+		url = encodeURI(url);
+		// var user_agent = urlCode(navigator.userAgent);
+		var user_agent = navigator.userAgent
+		var from = urlCode(document.referrer);
+		var now = new Date().format("yyyy-MM-dd hh:mm:ss");
+		document.getElementsByClassName('url')[0].innerText = url
+		document.getElementsByClassName('url')[0].href = url
+	    document.getElementsByClassName('user_agent')[0].innerText = user_agent
+		document.getElementsByClassName('now')[0].innerText = now
+		
+		// var content = ' <div class="info-tip"><div class="info-span">当前网址：</div>' +
+		//     '<span>' + url + '</span>' + '</div>' +
+		//     '<div class="info-tip"><div class="info-span">客户端特征：</div>' + user_agent +
+		//     '</div>' +'<div class="info-tip" id="client_ip" >' +
+		//     '</div>'+ '<div class="info-tip"><div class="info-span">拦截时间：</div>' + now +
+		//     '</div>';
+    </script>
+<script src="https://custompages.websaas.cn/udesk.js"type="text/javascript" charset="utf-8"></script>
+<script src="https://tapi.dbappsecurity.com.cn/tj/tj.min.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
+<script>window.onload = function() {var clientIp = "111.22.34.248";document.getElementById('client_ip').innerText = clientIp}</script>

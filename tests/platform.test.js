@@ -453,3 +453,173 @@ test('minor level requires lenient discretion stage and 50k cap together, otherw
  assert.equal(Number(fresh.fine_amount),60000);
  assert.equal(fresh.discretion,'lighter');
 });
+
+test('required material fields cannot be emptied or deleted to bypass finalization and export',async()=>{
+ const owner=await account('13900009083');
+ const e=(await request('/api/enterprises','POST',{name:'空白校验企业',credit_code:'91430100MA4L000083',legal:'测试人'},owner)).body.enterprise;
+ const k=(await request(`/api/enterprises/${e.id}/cases`,'POST',{type:'penalty',level:'general',event:'必填测试',authority:'测试机关',doc_no:'测试83',listed_date:'2025-01-01'},owner)).body.case;
+ const docs=require('../src/services/docs'),original=(await docs.build(k.id)).docs.apply.html;
+ const endpoint=`/api/cases/${k.id}/docs/apply/finalize`;
+ for(const replacement of ['', ' \n ', '&nbsp;<br>', '&#8203;', '……']){
+  const built=await docs.save(k.id,'apply',original.replace(/【待(?:补充|填写|核对)：[^】]*】/g,replacement),{userId:1});
+  assert.equal((await docs.check(k.id,'apply')).valid,false,'blank required field must fail: '+replacement);
+  assert.equal((await request(endpoint,'POST',{version:built.docs.apply.version},owner)).status,400);
+  assert.equal((await request(`/api/pdf/doc?case=${k.id}&key=apply`,'GET',undefined,owner)).status,400);
+ }
+ const filled=original.replace(/【待(?:补充|填写|核对)：[^】]*】/g,'实际完成情况与证明已填写');
+ assert.match(filled,/class="required"/);
+ const deleted=filled.replace(/<span class="required"[^>]*>[\s\S]*?<\/span>/g,'');
+ await docs.save(k.id,'apply',deleted,{userId:1});
+ assert.equal((await docs.check(k.id,'apply')).valid,false,'deleting entire field is not completion');
+ const good=await docs.save(k.id,'apply',filled,{userId:1});
+ assert.equal((await request(endpoint,'POST',{version:good.docs.apply.version},owner)).status,200);
+});
+
+test('saved drafts require explicit validated finalization; edits and stale versions cannot keep final status',async()=>{
+ const owner=await account('13900009080'),other=await account('13900009081');
+ const e=(await request('/api/enterprises','POST',{name:'定稿流程企业',credit_code:'91430100MA4L000080',legal:'测试人'},owner)).body.enterprise;
+ const k=(await request(`/api/enterprises/${e.id}/cases`,'POST',{type:'penalty',level:'general',event:'定稿测试',authority:'定稿测试机关',doc_no:'测试80',listed_date:'2025-01-01'},owner)).body.case;
+ const docs=require('../src/services/docs');
+ const endpoint=`/api/cases/${k.id}/docs/apply/finalize`;
+ assert.equal((await request(endpoint,'POST',{version:0},owner)).status,400);
+ const original=(await docs.build(k.id)).docs.apply.html;
+ await docs.save(k.id,'apply',original,{userId:1});
+ assert.equal((await request(endpoint,'POST',{version:1},owner)).status,400,'unfinished draft cannot be finalized');
+ const html=original.replace(/【待(?:补充|填写|核对)：[^】]*】/g,'经企业核对的实际说明');
+ await docs.save(k.id,'apply',html,{userId:1});
+ assert.equal((await request(endpoint,'POST',{version:2},other)).status,403);
+ const done=await request(endpoint,'POST',{version:2},owner);
+ assert.equal(done.status,200,JSON.stringify(done.body));
+ assert.equal(done.body.docs.find(d=>d.key==='apply').finalized,true);
+ assert.equal((await request(`/api/cases/${k.id}/docs`,'GET',undefined,owner)).body.docs.find(d=>d.key==='apply').finalized,true);
+ await docs.save(k.id,'apply',html+'<p>修订</p>',{userId:1});
+ assert.equal((await docs.build(k.id)).docs.apply.finalized,false);
+ assert.notEqual((await request(endpoint,'POST',{version:2},owner)).status,200,'stale browser cannot finalize newer text');
+ assert.equal((await request(endpoint,'POST',{version:3},owner)).status,200);
+ await docs.reset(k.id,'apply');
+ assert.equal((await docs.build(k.id)).docs.apply.finalized,false);
+ await docs.restore(k.id,'apply',3,1);
+ assert.equal((await docs.build(k.id)).docs.apply.finalized,false);
+ assert.equal((await request(endpoint,'POST',{version:5},owner)).status,200);
+ await isolated.db.run('UPDATE enterprises SET name=? WHERE id=?',['变更后的企业名称',e.id]);
+ assert.equal((await docs.build(k.id)).docs.apply.finalized,false,'stale locked facts must not show as finalized');
+});
+
+test('owner can advance diagnosed progress to 45 only with finalized valid documents and subject attachment',async()=>{
+ const owner=await account('13900009082');
+ const e=(await request('/api/enterprises','POST',{name:'材料就绪企业',credit_code:'91430100MA4L000082',legal:'测试人'},owner)).body.enterprise;
+ const k=(await request(`/api/enterprises/${e.id}/cases`,'POST',{type:'penalty',level:'general',event:'材料推进测试',authority:'材料推进专用机关',doc_no:'测试82',listed_date:'2025-01-01'},owner)).body.case;
+ await isolated.db.run("INSERT INTO rule_versions (rule_key,version,title,case_type,level,authority_match,source_url,effective_from,review_status,review_note,definition) VALUES ('finalize-stage',1,'材料测试','penalty','general','材料推进专用机关','https://example.com','2025-01-01','reviewed','测试',?)",[JSON.stringify({months:3,reviewDays:7,materials:['apply','subject']})]);
+ await request(`/api/cases/${k.id}/stage`,'POST',{to:'diagnosed'},owner);
+ const docs=require('../src/services/docs');
+ const html=(await docs.build(k.id)).docs.apply.html.replace(/【待(?:补充|填写|核对)：[^】]*】/g,'经企业确认的说明');
+ await docs.save(k.id,'apply',html,{userId:1});
+ const path=`/api/cases/${k.id}/stage`;
+ assert.equal((await request(path,'POST',{to:'materials_ready'},owner)).status,400,'draft alone cannot complete preparation');
+ assert.equal((await request(`/api/cases/${k.id}/docs/apply/finalize`,'POST',{version:1},owner)).status,200);
+ assert.equal((await request(path,'POST',{to:'materials_ready'},owner)).status,400,'subject evidence is required');
+ const uploaded=await request(`/api/cases/${k.id}/evidence`,'POST',{filename:'主体资格.pdf',kind:'subject',source:'企业提供的主体资格文件',observed_at:'2026-11-04',data:Buffer.from('%PDF-1.4\nsubject').toString('base64')},owner);
+ assert.equal(uploaded.status,200,JSON.stringify(uploaded.body));
+ const advanced=await request(path,'POST',{to:'materials_ready'},owner);
+ assert.equal(advanced.status,200,JSON.stringify(advanced.body));
+ assert.equal((await isolated.db.one('SELECT progress FROM cases WHERE id=?',[k.id])).progress,45);
+});
+
+test('107 minor rule never marks an automatic-stop case as eligible or emits application materials',async()=>{
+ const rules=require('../src/services/rules');
+ await isolated.db.run("INSERT INTO rule_versions (rule_key,version,title,case_type,level,authority_match,source_url,effective_from,review_status,review_note,definition) VALUES ('penalty-minor-107',1,'轻微测试','penalty','minor','轻微核查专用机关','https://example.com','2025-12-25','reviewed','测试',?)",[JSON.stringify({months:3,reviewDays:7,autoStopOnly:true,materials:['apply','subject','promise','rectify']})]);
+ const k={id:'minor-reviewed',type:'penalty',level:'minor',authority:'轻微核查专用机关',listed_date:'2026-01-01',fine_amount:10000,discretion:'lighter',obligation_at:'2026-01-01',rectified:1,no_new_similar:1};
+ const ev=await rules.evaluate(k,'2026-11-05');
+ assert.equal(ev.eligible,false);assert.deepEqual(ev.materials,[]);assert.equal(ev.reviewDays,null);
+ assert.equal(ev.status,'needs_review','penalty kind and whether there are other penalties remain unknown');
+ const owner=await account('13900009084');
+ const e=(await request('/api/enterprises','POST',{name:'免申测试企业',credit_code:'91430100MA4L000084'},owner)).body.enterprise;
+ const c=(await request(`/api/enterprises/${e.id}/cases`,'POST',{type:'penalty',level:'minor',event:'免申测试',authority:'轻微核查专用机关',listed_date:'2026-01-01'},owner)).body.case;
+ await isolated.db.run("INSERT INTO case_docs (case_id,doc_key,html,status,source,version) VALUES (?,'apply','<p>保留的旧草稿</p>','draft','manual',1)",[c.id]);
+ assert.deepEqual((await require('../src/services/docs').build(c.id)).docs,{},'application documents must not be generated');
+ assert.ok(await isolated.db.one('SELECT id FROM case_docs WHERE case_id=?',[c.id]),'historical drafts are retained');
+ await isolated.db.run("UPDATE cases SET stage='diagnosed' WHERE id=?",[c.id]);
+ await require('../src/services/diagnose').run(c.id);
+ assert.equal((await request(`/api/cases/${c.id}/stage`,'POST',{to:'materials_ready'},owner)).status,400,'automatic stop is not an application workflow');
+});
+
+test('107 serious and abnormal cases with missing classification require review instead of automatic decisions',async()=>{
+ const rules=require('../src/services/rules');
+ for(const [key,type,level] of [['penalty-serious-107','penalty','serious'],['abnormal-general-107','abnormal','general']]){
+  await isolated.db.run('INSERT INTO rule_versions (rule_key,version,title,case_type,level,authority_match,source_url,effective_from,review_status,review_note,definition) VALUES (?,1,?,?,?,?,?,?,\'reviewed\',\'测试\',?)',[key,'审核测试',type,level,'核查事项专用机关','https://example.com','2025-12-25',JSON.stringify({months:12,reviewDays:7,materials:['apply']})]);
+  const ev=await rules.evaluate({id:'review',type,level,authority:'核查事项专用机关',listed_date:'2026-01-01',fine_amount:70000,discretion:'normal',obligation_at:'2026-01-01',rectified:1,no_new_similar:1},'2026-11-05');
+  assert.equal(ev.eligible,false);assert.equal(ev.status,'needs_review');
+  if(type==='abnormal'){assert.equal(ev.applyFrom,null);assert.ok(!ev.conditions.some(c=>c.key==='nomore'));}
+ }
+});
+
+test('serious penalty subtypes, abnormal reasons, separate dates and manual verification gate conclusions', async () => {
+  const cookie = await account('13900009033');
+  const ent = (await request('/api/enterprises','POST',{name:'细分核实企业',credit_code:'91430100MA4L000091'},cookie)).body.enterprise;
+  await isolated.db.run("INSERT INTO rule_versions (rule_key,version,title,case_type,level,authority_match,source_url,effective_from,effective_until,review_status,review_note,definition) VALUES ('t-serious-a',1,'严重处罚隔离规则','penalty','serious','严重处罚核查机关','https://example.com/serious','2024-01-01','2030-12-31','reviewed','仅测试',?)",
+    [JSON.stringify({months:12,reviewDays:15,materials:['apply','subject','promise','rectify','plan']})]);
+
+  // 1) 限制生产经营：缺少限制期限届满日 -> 待核实；补齐后仍需人工核实
+  const serious = (await request(`/api/enterprises/${ent.id}/cases`,'POST',{type:'penalty',level:'serious',authority:'严重处罚核查机关',event:'责令停产停业',doc_no:'测罚〔2024〕9号',listed_date:'2024-06-01',penalty_type:'suspend_business'},cookie)).body.case;
+  let r = await request(`/api/cases/${serious.id}/diagnose`,'POST',{},cookie);
+  assert.equal(r.body.diagnosis.status,'needs_review');
+  assert.match(r.body.diagnosis.classification.text,/限制期限/);
+  assert.equal((await request(`/api/cases/${serious.id}/facts`,'PATCH',{obligation_at:'2024-07-01',rectified:1,no_new_similar:1,restrict_until:'2024-09-01'},cookie)).status,200);
+  r = await request(`/api/cases/${serious.id}`,'GET',undefined,cookie);
+  assert.equal(r.body.rule.status,'needs_verification');
+  assert.deepEqual(r.body.rule.verification.pending,['penalty_kind']);
+  assert.equal(r.body.rule.classification.complete,true);
+  // 限制期限早于公示期满一年时，参考日期取较晚的公示期满日
+  assert.equal(r.body.rule.applyFrom,'2025-06-01');
+  assert.equal((await request(`/api/cases/${serious.id}/verifications`,'POST',{scope:'penalty_kind',conclusion:'confirmed'},cookie)).status,400);
+  const verified = await request(`/api/cases/${serious.id}/verifications`,'POST',{scope:'penalty_kind',conclusion:'confirmed',note:'已对照决定书核实处罚种类与限制期限'},cookie);
+  assert.equal(verified.status,200);
+  assert.equal(verified.body.rule.eligible,true);
+  assert.equal(verified.body.rule.status,'eligible');
+  // 字段变更后原核实结论自动失效
+  await request(`/api/cases/${serious.id}/facts`,'PATCH',{restrict_until:'2024-10-01'},cookie);
+  r = await request(`/api/cases/${serious.id}`,'GET',undefined,cookie);
+  assert.equal(r.body.rule.status,'needs_verification');
+
+  // 2) 吊销证照：不能申请提前修复，不生成申请材料
+  const third = (await request(`/api/enterprises/${ent.id}/cases`,'POST',{type:'penalty',level:'serious',authority:'严重处罚核查机关',event:'吊销许可证件',listed_date:'2024-06-01',penalty_type:'revoke_license'},cookie)).body.case;
+  r = await request(`/api/cases/${third.id}`,'GET',undefined,cookie);
+  assert.equal(r.body.rule.status,'auto_stop');
+  assert.equal(r.body.rule.autoStopOnly,true);
+  assert.equal(r.body.rule.materials.length,0);
+  assert.equal(r.body.rule.applyFrom,'2027-06-01');
+  const revokeDocs = await request(`/api/cases/${third.id}/docs`,'GET',undefined,cookie);
+  assert.deepEqual(Object.keys(revokeDocs.body.docs),[]);
+
+  // 3) 经营异常：按列入原因给出专属证明要求，核实前不判定
+  await isolated.db.run("INSERT INTO rule_versions (rule_key,version,title,case_type,level,authority_match,source_url,effective_from,effective_until,review_status,review_note,definition) VALUES ('t-abnormal-a',1,'经营异常隔离规则','abnormal','general','测试市场监督管理局','https://example.com/abnormal','2025-12-25','2030-12-31','reviewed','仅测试',?)",
+    [JSON.stringify({months:0,reviewDays:2,materials:['apply','promise','rectify']})]);
+  const abnormal = (await request(`/api/enterprises/${ent.id}/cases`,'POST',{type:'abnormal',level:'general',authority:'测试市场监督管理局',event:'未按期公示年度报告',listed_date:'2026-01-01',abnormal_reason:'annual_report'},cookie)).body.case;
+  await request(`/api/cases/${abnormal.id}/facts`,'PATCH',{rectified:1,rectify_at:'2026-02-01'},cookie);
+  r = await request(`/api/cases/${abnormal.id}`,'GET',undefined,cookie);
+  assert.equal(r.body.rule.status,'needs_verification');
+  assert.equal(r.body.rule.requiredEvidence[0].kind,'annual_report');
+  assert.match(r.body.rule.materials.find(m=>m.key==='rectify').note,/补报年报/);
+  const av = await request(`/api/cases/${abnormal.id}/verifications`,'POST',{scope:'abnormal_reason',conclusion:'matched',note:'已核对补报年报公示记录'},cookie);
+  assert.equal(av.status,200);
+  assert.equal(av.body.rule.eligible,true);
+
+  // 4) 决定日期与公示日期不一致时必须选择起算依据，平台不自动取较早日期
+  const dated = (await request(`/api/enterprises/${ent.id}/cases`,'POST',{type:'penalty',level:'general',authority:'测试市场监管局',event:'日期冲突',listed_date:'2025-01-01',decision_date:'2025-01-01',publicity_date:'2025-02-01'},cookie)).body.case;
+  r = await request(`/api/cases/${dated.id}`,'GET',undefined,cookie);
+  assert.equal(r.body.rule.dateInfo.ambiguous,true);
+  assert.equal(r.body.rule.status,'needs_review');
+  await request(`/api/cases/${dated.id}/facts`,'PATCH',{start_basis:'decision'},cookie);
+  r = await request(`/api/cases/${dated.id}`,'GET',undefined,cookie);
+  assert.equal(r.body.rule.dateInfo.ambiguous,false);
+  assert.equal(r.body.rule.dateInfo.startDate,'2025-01-01');
+
+  // 5) 同类历史处罚对照：回溯范围内列出本企业其他处罚，且须人工记录结论
+  const hist = await request(`/api/cases/${serious.id}/history?months=36`,'GET',undefined,cookie);
+  assert.equal(hist.status,200);
+  assert.ok(hist.body.items.some(x=>x.id===third.id));
+  assert.equal(hist.body.months,36);
+
+  // 6) 非法字典值必须拒绝
+  assert.equal((await request(`/api/cases/${serious.id}/facts`,'PATCH',{penalty_type:'随便填'},cookie)).status,400);
+});

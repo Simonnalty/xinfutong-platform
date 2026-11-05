@@ -43,7 +43,23 @@ async function advance(caseId,to,{user,note='',ip,evidenceId}={}) {
       if(!await t.one('SELECT id FROM diagnoses WHERE case_id=? LIMIT 1',[caseId]))throw fail('请先完成诊断');
       const ev=await rules.evaluate(kase,new Date().toISOString().slice(0,10));
       if(!ev.ruleVersion)throw fail('请先核对适用规则，再确认材料齐备');
-      for(const material of ev.materials){if(!(await require('./docs').check(caseId,material.key)).valid)throw fail('材料尚未通过校验：'+material.title);}
+      if(ev.autoStopOnly)throw fail(`该情形无需申请或不能申请提前修复，不能进入申请材料流程：${ev.classification?.text||ev.blockers.map(b=>b.text).join('；')}`);
+      if(ev.verification.pending.length)throw fail(`请先完成人工核实并记录结论：${ev.verification.pending.join('、')}`);
+      // 列入原因对应的专项整改证明不能由情况说明替代，且须人工核录
+      for(const req of ev.requiredEvidence||[]){
+        const found=await t.one("SELECT id FROM evidence_files WHERE case_id=? AND kind=? AND archived=0 AND review_status='reviewed' LIMIT 1",[caseId,req.kind]);
+        if(!found)throw fail(`请上传并人工核录：${req.label}（${req.note}）`);
+      }
+      const docs=require('./docs'),built=await docs.build(caseId);
+      for(const material of ev.materials.filter(m=>m.required)){
+        if(material.key==='subject'){
+          if(!await t.one("SELECT id FROM evidence_files WHERE case_id=? AND kind='subject' AND archived=0 LIMIT 1",[caseId]))throw fail('请在证据附件中上传申请人主体资格文件');
+          continue;
+        }
+        if(!built.docs[material.key])continue;
+        if(!(await docs.check(caseId,material.key)).valid)throw fail('材料尚未通过校验：'+material.title);
+        if(!built.docs[material.key]?.finalized)throw fail('请先确认材料定稿：'+material.title);
+      }
     }
     if(to==='submitted'){
       const ev=await rules.evaluate(kase,new Date().toISOString().slice(0,10));

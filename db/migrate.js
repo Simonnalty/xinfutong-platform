@@ -21,7 +21,16 @@ module.exports = async function migrate({ all, one, run }) {
     // 107 号令第七条：较低数额罚款 = 「从轻/减轻的裁量阶次」+「经营主体 5 万元以下」
     // 两个条件同时成立。只登记金额会把 3 万元的一般阶次罚款误判成轻微。
     fine_amount: 'DECIMAL(12,2) NULL',
-    discretion: 'VARCHAR(16) NULL'                     // lighter|mitigated|normal|heavier
+    discretion: 'VARCHAR(16) NULL',                    // lighter|mitigated|normal|heavier
+    // 107 号令第八条细分及第十二条列入原因：只登记等级的旧库补列，值保持 NULL（待核实）
+    penalty_type: 'VARCHAR(32) NULL',
+    key_field: 'TINYINT NULL',
+    restrict_until: 'DATE NULL',
+    abnormal_reason: 'VARCHAR(32) NULL',
+    // 起算依据：决定作出日、实际公示日分别登记
+    decision_date: 'DATE NULL',
+    publicity_date: 'DATE NULL',
+    start_basis: 'VARCHAR(16) NULL'
   };
   for (const [name, ddl] of Object.entries(wanted)) {
     if (!have.has(name)) await run(`ALTER TABLE cases ADD COLUMN ${name} ${ddl}`);

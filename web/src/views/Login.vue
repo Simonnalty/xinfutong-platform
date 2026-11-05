@@ -51,7 +51,17 @@
 
       <el-dialog v-model="registerOpen" title="注册企业账号" width="420px">
         <el-form :model="reg" label-position="top">
-          <el-form-item label="手机号"><el-input v-model="reg.phone" /></el-form-item>
+          <el-form-item label="手机号">
+            <el-input v-model="reg.phone" style="margin-right:8px" />
+          </el-form-item>
+          <el-form-item label="短信验证码">
+            <div style="display:flex;gap:8px;width:100%">
+              <el-input v-model="reg.code" placeholder="6 位验证码" style="flex:1" />
+              <el-button :loading="smsLoading" :disabled="countdown > 0" @click="sendCode" style="min-width:108px">
+                {{ countdown > 0 ? `重新发送(${countdown}s)` : '获取验证码' }}
+              </el-button>
+            </div>
+          </el-form-item>
           <el-form-item label="姓名"><el-input v-model="reg.name" /></el-form-item>
           <el-form-item label="密码（至少 6 位）"><el-input v-model="reg.password" type="password" show-password /></el-form-item>
         </el-form>
@@ -80,7 +90,9 @@ const loading = ref(false)
 const error = ref('')
 const registerOpen = ref(false)
 const regLoading = ref(false)
-const reg = reactive({ phone: '', name: '', password: '' })
+const reg = reactive({ phone: '', name: '', password: '', code: '' })
+const smsLoading = ref(false)
+const countdown = ref(0)
 
 const feats = [
   { t: '智能诊断', d: '依据已复核规则和企业事实生成材料清单与办理提示' },
@@ -104,7 +116,27 @@ async function submit() {
   }
 }
 
+async function sendCode() {
+  if (!reg.phone) { ElMessage.warning('请先填写手机号'); return }
+  smsLoading.value = true
+  try {
+    const res = await api.smsSend(reg.phone)
+    if (res.devCode) ElMessage.success(`验证码已发送（联调码：${res.devCode}）`)
+    else ElMessage.success('验证码已发送，请查收短信')
+    countdown.value = 60
+    const timer = setInterval(() => {
+      countdown.value -= 1
+      if (countdown.value <= 0) clearInterval(timer)
+    }, 1000)
+  } catch (e) {
+    ElMessage.error(e.message)
+  } finally {
+    smsLoading.value = false
+  }
+}
+
 async function doRegister() {
+  if (!reg.phone || !reg.password || !reg.code) { ElMessage.warning('请填写手机号、验证码与密码'); return }
   regLoading.value = true
   try {
     await api.register({ ...reg })

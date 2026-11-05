@@ -1,0 +1,4745 @@
+{
+  "snapshot_time": "2026-11-03T02:58:39.406Z",
+  "scope": "本地隔离演示数据库，只读导出；不是公网业务数据库",
+  "tables": {
+    "knowledge_entries": [
+      {
+        "id": 1,
+        "category": "policy",
+        "title": "失信信息统一分为轻微、一般、严重三类",
+        "body": "依据国办发〔2025〕22号第二项，失信信息分为三类：轻微失信信息可不予公示或法定责任义务履行完毕即可申请修复，确需公示的公示期最长3个月；一般失信信息公示期最短3个月、最长1年；严重失信信息公示期最短1年、最长3年。各领域具体分类标准由行业主管部门制定并在「信用中国」网站统一发布。",
+        "source_url": "https://www.gov.cn/zhengce/content/202506/content_7029483.htm",
+        "issuer": "国务院办公厅",
+        "effective_at": "2025-06-22",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据国办发〔2025〕22号原文核验",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 2,
+        "category": "policy",
+        "title": "市场监管行政处罚信息的修复条件",
+        "body": "依据市场监管总局令第107号第十一条，最短公示期届满后申请信用修复，应同时符合：①已经自觉履行行政处罚决定中规定的义务；②已经主动采取相关整改措施，消除危害后果和不良影响；③未因同一类违法行为再次受到市场监督管理部门行政处罚。",
+        "source_url": "https://www.gov.cn/govweb/zhengce/202512/content_7050596.htm",
+        "issuer": "市场监管总局",
+        "effective_at": "2025-12-25",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据总局令第107号原文核验；该令2025-12-25施行，替代2021年旧办法",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 3,
+        "category": "policy",
+        "title": "仅受警告的处罚信息不予公示",
+        "body": "依据107号令第七条，仅受到警告的行政处罚信息不予公示；仅受通报批评、仅受较低数额罚款（经营主体5万元以下、相关责任人员5000元以下）的，公示期满3个月由市场监管部门停止公示。此类信息不存在「申请修复」环节。",
+        "source_url": "https://www.gov.cn/govweb/zhengce/202512/content_7050596.htm",
+        "issuer": "市场监管总局",
+        "effective_at": "2025-12-25",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据总局令第107号原文核验",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 4,
+        "category": "policy",
+        "title": "吊销证照类不适用提前修复",
+        "body": "依据107号令第八条，降低资质等级、吊销许可证件、吊销营业执照、责令关闭的行政处罚信息，公示期届满3年的，由市场监管部门停止公示。该类情形未规定可申请提前停止公示。企业遇到此类情形只能等待到期，无需反复申请。",
+        "source_url": "https://www.gov.cn/govweb/zhengce/202512/content_7050596.htm",
+        "issuer": "市场监管总局",
+        "effective_at": "2025-12-25",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据总局令第107号原文核验",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 5,
+        "category": "policy",
+        "title": "经营异常名录移出的五种情形",
+        "body": "依据107号令第十二条，被列入经营异常名录的当事人，符合下列条件之一即可向登记地市场监管部门申请移出：①未按期报送公示年报的，已补报并公示未报年份年报；②未按责令期限公示企业信息的，已履行公示义务；③未依法办理名称变更登记的，已完成变更登记；④通过登记住所无法取得联系的，已完成住所变更登记或可重新取得联系；⑤因其他违法行为被列入的，已改正该违法行为。移出同时停止公示列入信息。",
+        "source_url": "https://www.gov.cn/govweb/zhengce/202512/content_7050596.htm",
+        "issuer": "市场监管总局",
+        "effective_at": "2025-12-25",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据总局令第107号原文核验；注意本条无最短公示期要求，属「即办」类",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 6,
+        "category": "policy",
+        "title": "严重违法失信名单的移出条件",
+        "body": "依据107号令第十三条，被列入市场监督管理严重违法失信名单的当事人，公示期满1年后可申请移出，条件为：①已自觉履行行政处罚、行政裁决等行政决定中规定的义务；②已主动采取整改措施，消除危害后果和不良影响；③未再受到市场监管部门较重行政处罚。公示期满3年的，由市场监管部门移出。依法律、行政法规实施的管理措施期限尚未届满的，不得提前移出。",
+        "source_url": "https://www.gov.cn/govweb/zhengce/202512/content_7050596.htm",
+        "issuer": "市场监管总局",
+        "effective_at": "2025-12-25",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据总局令第107号原文核验",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 7,
+        "category": "policy",
+        "title": "重大税收违法失信主体的修复条件",
+        "body": "依据国家税务总局令第54号第十八条，符合下列条件之一可申请提前停止公布：①按税务处理决定书、处罚决定书缴清（退）税款、滞纳金、罚款，且失信信息公布满6个月；②破产，法院出具批准重整计划或认可和解协议裁定书，税务机关依法受偿；③突发事件期间因抢险救灾、疫情防控、重大项目建设或履行社会责任作出突出贡献。公布满3年的自动撤出，无需申请。",
+        "source_url": "https://www.chinatax.gov.cn/chinatax/n810214/n810641/c102061/c102062/c5171873/content.html",
+        "issuer": "国家税务总局",
+        "effective_at": "2022-02-01",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据总局令第54号原文核验",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 8,
+        "category": "policy",
+        "title": "海关失信信息的修复条件",
+        "body": "依据海关总署令第282号第三十六条，企业纠正违法行为、消除不良影响，且符合下列条件的可申请修复：①一般失信信息公示满3个月，或严重失信信息公示满1年；②作出信用承诺；③法律、行政法规、海关总署规定的其他条件。海关自收到申请3个工作日内决定是否受理，受理之日起7个工作日内作出修复决定，情况复杂可延长10个工作日。",
+        "source_url": "https://www.gov.cn/gongbao/2026/issue_12746/202605/content_7069427.html",
+        "issuer": "海关总署",
+        "effective_at": "2026-04-01",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据海关总署令第282号原文核验；该令2026-04-01施行，替代251号令",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 9,
+        "category": "policy",
+        "title": "法院失信被执行人不适用行政信用修复",
+        "body": "依据法释〔2017〕7号，纳入失信被执行人名单的期限为2年，情节严重可延长1至3年。被执行人积极履行义务或主动纠正失信行为的，人民法院可以决定提前删除失信信息。删除路径为：全部履行完毕、达成执行和解并履行完毕、人民法院裁定终结执行。该程序由执行法院依职权处理，不属于行政机关信用修复的受理范围。",
+        "source_url": "https://www.court.gov.cn/fabu/xiangqing/37172.html",
+        "issuer": "最高人民法院",
+        "effective_at": "2017-05-01",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据法释〔2017〕7号原文核验；本类不进平台自动判定，仅作说明",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 10,
+        "category": "policy",
+        "title": "罚款金额相同，失信等级可能相反（关键判定规则）",
+        "body": "依据107号令第七条，「较低数额罚款」须同时满足两个条件：①按从轻或者减轻处罚的裁量阶次；②经营主体5万元以下、相关责任人员5000元以下。缺任一条件即不属于轻微。同一笔3万元罚款，按从轻或减轻阶次作出的属轻微信息，公示满3个月自动停止；非从轻减轻阶次作出的，重点领域属严重信息（最短公示期1年），非重点领域属一般信息（最短公示期3个月）。重点领域按处罚决定书所依据的法律认定，重点工业产品范围以《全国重点工业产品质量安全监管目录》为准。",
+        "source_url": "https://scjgj.yancheng.gov.cn/art/2026/9/20/art_21470_4455305.html",
+        "issuer": "市场监管总局 / 盐城市市场监管局",
+        "effective_at": "2026-09-20",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据107号令第七条与盐城市局服务指南交叉核验；本条是平台判定的关键，仅采集罚款金额会判错",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 11,
+        "category": "policy",
+        "title": "「信用修复」与「征信修复」是两回事",
+        "body": "信用修复指公共信用信息领域的修复机制，针对「信用中国」等平台公示的行政处罚信息、严重失信主体名单，由各级社会信用体系建设牵头部门协调监督。而「征信修复」在现行法规和政策中并无此概念，以「征信修复」「征信洗白」「征信铲单」为噱头的宣传或广告均涉嫌虚假宣传。金融信用信息基础数据库中的信息，除确有错误、遗漏外，任何机构或个人无权擅自修改或删除。",
+        "source_url": "https://www.jian.gov.cn/news-show-108206.html",
+        "issuer": "中国人民银行吉安市分行、吉安市市场监督管理局、吉安市行政审批局",
+        "effective_at": null,
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据三部门联合公告核验；本条同时是平台文案红线依据",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 12,
+        "category": "guide",
+        "title": "市场监管信用修复的四类申请材料",
+        "body": "依据107号令第十四条，申请信用修复应提交：①信用修复申请书；②申请人主体资格文件；③守信承诺书；④履行法定义务、纠正违法行为、实施整改等相关材料。能通过政务信息共享平台获取的材料，市场监管部门不得要求重复提供。",
+        "source_url": "https://www.gov.cn/govweb/zhengce/202512/content_7050596.htm",
+        "issuer": "市场监管总局",
+        "effective_at": "2025-12-25",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据总局令第107号原文核验；注意含「申请人主体资格文件」，旧清单易漏",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 13,
+        "category": "guide",
+        "title": "市场监管信用修复的办理时限",
+        "body": "依据107号令第十四至十七条：材料齐全的，自收到申请2个工作日内受理；申请移出经营异常名录的，自受理2个工作日内作出决定；申请停止公示行政处罚信息或移出严重违法失信名单的，自受理7个工作日内作出决定，情况复杂经批准可延长10个工作日；准予修复的，自决定作出3个工作日内完成数据处理。",
+        "source_url": "https://www.gov.cn/govweb/zhengce/202512/content_7050596.htm",
+        "issuer": "市场监管总局",
+        "effective_at": "2025-12-25",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据总局令第107号原文核验；较2021年旧办法的15个工作日已缩短",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 14,
+        "category": "guide",
+        "title": "经营异常名录的线上办理路径",
+        "body": "通过国家企业信用信息公示系统（https://www.gsxt.gov.cn）首页「信用修复」入口，使用电子营业执照扫码登录后在线提交。也可到登记地市场监管部门现场申请。移出经营异常名录不收取任何费用。申请材料模板可在公示系统下载。2025年3月起，市场监管信用修复全国统一平台已上线，支持跨省异地办理。",
+        "source_url": "https://www.gsxt.gov.cn",
+        "issuer": "国家企业信用信息公示系统",
+        "effective_at": null,
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据公示系统入口与总局公开答问核验",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 15,
+        "category": "guide",
+        "title": "信用修复不收取任何费用",
+        "body": "市场监管部门办理年报公示、移出经营异常名录、信用修复，均不收取任何费用，也未授权或委托任何第三方收费代办。凡以「加快修复」「内部渠道」「包过」为名收取费用或索要财物的，均非官方行为。企业信用修复是政府提供的公共服务，须先纠正失信行为、履行义务、达到最短公示期，才能通过官方渠道申请。不存在付费删除记录的合法途径。",
+        "source_url": "https://cpc.people.com.cn/BIG5/n1/2026/0404/c64387-40695215.html",
+        "issuer": "市场监管总局信用监管司",
+        "effective_at": "2026-04-04",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据人民日报「政策问答·回应关切」专访市场监管总局信用监管司负责人核验",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 16,
+        "category": "guide",
+        "title": "弄虚作假的后果",
+        "body": "依据107号令第二十三条，当事人在信用修复过程中故意隐瞒真实情况、弄虚作假的，不得准予修复；已准予的应撤销，恢复至修复前状态，公示期自撤销之日起重新计算且不得提前停止公示。同时该不予修复或撤销决定在公示系统公示3年，自决定作出之日起3年内不得申请信用修复。",
+        "source_url": "https://www.gov.cn/govweb/zhengce/202512/content_7050596.htm",
+        "issuer": "市场监管总局",
+        "effective_at": "2025-12-25",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据总局令第107号原文核验；本条支撑平台「不代填事实、不伪造材料」的产品红线",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 17,
+        "category": "guide",
+        "title": "「两书同达」与修复告知",
+        "body": "依据国办发〔2025〕22号第四项，鼓励推广「两书同达」：向信用主体送达行政处罚决定书或列入严重失信主体名单决定书时，同步送达信用修复告知书，确保企业第一时间知晓修复政策。企业收到处罚决定书时，可一并确认修复的起算时间与最短公示期。告知书通常载明公示网站、最短公示期、修复流程与条件、办理渠道。",
+        "source_url": "https://www.gov.cn/zhengce/content/202506/content_7029483.htm",
+        "issuer": "国务院办公厅",
+        "effective_at": "2025-06-22",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据国办发〔2025〕22号原文核验；地方落地进度不一，湖南具体情况需另核",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 18,
+        "category": "case",
+        "title": "有偿删除失信信息的法律风险",
+        "body": "依法应当公示的失信信息，在法院、行政机关解除相关措施前，任何第三方无权删除。常见违法手段包括：伪造法院结案或撤销文书用于申诉（涉嫌伪造国家机关公文）、冒用企业名义伪造公章发起虚假投诉、买通平台人员删改数据、技术手段侵入官方系统篡改后台。整条产业链涉嫌非法经营、破坏计算机信息系统等犯罪，委托方与操作方均需担责。已有多起企业付费后对方失联的报案记录。",
+        "source_url": "https://www.cnr.cn/mspd/msyx/20260714/t20260714_527708969.shtml",
+        "issuer": "央广网",
+        "effective_at": "2026-07-14",
+        "review_status": "reviewed",
+        "review_note": "2026-10-31 依据央广网调查报道核验；报道含市场监管总局信用监管司、北京市市场监管局表态",
+        "created_at": "2026-11-02 23:47:20"
+      }
+    ],
+    "rule_versions": [
+      {
+        "id": 1,
+        "rule_key": "penalty-general-107",
+        "version": 1,
+        "title": "市场监督管理领域一般违法失信信息信用修复",
+        "case_type": "penalty",
+        "level": "general",
+        "authority_match": "市场监督管理局",
+        "source_url": "https://www.gov.cn/zhengce/202512/content_7050596.htm",
+        "effective_from": "2025-12-25",
+        "effective_until": null,
+        "review_status": "reviewed",
+        "review_note": "依据市场监管总局令第107号第九条。一般违法失信信息指除第七条、第八条规定情形外的其他行政处罚信息。最短公示期三个月，最长公示期一年；公示期满三个月且符合第十一条三项条件可申请修复，期满一年自动停止公示。",
+        "definition": {
+          "months": 3,
+          "reviewDays": 7,
+          "materials": [
+            "apply",
+            "subject",
+            "promise",
+            "rectify"
+          ],
+          "basis": [
+            {
+              "law": "市场监督管理信用修复管理办法 第九条",
+              "text": "一般违法失信信息，是指除第七条、第八条规定情形外的其他行政处罚信息。最短公示期为三个月，最长公示期为一年。公示期满三个月的，符合第十一条规定条件的当事人可以向作出行政处罚决定的市场监督管理部门申请信用修复；公示期满一年的，由市场监督管理部门停止公示。"
+            }
+          ],
+          "rejectReasons": [
+            "未完全履行行政处罚决定中规定的义务，如罚款未缴清",
+            "未主动采取整改措施，危害后果或不良影响未消除",
+            "因同一类违法行为再次受到市场监督管理部门行政处罚",
+            "公示期尚未届满最短公示期三个月",
+            "申请材料不齐全或不符合法定形式，如缺少申请人主体资格文件、守信承诺书",
+            "向非作出该行政处罚决定的机关提出申请"
+          ]
+        },
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 2,
+        "rule_key": "penalty-serious-107",
+        "version": 1,
+        "title": "市场监督管理领域严重违法失信信息信用修复",
+        "case_type": "penalty",
+        "level": "serious",
+        "authority_match": "市场监督管理局",
+        "source_url": "https://www.gov.cn/zhengce/202512/content_7050596.htm",
+        "effective_from": "2025-12-25",
+        "effective_until": null,
+        "review_status": "reviewed",
+        "review_note": "依据市场监管总局令第107号第八条。严重违法失信信息最短公示期一年、最长三年。第一项领域类公示满一年可申请；第二项须同时满足限制期限届满；第三项（降低资质等级、吊销证照、责令关闭）只能待三年期满自动停止，不可申请提前修复。本条未细分三项差异，第三项情形由驳回原因首条提示。",
+        "definition": {
+          "months": 12,
+          "reviewDays": 7,
+          "materials": [
+            "apply",
+            "subject",
+            "promise",
+            "rectify"
+          ],
+          "basis": [
+            {
+              "law": "市场监督管理信用修复管理办法 第八条",
+              "text": "严重违法失信信息最短公示期为一年，最长公示期为三年。属食品、药品、医疗器械、化妆品、特种设备、重点工业产品领域的，公示期满一年可申请修复；属限制开展生产经营活动、责令停产停业、限制从业的，还须行政处罚限制期限届满；属降低资质等级、吊销许可证件、吊销营业执照、责令关闭的，公示期满三年由市场监督管理部门停止公示。"
+            }
+          ],
+          "rejectReasons": [
+            "属于降低资质等级、吊销许可证件、吊销营业执照、责令关闭情形，依 107 号令第八条第三项只能待公示期满三年自动停止公示，不能申请提前修复",
+            "属于限制开展生产经营活动、责令停产停业、限制从业情形，行政处罚限制期限尚未届满",
+            "未完全履行行政处罚决定中规定的义务",
+            "未主动采取整改措施，危害后果或不良影响未消除",
+            "因同一类违法行为再次受到市场监督管理部门行政处罚",
+            "公示期尚未届满最短公示期一年"
+          ]
+        },
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 3,
+        "rule_key": "penalty-minor-107",
+        "version": 1,
+        "title": "市场监督管理领域轻微违法失信信息停止公示",
+        "case_type": "penalty",
+        "level": "minor",
+        "authority_match": "市场监督管理局",
+        "source_url": "https://www.gov.cn/zhengce/202512/content_7050596.htm",
+        "effective_from": "2025-12-25",
+        "effective_until": null,
+        "review_status": "reviewed",
+        "review_note": "依据市场监管总局令第107号第七条。仅警告不予公示；仅通报批评或仅较低数额罚款的，公示期满三个月由市场监管部门停止公示，无需当事人申请。较低数额罚款须同时满足「从轻或减轻处罚的裁量阶次」与「经营主体五万元以下、责任人员五千元以下」两项条件，缺一即不属于轻微。",
+        "definition": {
+          "months": 3,
+          "reviewDays": 7,
+          "autoStopOnly": true,
+          "materials": [
+            "apply",
+            "subject",
+            "promise",
+            "rectify"
+          ],
+          "basis": [
+            {
+              "law": "市场监督管理信用修复管理办法 第七条",
+              "text": "仅受到警告的行政处罚信息不予公示；仅受到通报批评、仅受到较低数额罚款的，公示期满三个月由市场监督管理部门停止公示。较低数额罚款是指按照从轻或者减轻处罚的裁量阶次，对经营主体处以五万元以下、对相关责任人员处以五千元以下的罚款。"
+            }
+          ],
+          "rejectReasons": [
+            "罚款数额虽在五万元以下，但不属于从轻或减轻处罚的裁量阶次，应定为一般或严重失信信息而非轻微",
+            "仅受到警告的行政处罚信息本不予公示，无需办理",
+            "公示期尚未届满三个月"
+          ]
+        },
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 4,
+        "rule_key": "abnormal-general-107",
+        "version": 1,
+        "title": "移出经营异常名录",
+        "case_type": "abnormal",
+        "level": "general",
+        "authority_match": "市场监督管理局",
+        "source_url": "https://www.gov.cn/zhengce/202512/content_7050596.htm",
+        "effective_from": "2025-12-25",
+        "effective_until": null,
+        "review_status": "reviewed",
+        "review_note": "依据市场监管总局令第107号第十二条、第十六条。符合五种情形之一即可申请移出，法规未规定最短公示期，无等待期。受理后两个工作日内作出决定。第一百一十条（原文第十六条）另规定通过登记住所无法取得联系的，自核实之日起两个工作日。",
+        "definition": {
+          "months": 0,
+          "reviewDays": 2,
+          "materials": [
+            "apply",
+            "subject",
+            "promise",
+            "rectify"
+          ],
+          "basis": [
+            {
+              "law": "市场监督管理信用修复管理办法 第十二条、第十六条",
+              "text": "被列入经营异常名录的当事人，已补报并公示未报年份年度报告、已履行信息公示义务、已依法完成企业名称变更登记、已重新取得联系或完成住所变更登记、已改正其他违法行为的，可以向登记地市场监督管理部门申请移出。市场监督管理部门应当自受理之日起两个工作日内作出决定。法规未规定最短公示期，无等待期。"
+            }
+          ],
+          "rejectReasons": [
+            "未补报、公示未报年份的年度报告",
+            "未履行市场监督管理部门责令期限内的信息公示义务",
+            "未依法完成企业名称变更登记",
+            "通过登记的住所或经营场所无法取得联系，且未完成变更登记或未重新取得联系",
+            "被列入的违法行为尚未改正",
+            "申请材料不齐全，如缺少申请人主体资格文件"
+          ]
+        },
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 5,
+        "rule_key": "abnormal-minor-107",
+        "version": 1,
+        "title": "移出经营异常名录",
+        "case_type": "abnormal",
+        "level": "minor",
+        "authority_match": "市场监督管理局",
+        "source_url": "https://www.gov.cn/zhengce/202512/content_7050596.htm",
+        "effective_from": "2025-12-25",
+        "effective_until": null,
+        "review_status": "reviewed",
+        "review_note": "依据市场监管总局令第107号第十二条、第十六条。经营异常名录不区分失信等级，移出条件与一般等级相同，无等待期，受理后两个工作日内作出决定。",
+        "definition": {
+          "months": 0,
+          "reviewDays": 2,
+          "materials": [
+            "apply",
+            "subject",
+            "promise",
+            "rectify"
+          ],
+          "basis": [
+            {
+              "law": "市场监督管理信用修复管理办法 第十二条、第十六条",
+              "text": "经营异常名录不区分失信等级，移出条件与一般等级相同：符合第十二条规定情形之一的即可申请移出，无最短公示期要求。市场监督管理部门应当自受理之日起两个工作日内作出决定。"
+            }
+          ],
+          "rejectReasons": [
+            "未补报、公示未报年份的年度报告",
+            "未履行市场监督管理部门责令期限内的信息公示义务",
+            "未依法完成企业名称变更登记",
+            "通过登记的住所或经营场所无法取得联系，且未完成变更登记或未重新取得联系",
+            "申请材料不齐全，如缺少申请人主体资格文件"
+          ]
+        },
+        "created_at": "2026-11-02 23:47:20"
+      }
+    ],
+    "doc_templates": [
+      {
+        "id": 1,
+        "doc_key": "apply",
+        "version": 1,
+        "title": "信用修复申请书",
+        "slots": [],
+        "body": "<h4>信用修复申请书</h4>\n<div class=\"meta\">受理机关：{{authority}}</div>\n<p class=\"no-indent\">{{authority}}：</p>\n<p>申请人<span class=\"lock\">{{name}}</span>（统一社会信用代码：<span class=\"lock\">{{code}}</span>），法定代表人<span class=\"lock\">{{legal}}</span>。因<span class=\"lock\">{{event}}</span>，于<span class=\"lock\">{{listedCN}}</span>被列入失信名单（决定书文号：<span class=\"lock\">{{docNo}}</span>）。</p>\n<p>列入后，本企业已按要求完成整改、履行相关义务，{{removedText}}现公示期已届满，本企业无新增同类失信记录，符合《失信行为纠正后的信用信息修复管理办法（试行）》规定的修复条件。</p>\n<p>据此，申请对上述失信信息予以信用修复，停止公示并同步更新相关平台信息。</p>\n<p>随附《守信承诺书》《整改情况说明》及证明材料，所提交材料真实、合法、有效，如有虚假，愿承担相应法律责任。</p>\n{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 2,
+        "doc_key": "promise",
+        "version": 1,
+        "title": "守信承诺书",
+        "slots": [],
+        "body": "<h4>守信承诺书</h4>\n<div class=\"meta\">承诺主体：{{name}}</div>\n<p>本企业就信用修复事项作出如下承诺：</p>\n<p>一、已如实履行行政处罚决定或列入决定所确定的义务，整改措施已落实到位，相关证明材料真实有效。</p>\n<p>二、自本承诺作出之日起，按《企业信息公示暂行条例》要求于每年 1 月 1 日至 6 月 30 日期间报送上一年度年度报告并公示。</p>\n<p>三、建立内部信用管理制度，指定专人负责年报与公示信息核对，避免同类问题再次发生。</p>\n<p>四、如违反上述承诺，自愿接受行政机关依法处理，并承担由此产生的信用后果。</p>\n{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 3,
+        "doc_key": "rectify",
+        "version": 1,
+        "title": "整改情况说明",
+        "slots": [],
+        "body": "<h4>整改情况说明</h4>\n<div class=\"meta\">{{name}}</div>\n<p>一、问题成因。{{cause}}</p>\n<p>二、整改措施。{{measure}}</p>\n<p>三、整改结果。{{result}}</p>\n<p>四、后续安排。本企业将按法定期间报送年度报告，定期核对公示信息，并接受社会监督。</p>\n{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 4,
+        "doc_key": "auth",
+        "version": 1,
+        "title": "授权委托书",
+        "slots": [],
+        "body": "<h4>授权委托书</h4>\n<div class=\"meta\">委托事项：办理信用修复申请</div>\n<p>委托人：<span class=\"lock\">{{name}}</span>（统一社会信用代码：<span class=\"lock\">{{code}}</span>）</p>\n<p>受托人：{{agent}}　身份证号：{{agentId}}</p>\n<p>兹授权受托人代表本企业办理上述失信信息的信用修复申请、材料递交、补正及结果领取等事宜，授权期限自签署之日起 6 个月。</p>\n<p>受托人在授权范围内的行为，视为本企业行为，法律后果由本企业承担。</p>\n{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 5,
+        "doc_key": "list",
+        "version": 1,
+        "title": "材料目录与证明清单",
+        "slots": [],
+        "body": "<h4>材料目录与证明清单</h4>\n<div class=\"meta\">共 {{count}} 项</div>\n<p class=\"no-indent\">1. 信用修复申请书（原件 1 份）</p>\n<p class=\"no-indent\">2. 守信承诺书（原件 1 份）</p>\n<p class=\"no-indent\">3. 整改情况说明（原件 1 份）</p>\n<p class=\"no-indent\">4. 营业执照复印件（加盖公章）</p>\n<p class=\"no-indent\">5. {{proofName}}（复印件）</p>\n<p>以上材料均与原件一致，如有不符，由本企业承担相应责任。</p>\n{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 6,
+        "doc_key": "apply",
+        "version": 2,
+        "title": "信用修复申请书",
+        "slots": [],
+        "body": "<h4>信用修复申请书</h4><p>企业：<span class=\"lock\">{{name}}</span>；统一社会信用代码：<span class=\"lock\">{{code}}</span>。</p><p>事项：<span class=\"lock\">{{event}}</span>；文号：<span class=\"lock\">{{docNo}}</span>；机关：<span class=\"lock\">{{authority}}</span>；登记日期：<span class=\"lock\">{{listedCN}}</span>。</p><p>现就上述事项提出信用修复申请，具体适用条件与提交要求请受理机关核实。</p><p>{{measure}}</p><p>申请理由：【待补充：结合实际事实、证明及主管部门要求说明，不得预先宣称符合全部条件】</p><p>所附材料及陈述经企业确认后提交。{{removedText}}</p>{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 7,
+        "doc_key": "promise",
+        "version": 2,
+        "title": "守信承诺书",
+        "slots": [],
+        "body": "<h4>守信承诺书</h4><p>企业：<span class=\"lock\">{{name}}</span>；统一社会信用代码：<span class=\"lock\">{{code}}</span>。</p><p>事项：<span class=\"lock\">{{event}}</span>；文号：<span class=\"lock\">{{docNo}}</span>；机关：<span class=\"lock\">{{authority}}</span>；登记日期：<span class=\"lock\">{{listedCN}}</span>。</p><p>本企业承诺如实陈述情况，并对自行提交材料的真实性负责。</p><p>履行及整改情况：【待补充：实际完成情况、相应证明及尚待办理事项】</p><p>具体承诺事项：【待补充：依受理机关公布的格式与要求填写】</p>{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 8,
+        "doc_key": "rectify",
+        "version": 2,
+        "title": "整改情况说明",
+        "slots": [],
+        "body": "<h4>整改情况说明</h4><p>企业：<span class=\"lock\">{{name}}</span>；统一社会信用代码：<span class=\"lock\">{{code}}</span>。</p><p>事项：<span class=\"lock\">{{event}}</span>；文号：<span class=\"lock\">{{docNo}}</span>；机关：<span class=\"lock\">{{authority}}</span>；登记日期：<span class=\"lock\">{{listedCN}}</span>。</p><p>问题成因：{{cause}}</p><p>整改措施：{{measure}}</p><p>实际办理情况：{{result}}</p><p>后续复查安排：【待补充：具体负责人、复查频率与事项】</p>{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 9,
+        "doc_key": "auth",
+        "version": 2,
+        "title": "授权委托书",
+        "slots": [],
+        "body": "<h4>授权委托书</h4><p>企业：<span class=\"lock\">{{name}}</span>；统一社会信用代码：<span class=\"lock\">{{code}}</span>。</p><p>事项：<span class=\"lock\">{{event}}</span>；文号：<span class=\"lock\">{{docNo}}</span>；机关：<span class=\"lock\">{{authority}}</span>；登记日期：<span class=\"lock\">{{listedCN}}</span>。</p><p>委托人法定代表人：<span class=\"lock\">{{legal}}</span>。</p><p>受托人：{{agent}}；证件号码：{{agentId}}。</p><p>授权事项、范围及期限：【待填写：按实际委托内容填写，由委托人确认签署】</p>{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 10,
+        "doc_key": "list",
+        "version": 2,
+        "title": "材料目录与证明清单",
+        "slots": [],
+        "body": "<h4>材料目录与证明清单</h4><p>企业：<span class=\"lock\">{{name}}</span>；统一社会信用代码：<span class=\"lock\">{{code}}</span>。</p><p>事项：<span class=\"lock\">{{event}}</span>；文号：<span class=\"lock\">{{docNo}}</span>；机关：<span class=\"lock\">{{authority}}</span>；登记日期：<span class=\"lock\">{{listedCN}}</span>。</p><p>附件份数：{{count}}</p><p>实际附件目录（含文件名、材料类型、日期及摘要）：【待核对：按证据附件页的有效文件逐项填写，仅列实际提交材料】</p><p>受理机关另行要求的材料：【待核对：按官方办理入口确认】</p>{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 11,
+        "doc_key": "plan",
+        "version": 2,
+        "title": "整改计划书",
+        "slots": [],
+        "body": "<h4>整改计划书</h4><p>企业：<span class=\"lock\">{{name}}</span>；统一社会信用代码：<span class=\"lock\">{{code}}</span>。</p><p>事项：<span class=\"lock\">{{event}}</span>；文号：<span class=\"lock\">{{docNo}}</span>；机关：<span class=\"lock\">{{authority}}</span>；登记日期：<span class=\"lock\">{{listedCN}}</span>。</p><p>待整改问题：【待补充：如实列明问题】</p><p>整改措施、负责人和计划完成日：【待补充：逐项填写】</p><p>复查方式与证明：【待补充：说明复查安排及将形成的证明】</p>{{sign}}",
+        "effective_from": "2026-11-02 23:47:20",
+        "created_at": "2026-11-02 23:47:20"
+      }
+    ],
+    "rule_params": [
+      {
+        "id": 1,
+        "pkey": "min_months.minor",
+        "pvalue": "3",
+        "note": "轻微失信信息公示期满三个月由市场监管部门停止公示（107号令第七条）",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 2,
+        "pkey": "min_months.general",
+        "pvalue": "3",
+        "note": "一般失信信息最短公示期三个月（107号令第九条）",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 3,
+        "pkey": "min_months.serious",
+        "pvalue": "12",
+        "note": "严重失信信息最短公示期一年（107号令第八条）",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 4,
+        "pkey": "review_days",
+        "pvalue": "7",
+        "note": "行政处罚信息及严重违法失信名单修复：受理后七个工作日内作出决定（107号令第十六条）",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 6,
+        "pkey": "required_conditions",
+        "pvalue": "obligation,rectify,nomore",
+        "note": "参与判定的前置条件，逗号分隔（107号令第十一条）",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 7,
+        "pkey": "objection_sla_days",
+        "pvalue": "3",
+        "note": "平台对异议函的答复时限（工作日）",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 8,
+        "pkey": "minor_fine_cap",
+        "pvalue": "50000",
+        "note": "较低数额罚款上限：对经营主体五万元以下（107号令第七条）；须与从轻或减轻的裁量阶次同时成立",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 9,
+        "pkey": "person_fine_cap",
+        "pvalue": "5000",
+        "note": "较低数额罚款上限：对相关责任人员五千元以下（107号令第七条）",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 10,
+        "pkey": "cert_valid_months",
+        "pvalue": "12",
+        "note": "办理进度记录有效期（月）",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 11,
+        "pkey": "min_months.severe",
+        "pvalue": "36",
+        "note": "列入严重违法失信名单的公示期三年（107号令第十三条）",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 12,
+        "pkey": "review_days_abnormal",
+        "pvalue": "2",
+        "note": "经营异常名录移出：受理后两个工作日内作出决定（107号令第十六条）",
+        "updated_at": "2026-11-02 23:47:20"
+      },
+      {
+        "id": 13,
+        "pkey": "no_similar_window_months",
+        "pvalue": "0",
+        "note": "「未因同一类违法行为再次受罚」不作时间限制，0 表示不设窗口（107号令第十一条第三项）",
+        "updated_at": "2026-11-02 23:47:20"
+      }
+    ]
+  },
+  "columns": [
+    {
+      "TABLE_NAME": "alerts",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "alerts",
+      "COLUMN_NAME": "enterprise_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "alerts",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "alerts",
+      "COLUMN_NAME": "policy_id",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "alerts",
+      "COLUMN_NAME": "due_at",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "alerts",
+      "COLUMN_NAME": "channel",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "'inapp'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "alerts",
+      "COLUMN_NAME": "status",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "'pending'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "alerts",
+      "COLUMN_NAME": "read_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "alerts",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "audit_logs",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "audit_logs",
+      "COLUMN_NAME": "actor_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "audit_logs",
+      "COLUMN_NAME": "action",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(60)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "audit_logs",
+      "COLUMN_NAME": "target",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(100)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "audit_logs",
+      "COLUMN_NAME": "detail",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "audit_logs",
+      "COLUMN_NAME": "ip",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "audit_logs",
+      "COLUMN_NAME": "at",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "enterprise_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "type",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(30)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "event",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "authority",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "doc_no",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(120)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "listed_date",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "removed_date",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "level",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "stage",
+      "ORDINAL_POSITION": 10,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'draft'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "progress",
+      "ORDINAL_POSITION": 11,
+      "COLUMN_TYPE": "tinyint(4)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "apply_from",
+      "ORDINAL_POSITION": 12,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "due_date",
+      "ORDINAL_POSITION": 13,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "closed_at",
+      "ORDINAL_POSITION": 14,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "obligation_at",
+      "ORDINAL_POSITION": 15,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "rectified",
+      "ORDINAL_POSITION": 16,
+      "COLUMN_TYPE": "tinyint(4)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "rectify_at",
+      "ORDINAL_POSITION": 17,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "no_new_similar",
+      "ORDINAL_POSITION": 18,
+      "COLUMN_TYPE": "tinyint(4)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "fine_amount",
+      "ORDINAL_POSITION": 19,
+      "COLUMN_TYPE": "decimal(12,2)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "discretion",
+      "ORDINAL_POSITION": 20,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "facts_updated_at",
+      "ORDINAL_POSITION": 21,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 22,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_channels",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_channels",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_channels",
+      "COLUMN_NAME": "channel_code",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(40)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_channels",
+      "COLUMN_NAME": "channel_name",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(100)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_channels",
+      "COLUMN_NAME": "state",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'idle'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_channels",
+      "COLUMN_NAME": "note",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(300)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_channels",
+      "COLUMN_NAME": "first_seen_at",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_channels",
+      "COLUMN_NAME": "last_checked_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_channels",
+      "COLUMN_NAME": "sort",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_docs",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_docs",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_docs",
+      "COLUMN_NAME": "doc_key",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(32)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_docs",
+      "COLUMN_NAME": "html",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "mediumtext",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_docs",
+      "COLUMN_NAME": "status",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'template'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_docs",
+      "COLUMN_NAME": "source",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'template'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_docs",
+      "COLUMN_NAME": "version",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "1",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_docs",
+      "COLUMN_NAME": "updated_by",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_docs",
+      "COLUMN_NAME": "updated_at",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "on update current_timestamp()",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "code",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "doc_no",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(120)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "digest",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "prev_hash",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "signature",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "issued_at",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "valid_until",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "status",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'valid'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "revoked_reason",
+      "ORDINAL_POSITION": 10,
+      "COLUMN_TYPE": "varchar(300)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "COLUMN_NAME": "revoked_at",
+      "ORDINAL_POSITION": 11,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificate_snapshots",
+      "COLUMN_NAME": "code",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificate_snapshots",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificate_snapshots",
+      "COLUMN_NAME": "version",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificate_snapshots",
+      "COLUMN_NAME": "content",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificate_snapshots",
+      "COLUMN_NAME": "content_hash",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificate_snapshots",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cert_scans",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cert_scans",
+      "COLUMN_NAME": "code",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cert_scans",
+      "COLUMN_NAME": "at",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cert_scans",
+      "COLUMN_NAME": "ip",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cert_scans",
+      "COLUMN_NAME": "ua",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(300)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cert_scans",
+      "COLUMN_NAME": "result",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_configs",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_configs",
+      "COLUMN_NAME": "channel_code",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(40)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_configs",
+      "COLUMN_NAME": "provider",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'manual'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_configs",
+      "COLUMN_NAME": "latest_snapshot",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_configs",
+      "COLUMN_NAME": "last_error",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(300)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_snapshots",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_snapshots",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_snapshots",
+      "COLUMN_NAME": "channel_code",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(40)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_snapshots",
+      "COLUMN_NAME": "fetched_at",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_snapshots",
+      "COLUMN_NAME": "payload",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_snapshots",
+      "COLUMN_NAME": "digest",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_snapshots",
+      "COLUMN_NAME": "source",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'mock'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_snapshots",
+      "COLUMN_NAME": "run_id",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "checks_runs",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "checks_runs",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "checks_runs",
+      "COLUMN_NAME": "started_at",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "checks_runs",
+      "COLUMN_NAME": "finished_at",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "checks_runs",
+      "COLUMN_NAME": "diffs",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "checks_runs",
+      "COLUMN_NAME": "digest",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "checks_runs",
+      "COLUMN_NAME": "trigger_by",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "varchar(40)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "'manual'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_notices",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "bigint(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_notices",
+      "COLUMN_NAME": "enterprise_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_notices",
+      "COLUMN_NAME": "kind",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_notices",
+      "COLUMN_NAME": "title",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_notices",
+      "COLUMN_NAME": "body",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "text",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_notices",
+      "COLUMN_NAME": "source_url",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_notices",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_notices",
+      "COLUMN_NAME": "dedup_key",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "UNI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_notices",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_subscriptions",
+      "COLUMN_NAME": "enterprise_id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_subscriptions",
+      "COLUMN_NAME": "enabled",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "tinyint(4)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "1",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_subscriptions",
+      "COLUMN_NAME": "policy_updates",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "tinyint(4)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "1",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_subscriptions",
+      "COLUMN_NAME": "repeat_days",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "30",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_subscriptions",
+      "COLUMN_NAME": "next_at",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_subscriptions",
+      "COLUMN_NAME": "updated_at",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "on update current_timestamp()",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnoses",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnoses",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnoses",
+      "COLUMN_NAME": "level",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnoses",
+      "COLUMN_NAME": "apply_from",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnoses",
+      "COLUMN_NAME": "conditions",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnoses",
+      "COLUMN_NAME": "basis",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnoses",
+      "COLUMN_NAME": "score",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "tinyint(4)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnoses",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnosis_snapshots",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "bigint(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnosis_snapshots",
+      "COLUMN_NAME": "diagnosis_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnosis_snapshots",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnosis_snapshots",
+      "COLUMN_NAME": "content",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnosis_snapshots",
+      "COLUMN_NAME": "digest",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnosis_snapshots",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_checks",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_checks",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_checks",
+      "COLUMN_NAME": "result",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_checks",
+      "COLUMN_NAME": "score",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "tinyint(4)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_checks",
+      "COLUMN_NAME": "checked_at",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_templates",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_templates",
+      "COLUMN_NAME": "doc_key",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(32)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_templates",
+      "COLUMN_NAME": "version",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "1",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_templates",
+      "COLUMN_NAME": "title",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(100)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_templates",
+      "COLUMN_NAME": "slots",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_templates",
+      "COLUMN_NAME": "body",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "mediumtext",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_templates",
+      "COLUMN_NAME": "effective_from",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_templates",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_versions",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "bigint(20) unsigned",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_versions",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_versions",
+      "COLUMN_NAME": "doc_key",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(32)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_versions",
+      "COLUMN_NAME": "version",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_versions",
+      "COLUMN_NAME": "html",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "mediumtext",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_versions",
+      "COLUMN_NAME": "source",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(32)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_versions",
+      "COLUMN_NAME": "created_by",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "bigint(20) unsigned",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_versions",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "COLUMN_NAME": "name",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "COLUMN_NAME": "credit_code",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "char(18)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "UNI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "COLUMN_NAME": "legal",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(50)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "COLUMN_NAME": "industry",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(60)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "COLUMN_NAME": "region",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(60)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "COLUMN_NAME": "scale",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "varchar(40)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "COLUMN_NAME": "contact",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "varchar(50)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "COLUMN_NAME": "phone",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 10,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprise_members",
+      "COLUMN_NAME": "enterprise_id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprise_members",
+      "COLUMN_NAME": "user_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprise_members",
+      "COLUMN_NAME": "role",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'staff'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprise_members",
+      "COLUMN_NAME": "granted_at",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprise_members",
+      "COLUMN_NAME": "revoked_at",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "char(36)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "kind",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(32)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "filename",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "media_type",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(100)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "byte_size",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "content",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "longblob",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "digest",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "source",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "observed_at",
+      "ORDINAL_POSITION": 10,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "uploaded_by",
+      "ORDINAL_POSITION": 11,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "review_status",
+      "ORDINAL_POSITION": 12,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'recorded'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "reviewed_by",
+      "ORDINAL_POSITION": 13,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "reviewed_at",
+      "ORDINAL_POSITION": 14,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "review_note",
+      "ORDINAL_POSITION": 15,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "archived",
+      "ORDINAL_POSITION": 16,
+      "COLUMN_TYPE": "tinyint(4)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "archived_at",
+      "ORDINAL_POSITION": 17,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 18,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "kb_articles",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "kb_articles",
+      "COLUMN_NAME": "category",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(40)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "kb_articles",
+      "COLUMN_NAME": "title",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "kb_articles",
+      "COLUMN_NAME": "body",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "mediumtext",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "kb_articles",
+      "COLUMN_NAME": "tags",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "kb_articles",
+      "COLUMN_NAME": "status",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "'published'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "kb_articles",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "category",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "title",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "body",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "mediumtext",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "source_url",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "issuer",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(100)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "effective_at",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "review_status",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'draft'",
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "review_note",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "created_by",
+      "ORDINAL_POSITION": 10,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 11,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "notice_receipts",
+      "COLUMN_NAME": "notice_id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "bigint(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "notice_receipts",
+      "COLUMN_NAME": "user_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "notice_receipts",
+      "COLUMN_NAME": "read_at",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objections",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objections",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objections",
+      "COLUMN_NAME": "channel_code",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(40)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objections",
+      "COLUMN_NAME": "body_html",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "mediumtext",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objections",
+      "COLUMN_NAME": "status",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'draft'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objections",
+      "COLUMN_NAME": "sent_at",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objections",
+      "COLUMN_NAME": "reply_at",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objections",
+      "COLUMN_NAME": "pdf_path",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "varchar(300)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objections",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_events",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "bigint(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_events",
+      "COLUMN_NAME": "objection_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_events",
+      "COLUMN_NAME": "status",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_events",
+      "COLUMN_NAME": "note",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_events",
+      "COLUMN_NAME": "evidence_id",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "char(36)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_events",
+      "COLUMN_NAME": "snapshot_id",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_events",
+      "COLUMN_NAME": "actor_id",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_events",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_followups",
+      "COLUMN_NAME": "objection_id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_followups",
+      "COLUMN_NAME": "remind_date",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_followups",
+      "COLUMN_NAME": "updated_at",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "on update current_timestamp()",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_revisions",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "bigint(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_revisions",
+      "COLUMN_NAME": "objection_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_revisions",
+      "COLUMN_NAME": "version",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_revisions",
+      "COLUMN_NAME": "body_html",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "mediumtext",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_revisions",
+      "COLUMN_NAME": "note",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "text",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_revisions",
+      "COLUMN_NAME": "actor_id",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_revisions",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "orgs",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "orgs",
+      "COLUMN_NAME": "name",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "orgs",
+      "COLUMN_NAME": "type",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "orgs",
+      "COLUMN_NAME": "credit_code",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "char(18)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "orgs",
+      "COLUMN_NAME": "contact",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(50)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "orgs",
+      "COLUMN_NAME": "phone",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "orgs",
+      "COLUMN_NAME": "status",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'active'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "orgs",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_enterprises",
+      "COLUMN_NAME": "org_id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_enterprises",
+      "COLUMN_NAME": "enterprise_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_enterprises",
+      "COLUMN_NAME": "perm",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(10)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'read'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_enterprises",
+      "COLUMN_NAME": "note",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_enterprises",
+      "COLUMN_NAME": "granted_at",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_enterprises",
+      "COLUMN_NAME": "revoked_at",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_members",
+      "COLUMN_NAME": "org_id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_members",
+      "COLUMN_NAME": "user_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_members",
+      "COLUMN_NAME": "role",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'member'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_members",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "policies",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "policies",
+      "COLUMN_NAME": "title",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(300)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "policies",
+      "COLUMN_NAME": "issuer",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "policies",
+      "COLUMN_NAME": "published_at",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "policies",
+      "COLUMN_NAME": "effective_at",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "policies",
+      "COLUMN_NAME": "level",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "policies",
+      "COLUMN_NAME": "summary",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "text",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "policies",
+      "COLUMN_NAME": "url",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "policies",
+      "COLUMN_NAME": "tags",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "char(36)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "COLUMN_NAME": "certificate_code",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "COLUMN_NAME": "purpose",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "COLUMN_NAME": "recipient",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "COLUMN_NAME": "token_hash",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "UNI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "COLUMN_NAME": "expires_ts",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "bigint(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "COLUMN_NAME": "revoked_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "COLUMN_NAME": "created_by",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 10,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_params",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_params",
+      "COLUMN_NAME": "pkey",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(60)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "UNI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_params",
+      "COLUMN_NAME": "pvalue",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_params",
+      "COLUMN_NAME": "note",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(300)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_params",
+      "COLUMN_NAME": "updated_at",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "on update current_timestamp()",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "bigint(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "rule_key",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(80)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "version",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "title",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "case_type",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "level",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "authority_match",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "varchar(100)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "source_url",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "effective_from",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "effective_until",
+      "ORDINAL_POSITION": 10,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "review_status",
+      "ORDINAL_POSITION": 11,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'draft'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "review_note",
+      "ORDINAL_POSITION": 12,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "definition",
+      "ORDINAL_POSITION": 13,
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "created_by",
+      "ORDINAL_POSITION": 14,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 15,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "bigint(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "kind",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(32)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "state",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'queued'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "next_at",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "interval_hours",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "24",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "attempts",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "lease_until",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "lease_token",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "char(36)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "last_error",
+      "ORDINAL_POSITION": 10,
+      "COLUMN_TYPE": "varchar(300)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "COLUMN_NAME": "last_run_at",
+      "ORDINAL_POSITION": 11,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "sessions",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "sessions",
+      "COLUMN_NAME": "user_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "sessions",
+      "COLUMN_NAME": "token",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "char(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "UNI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "sessions",
+      "COLUMN_NAME": "expires_at",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "sessions",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "sessions",
+      "COLUMN_NAME": "ip",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "sessions",
+      "COLUMN_NAME": "ua",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "varchar(300)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "stage_events",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "bigint(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "stage_events",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "stage_events",
+      "COLUMN_NAME": "from_stage",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "stage_events",
+      "COLUMN_NAME": "to_stage",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "stage_events",
+      "COLUMN_NAME": "actor_id",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "stage_events",
+      "COLUMN_NAME": "note",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "stage_events",
+      "COLUMN_NAME": "evidence_id",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "char(36)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "stage_events",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "subscriptions",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "subscriptions",
+      "COLUMN_NAME": "subject_type",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "subscriptions",
+      "COLUMN_NAME": "subject_id",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "subscriptions",
+      "COLUMN_NAME": "plan",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(40)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "subscriptions",
+      "COLUMN_NAME": "quota",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "subscriptions",
+      "COLUMN_NAME": "used",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "subscriptions",
+      "COLUMN_NAME": "start_at",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "subscriptions",
+      "COLUMN_NAME": "end_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "subscriptions",
+      "COLUMN_NAME": "status",
+      "ORDINAL_POSITION": 9,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "'active'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "tasks",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "tasks",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "tasks",
+      "COLUMN_NAME": "name",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "tasks",
+      "COLUMN_NAME": "owner",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(50)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "tasks",
+      "COLUMN_NAME": "due_date",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "tasks",
+      "COLUMN_NAME": "status",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'todo'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "tasks",
+      "COLUMN_NAME": "depends_on",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "tasks",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "task_events",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "bigint(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "task_events",
+      "COLUMN_NAME": "task_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "task_events",
+      "COLUMN_NAME": "actor_id",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "task_events",
+      "COLUMN_NAME": "note",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "task_events",
+      "COLUMN_NAME": "evidence_id",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "char(36)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "task_events",
+      "COLUMN_NAME": "changes",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "longtext",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "task_events",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "timeline_events",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "timeline_events",
+      "COLUMN_NAME": "case_id",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(64)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "timeline_events",
+      "COLUMN_NAME": "at",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "timeline_events",
+      "COLUMN_NAME": "actor",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(50)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "timeline_events",
+      "COLUMN_NAME": "action",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(100)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "timeline_events",
+      "COLUMN_NAME": "detail",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(500)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "usage_logs",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "usage_logs",
+      "COLUMN_NAME": "subject_type",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "usage_logs",
+      "COLUMN_NAME": "subject_id",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "usage_logs",
+      "COLUMN_NAME": "kind",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "usage_logs",
+      "COLUMN_NAME": "tokens_in",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "usage_logs",
+      "COLUMN_NAME": "tokens_out",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "usage_logs",
+      "COLUMN_NAME": "cost",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "decimal(10,4)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "0.0000",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "usage_logs",
+      "COLUMN_NAME": "at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "id",
+      "ORDINAL_POSITION": 1,
+      "COLUMN_TYPE": "int(11)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "phone",
+      "ORDINAL_POSITION": 2,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "UNI",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "pwd_hash",
+      "ORDINAL_POSITION": 3,
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "name",
+      "ORDINAL_POSITION": 4,
+      "COLUMN_TYPE": "varchar(50)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "role",
+      "ORDINAL_POSITION": 5,
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'enterprise'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "status",
+      "ORDINAL_POSITION": 6,
+      "COLUMN_TYPE": "varchar(16)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "'active'",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "created_at",
+      "ORDINAL_POSITION": 7,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "current_timestamp()",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "last_login_at",
+      "ORDINAL_POSITION": 8,
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": "NULL",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "COLUMN_COMMENT": ""
+    }
+  ],
+  "schema_tables": [
+    {
+      "TABLE_NAME": "alerts",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "audit_logs",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cases",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_channels",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "case_docs",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificates",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "certificate_snapshots",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "cert_scans",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_configs",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "channel_snapshots",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "checks_runs",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_notices",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "compliance_subscriptions",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnoses",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "diagnosis_snapshots",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_checks",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_templates",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "doc_versions",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprises",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "enterprise_members",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "evidence_files",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "kb_articles",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "knowledge_entries",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "notice_receipts",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objections",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_events",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_followups",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "objection_revisions",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "orgs",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_enterprises",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "org_members",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "policies",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "purpose_shares",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_params",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "rule_versions",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "scheduled_jobs",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "sessions",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "stage_events",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "subscriptions",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "tasks",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "task_events",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "timeline_events",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "usage_logs",
+      "TABLE_COMMENT": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "TABLE_COMMENT": ""
+    }
+  ]
+}

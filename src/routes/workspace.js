@@ -13,6 +13,7 @@ const enterprises = require('../services/enterprises.js');
 const cases = require('../services/cases.js');
 const caseTypes = require('../services/case-types.js');
 const validation = require('../services/validation.js');
+const legal = require('../services/legal.js');
 
 async function guard(user, caseId) {
   const k = await db.one('SELECT * FROM cases WHERE id = ?', [caseId]);
@@ -107,7 +108,12 @@ module.exports = function register(r) {
     return { docs: Object.entries(built.docs).map(([key, d]) => ({ key, ...d })) };
   }, { auth: true });
 
-  // 保存定稿（AI 润色或手改）
+  // 保存草稿与确认定稿是两个独立操作。
+  r.post('/api/cases/:id/docs/:key/finalize', async ({ user, params, body }) => {
+    await guardWrite(user, params.id);
+    const built = await docs.finalize(params.id, params.key, body.version, user.id);
+    return { docs: Object.entries(built.docs).map(([key,d]) => ({key,...d})) };
+  }, { auth: true });
   r.get('/api/cases/:id/docs/:key/versions', async ({ user, params }) => {
     await guard(user, params.id);
     return { items: await docs.versions(params.id, params.key) };
@@ -150,8 +156,10 @@ module.exports = function register(r) {
       if (f[key] && kase.listed_date && f[key] < kase.listed_date) throw new Error('履行、整改或移出日期不能早于列入日期');
     }
     await db.tx(async t => {
-      await t.run('UPDATE cases SET obligation_at=?,rectified=?,rectify_at=?,no_new_similar=?,removed_date=?,fine_amount=?,discretion=?,facts_updated_at=NOW() WHERE id=?',
-        [f.obligation_at,f.rectified,f.rectify_at,f.no_new_similar,f.removed_date,f.fine_amount,f.discretion,params.id]);
+      await t.run(`UPDATE cases SET obligation_at=?,rectified=?,rectify_at=?,no_new_similar=?,removed_date=?,fine_amount=?,discretion=?,
+        penalty_type=?,key_field=?,restrict_until=?,abnormal_reason=?,decision_date=?,publicity_date=?,start_basis=?,facts_updated_at=NOW() WHERE id=?`,
+        [f.obligation_at,f.rectified,f.rectify_at,f.no_new_similar,f.removed_date,f.fine_amount,f.discretion,
+         f.penalty_type,f.key_field,f.restrict_until,f.abnormal_reason,f.decision_date,f.publicity_date,f.start_basis,params.id]);
       await t.run('INSERT INTO timeline_events (case_id, at, actor, action, detail) VALUES (?, NOW(), ?, ?, ?)',
         [params.id,user.name || '企业','更新案件事实','事实已更新，请重新诊断并核对已生成材料']);
       await t.run("INSERT INTO audit_logs (actor_id,action,target,detail,ip) VALUES (?,'facts',?,?,?)",[user.id,params.id,'更新履行/整改/裁量阶次事实',ip||null]);
@@ -159,7 +167,66 @@ module.exports = function register(r) {
     const today = new Date().toISOString().slice(0, 10);
     const fresh = await db.one('SELECT * FROM cases WHERE id = ?', [params.id]);
     const evald = await rules.evaluate(fresh, today);
-    return { case: fresh, rule: { ...evald, basis: diagnose.BASIS[kase.type] || diagnose.BASIS.penalty } };
+    return { case: fresh, rule: { ...evald, basis: (evald.basis && evald.basis.length) ? evald.basis : (evald.ruleVersion?[{law:evald.ruleVersion.title,text:evald.ruleVersion.review_note,url:evald.ruleVersion.source_url}]:[]) } };
+  }, { auth: true });
+
+  // 法规口径选项：处罚种类、经营异常原因、起算依据（前端表单共用）
+  r.get('/api/legal/options', async () => legal.options(), { auth: true });
+
+  // 记录人工核实结论：须写明依据并关联材料；字段变更后按快照自动失效
+  r.post('/api/cases/:id/verifications', async ({ user, params, body, ip }) => {
+    const kase = await guardWrite(user, params.id);
+    const scope = String(body.scope || '');
+    if (!legal.VERIFICATION_SCOPES.includes(scope)) throw new Error('请选择有效的人工核实范围');
+    const allowed = legal.VERIFICATION_CONCLUSIONS[scope] || [];
+    const conclusion = String(body.conclusion || '');
+    if (!allowed.some(x => x.code === conclusion)) throw new Error('请选择有效核实结论');
+    const note = validation.text(body.note, '核实说明', 1000, true);
+    let evidenceId = null;
+    if (body.evidence_id) {
+      const f = await db.one('SELECT id FROM evidence_files WHERE id=? AND case_id=? AND archived=0', [body.evidence_id, params.id]);
+      if (!f) throw new Error('核实依据材料不存在或已归档');
+      evidenceId = f.id;
+    }
+    // 服务端按当前登记值写入快照，避免客户端篡改后把旧结论套到新事实上
+    const clientDetail = body.detail && typeof body.detail === 'object' ? body.detail : {};
+    let detail = clientDetail;
+    if (scope === 'similar_history') {
+      const months = Number(clientDetail.months);
+      detail = { months: Number.isFinite(months) ? Math.max(0, Math.min(120, Math.round(months))) : 0 };
+    } else {
+      detail = { ...clientDetail, ...(rules.snapshotOf(kase, scope) || {}) };
+    }
+    await db.tx(async t => {
+      await t.run('INSERT INTO case_verifications (case_id,scope,conclusion,detail,note,evidence_id,created_by) VALUES (?,?,?,?,?,?,?)',
+        [params.id, scope, conclusion, JSON.stringify(detail), note, evidenceId, user.id]);
+      await t.run('INSERT INTO timeline_events (case_id,at,actor,action,detail) VALUES (?,NOW(),?,?,?)',
+        [params.id, user.name || '经办人', '记录人工核实', note]);
+      await t.run("INSERT INTO audit_logs (actor_id,action,target,detail,ip) VALUES (?,'case_verify',?,?,?)",
+        [user.id, params.id, scope + ':' + conclusion, ip || null]);
+    });
+    const fresh = await db.one('SELECT * FROM cases WHERE id=?', [params.id]);
+    const evald = await rules.evaluate(fresh, new Date().toISOString().slice(0, 10));
+    const items = await db.all('SELECT id,scope,conclusion,detail,note,evidence_id,created_at FROM case_verifications WHERE case_id=? ORDER BY id DESC LIMIT 20', [params.id]);
+    return { verifications: items, rule: evald };
+  }, { auth: true });
+
+  // 同类历史处罚对照：列出本企业其他处罚，回溯范围可调，结论须人工记录
+  r.get('/api/cases/:id/history', async ({ user, params, url }) => {
+    const kase = await guard(user, params.id);
+    const months = Math.max(0, Math.min(120, Number(url.searchParams.get('months')) || 36));
+    const base = kase.listed_date || new Date().toISOString().slice(0, 10);
+    const from = months > 0 ? rules.addMonths(base, -months) : null;
+    const items = await db.all(
+      `SELECT id,event,authority,doc_no,listed_date,level,fine_amount,penalty_type,decision_date,publicity_date
+       FROM cases WHERE enterprise_id=? AND type='penalty' AND id<>? ${from ? 'AND listed_date>=?' : ''}
+       ORDER BY listed_date DESC LIMIT 50`,
+      from ? [kase.enterprise_id, params.id, from] : [kase.enterprise_id, params.id]);
+    const verifications = await db.all("SELECT id,scope,conclusion,detail,note,evidence_id,created_at FROM case_verifications WHERE case_id=? AND scope='similar_history' ORDER BY id DESC LIMIT 10", [params.id]);
+    return {
+      months, from, items, verifications,
+      note: '回溯范围仅辅助检索；是否属于同一类违法行为须逐份对照处罚决定书，并由经办人记录核实结论。'
+    };
   }, { auth: true });
 
   // 推进案件阶段

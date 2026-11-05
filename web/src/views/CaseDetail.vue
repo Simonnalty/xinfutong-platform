@@ -27,14 +27,12 @@
             <a v-if="rule.support.channel" :href="rule.support.channel.url" target="_blank" rel="noopener noreferrer" class="tiny">{{ rule.support.channel.name }} 官方入口 →</a>
           </div>
 
-          <!-- 轻微失信：公示期满由机关停止公示，企业无需申请 -->
-          <el-alert v-if="rule.autoStopOnly" type="success" :closable="false" show-icon style="margin-bottom:16px">
-            <template #title>本情形无需申请：公示期满由作出决定的机关直接停止公示</template>
+          <!-- 无需申请：轻微失信到期停止公示；吊销证照等满三年停止公示 -->
+          <el-alert v-if="rule.autoStopOnly" type="warning" :closable="false" show-icon style="margin-bottom:16px">
+            <template #title>{{ rule.classification?.seriousCode === 'third' ? '该情形不能申请提前修复' : '该情形无需企业申请' }}</template>
+            <div class="tiny" style="line-height:2">{{ rule.classification?.text || '依《市场监督管理信用修复管理办法》第七条，仅受到警告的行政处罚信息不予公示；仅受到通报批评、仅受到较低数额罚款的，公示期满三个月由市场监督管理部门停止公示。' }}</div>
             <div class="tiny" style="line-height:2">
-              依《市场监督管理信用修复管理办法》第七条，仅受到警告的行政处罚信息不予公示；仅受到通报批评、仅受到较低数额罚款的，公示期满三个月由市场监督管理部门停止公示。
-            </div>
-            <div class="tiny" style="line-height:2">
-              按登记日期推算，预计停止公示日为 <strong>{{ rule.applyFrom || '待定' }}</strong>。企业不需要提交信用修复申请，提交了也不会被受理。
+              推算的停止公示日期为 <strong>{{ rule.applyFrom || '按起算依据待定' }}</strong>，起算依据和实际公示状态请向主管机关核实。
             </div>
             <div class="tiny" style="line-height:2">
               请到「信用中国」核对公示状态；届满仍未停止公示的，再向作出决定的机关反映，或按渠道差异生成异议草稿。
@@ -67,7 +65,7 @@
                   <div style="font-size:18px;font-weight:600">{{ rule.levelLabel }}</div>
                 </div>
                 <div>
-                  <div class="muted tiny">{{ rule.autoStopOnly ? '预计停止公示日' : '可申请修复日' }}</div>
+                  <div class="muted tiny">{{ rule.autoStopOnly ? '参考日期（待核实）' : '参考申请日期（待核实）' }}</div>
                   <div style="font-size:18px;font-weight:600" :style="{ color: rule.autoStopOnly || rule.eligible ? 'var(--ok)' : 'var(--warn)' }">
                     {{ rule.applyFrom || '待定' }}
                   </div>
@@ -100,6 +98,88 @@
                 <template #title>当前阻塞项（{{ rule.blockers.length }}）</template>
                 <div v-for="(b, i) in rule.blockers" :key="i" style="font-size:13px;line-height:1.9">· {{ b.text }}</div>
               </el-alert>
+            </div>
+          </div>
+
+          <!-- 严重处罚细分 / 经营异常列入原因：结构化登记，未补齐前不给结论 -->
+          <div v-if="rule.classification" class="card card-pad" style="margin-top:18px">
+            <div class="card-title"><span class="bar"></span>{{ data.case.type === 'abnormal' ? '经营异常列入原因与整改对应' : '严重处罚细分核实' }}</div>
+            <div class="kv" style="display:grid;grid-template-columns:130px 1fr;gap:8px 14px;font-size:13px">
+              <template v-if="data.case.type === 'abnormal'">
+                <div class="muted">列入原因</div>
+                <div>{{ rule.classification.abnormalReasonLabel || '未登记' }}</div>
+                <div class="muted">对应整改</div>
+                <div>{{ abnormalProof || '选择列入原因后显示对应整改事项和证明材料' }}</div>
+              </template>
+              <template v-else>
+                <div class="muted">处罚种类</div>
+                <div>{{ rule.classification.penaltyTypeLabel || '未登记' }}</div>
+                <div class="muted">重点领域</div>
+                <div>{{ rule.classification.keyField == null ? '未确认' : rule.classification.keyField === 1 ? '属于重点领域' : '不属于重点领域' }}</div>
+                <div class="muted">限制期限届满日</div>
+                <div>{{ rule.classification.restrictUntil || '未登记（涉及限制经营等情形时必填）' }}</div>
+              </template>
+            </div>
+            <el-alert v-if="!rule.classification.complete" type="warning" :closable="false" show-icon style="margin-top:12px" :title="rule.classification.text" />
+            <div class="row" style="margin-top:12px">
+              <el-button size="small" @click="openFacts">登记 / 修改细分信息</el-button>
+              <el-button v-if="rule.classification.complete" size="small" type="primary" plain @click="openVerifyRecord(rule.classification.scope)">记录人工核实结论</el-button>
+            </div>
+          </div>
+
+          <!-- 日期与起算依据分开登记，历史案件不自动套用新规 -->
+          <div v-if="rule.dateInfo" class="card card-pad" style="margin-top:18px">
+            <div class="card-title"><span class="bar"></span>日期与起算依据</div>
+            <div class="kv" style="display:grid;grid-template-columns:130px 1fr;gap:8px 14px;font-size:13px">
+              <div class="muted">处罚决定日期</div><div>{{ rule.dateInfo.decisionDate || '未登记' }}</div>
+              <div class="muted">实际公示日期</div><div>{{ rule.dateInfo.publicityDate || '未登记' }}</div>
+              <div class="muted">平台登记日期</div><div>{{ rule.dateInfo.listedDate || '未登记' }}</div>
+              <div class="muted">采用的起算依据</div><div>{{ rule.dateInfo.basisLabel || '未确定' }}<span v-if="rule.dateInfo.startDate">（{{ rule.dateInfo.startDate }}）</span></div>
+            </div>
+            <el-alert v-if="rule.dateInfo.ambiguous" type="warning" :closable="false" show-icon style="margin-top:12px" title="决定日期与实际公示日期不一致，请选择最短公示期的起算依据，并记录核实结论；平台不自动取较早或较晚日期。" />
+            <el-alert v-else-if="rule.dateInfo.historical" type="warning" :closable="false" show-icon style="margin-top:12px" title="起算日期早于 107 号令生效日，历史案件须结合决定书、公示记录和当时适用的部门规定核实，平台不按新规倒推结论。" />
+            <div class="row" style="margin-top:12px"><el-button size="small" @click="openFacts">登记日期与起算依据</el-button><el-button size="small" @click="openVerifyRecord('dates')">记录日期核实结论</el-button></div>
+          </div>
+
+          <!-- 人工核实：区分「缺事实」「已登记但需核实」，核实结论关联材料并随字段变更失效 -->
+          <div v-if="rule.verification?.required?.length" class="card card-pad" style="margin-top:18px">
+            <div class="card-title"><span class="bar"></span>人工核实（{{ rule.verification.verified ? '已完成' : '待完成' }}）</div>
+            <div class="muted tiny" style="margin-bottom:10px;line-height:1.8">平台只登记结构化事实，不代替经办人对照决定书和证明材料作出判断。核实结论须写明依据；相关字段变更后，旧结论自动失效并重新提示。</div>
+            <div v-for="sc in rule.verification.required" :key="sc" class="spread" style="padding:8px 0;border-bottom:1px dashed var(--line)">
+              <span style="font-size:13px">{{ scopeLabel(sc) }}</span>
+              <div class="row">
+                <el-tag size="small" :type="rule.verification.pending.includes(sc) ? 'warning' : 'success'">{{ rule.verification.pending.includes(sc) ? '待核实' : '已记录' }}</el-tag>
+                <el-button size="small" @click="openVerifyRecord(sc)">记录结论</el-button>
+              </div>
+            </div>
+            <div v-for="v in rule.verification.latest" :key="v.id" class="muted tiny" style="padding:6px 0;line-height:1.8">· {{ fmt(v.created_at) }} {{ scopeLabel(v.scope) }}：{{ conclusionLabel(v.scope, v.conclusion) }}——{{ v.note }}</div>
+          </div>
+
+          <!-- 同类历史处罚对照：回溯范围可调，结论必须人工记录 -->
+          <div v-if="data.case.type === 'penalty'" class="card card-pad" style="margin-top:18px">
+            <div class="spread" style="margin-bottom:10px">
+              <div class="card-title" style="margin:0"><span class="bar"></span>同类历史处罚对照</div>
+              <div class="row">
+                <el-select v-model="historyMonths" size="small" style="width:130px">
+                  <el-option :value="0" label="全部历史" />
+                  <el-option :value="12" label="回溯 12 个月" />
+                  <el-option :value="24" label="回溯 24 个月" />
+                  <el-option :value="36" label="回溯 36 个月" />
+                  <el-option :value="60" label="回溯 60 个月" />
+                </el-select>
+                <el-button size="small" :loading="historyLoading" @click="loadHistory">检索</el-button>
+              </div>
+            </div>
+            <div v-if="!history" class="muted tiny" style="line-height:1.9">按本企业其他处罚记录检索，辅助判断是否属于同类再次违法；是否同类须逐份对照决定书。</div>
+            <div v-else>
+              <div class="muted tiny" style="margin-bottom:8px">回溯至 {{ history.from || '全部历史' }}，共 {{ history.items.length }} 条；{{ history.note }}</div>
+              <el-empty v-if="!history.items.length" description="回溯范围内没有其他处罚记录" :image-size="70" />
+              <div v-for="h in history.items" :key="h.id" style="padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px;line-height:1.8">
+                <div>{{ h.listed_date }} · {{ h.doc_no || '无文号' }} · {{ h.authority }}</div>
+                <div class="muted tiny">{{ h.event }}｜{{ h.level }}｜{{ h.fine_amount == null ? '罚款未登记' : h.fine_amount + ' 元' }}</div>
+              </div>
+              <div class="row" style="margin-top:10px"><el-button size="small" type="primary" plain @click="openVerifyRecord('similar_history')">记录对照结论</el-button></div>
+              <div v-for="v in history.verifications" :key="v.id" class="muted tiny" style="padding:6px 0;line-height:1.8">· {{ fmt(v.created_at) }} {{ conclusionLabel('similar_history', v.conclusion) }}——{{ v.note }}</div>
             </div>
           </div>
 
@@ -149,12 +229,19 @@
           <div class="card card-pad">
             <div class="card-title"><span class="bar"></span>{{ rule.support && !rule.support.autoJudgeable ? '材料参考清单' : '需要准备的材料' }}（{{ rule.materials.length }} 份）</div>
             <div class="muted tiny material-summary">材料完备度 {{ materialCheck?.score ?? '—' }} / 100 · {{ materialCheckLabel }}；事项办理进度 {{ data.stage?.progress ?? 0 }}%，两项指标分别反映材料和流转状态。</div>
-            <div v-for="(m, i) in rule.materials" :key="m.key" class="spread" style="padding:10px 0;border-bottom:1px dashed var(--line)">
-              <div>
-                <span class="muted mono" style="margin-right:10px">{{ String(i + 1).padStart(2, '0') }}</span>
-                <span style="font-size:14px">{{ m.title }}</span>
+            <div v-if="rule.autoStopOnly" class="muted tiny">请先核实是否属于无需申请、由机关到期停止公示的情形；此规则不生成申请材料。</div>
+            <div v-for="(m, i) in rule.materials" :key="m.key" style="padding:10px 0;border-bottom:1px dashed var(--line)">
+              <div class="spread">
+                <div>
+                  <span class="muted mono" style="margin-right:10px">{{ String(i + 1).padStart(2, '0') }}</span>
+                  <span style="font-size:14px">{{ m.title }}</span>
+                  <el-tag size="small" effect="plain" style="margin-left:8px">{{ m.categoryLabel }}</el-tag>
+                  <el-tag v-if="!m.required" size="small" type="info" effect="plain" style="margin-left:6px">条件性 / 辅助</el-tag>
+                </div>
+                <el-tag size="small" effect="plain">{{ docStatus(m.key) }}</el-tag>
               </div>
-              <el-tag size="small" effect="plain">{{ docStatus(m.key) }}</el-tag>
+              <div v-if="m.note" class="muted tiny" style="margin:4px 0 0 34px;line-height:1.8">{{ m.note }}</div>
+              <div v-if="m.condition" class="muted tiny" style="margin:2px 0 0 34px">{{ m.condition }}</div>
             </div>
           </div>
           <div class="card card-pad">
@@ -179,6 +266,7 @@
 
         <div class="card card-pad" style="margin-top:18px">
           <div class="card-title"><span class="bar"></span>风险提示</div>
+          <el-alert title="日期仅依据登记信息辅助计算；请结合决定书、官方公示日期、适用渠道和新旧规定向主管机关核实起算依据。是否属于同类再次违法，需要结合处罚文书人工确认。" type="warning" :closable="false" show-icon style="margin-bottom:10px" />
           <div v-if="rule.ruleVersion" class="card card-pad" style="margin-bottom:12px">当前匹配：{{rule.ruleVersion.title}} · v{{rule.ruleVersion.version}}<p class="muted">{{rule.ruleVersion.authority_match}} · {{rule.ruleVersion.effective_from}} 起生效</p><a :href="rule.ruleVersion.source_url" target="_blank" rel="noopener noreferrer">查看规则来源</a></div>
           <el-collapse v-if="data.diagnosisHistory?.length" style="margin-bottom:14px"><el-collapse-item title="历史诊断快照（保留当时事实及规则）"><div v-for="h in data.diagnosisHistory" :key="h.id" style="margin:10px 0"><strong>{{h.created_at}}</strong><pre style="white-space:pre-wrap;overflow-wrap:anywhere">{{JSON.stringify(h.content,null,2)}}</pre><span class="muted tiny">{{h.digest}}</span></div></el-collapse-item></el-collapse>
           <el-alert v-for="(w, i) in rule.warnings" :key="i" :title="w.text" :type="w.level === 'bad' ? 'error' : w.level" :closable="false" show-icon style="margin-bottom:10px" />
@@ -196,13 +284,16 @@
 
       <!-- 材料 -->
       <el-tab-pane label="材料工坊" name="docs">
-        <div class="doc-layout">
+        <el-alert v-if="rule.autoStopOnly" title="该情形无需申请或不能申请提前修复，暂不生成申请文书；原已保存材料仍保留。" type="warning" :closable="false" show-icon />
+        <div v-else class="doc-layout">
           <div class="card card-pad doc-list">
             <div class="card-title"><span class="bar"></span>材料清单</div>
             <div v-for="d in docs" :key="d.key" class="doc-item" :class="{ active: d.key === activeDoc }" @click="activeDoc = d.key">
               <div class="t">{{ d.title }}</div>
+              <div class="s">{{ materialCategory(d.key) }}</div>
               <div class="s">
-                <span v-if="d.status === 'template'">模板 · 未定稿</span>
+                <span v-if="d.finalized">已定稿 · 版本 {{ d.version }}</span>
+                <span v-else-if="d.status === 'template' && !d.version">模板 · 未定稿</span>
                 <span v-else-if="d.status === 'ai'">AI 润色 · 已保存草稿</span>
                 <span v-else>手工修改 · 已保存草稿</span>
               </div>
@@ -213,6 +304,7 @@
           </div>
 
           <div class="card card-pad">
+            <el-alert title="模板仅供参考；请根据本企业决定书和主管机关要求填写真实事实，证明材料须另行提供。" type="info" :closable="false" style="margin-bottom:14px" />
             <div class="spread" style="margin-bottom:14px">
               <div class="card-title" style="margin:0"><span class="bar"></span>{{ currentDoc?.title }}</div>
               <div class="row">
@@ -245,7 +337,7 @@
           </div>
           <el-progress :percentage="data.stage?.progress || 0" :stroke-width="10" />
           <div class="muted tiny" style="margin-top:8px">
-            阶段只能按流程推进，跳步会被服务端拒绝；提交需满足诊断条件，提交、受理与退回需关联实际回执；修复需官方结果材料及移出日期。
+            请点击上方按钮登记下一阶段。20% → 材料就绪45%：所需文书校验并确认定稿，在“证据附件”上传主体资格文件；已提交65%、审核中80%需关联实际回执；已修复100%需核录官方结果并登记移出日期。
           </div>
         </div>
         <div class="case-section-grid" style="--case-columns:1.3fr 1fr">
@@ -385,10 +477,45 @@
         <el-date-picker v-model="factForm.rectify_at" type="date" value-format="YYYY-MM-DD" placeholder="整改复查通过日期" style="width:100%" />
       </el-form-item>
       <el-form-item label="官方登记移出日期"><el-date-picker v-model="factForm.removed_date" type="date" value-format="YYYY-MM-DD" placeholder="以官方修复结果材料为准" style="width:100%" /></el-form-item>
-      <el-form-item label="近12个月无新增同类">
+      <template v-if="data?.case?.type === 'penalty'">
+        <el-form-item label="处罚种类">
+          <el-select v-model="factForm.penalty_type" placeholder="未登记（待核实）" style="width:100%">
+            <el-option v-for="t in legalOptions.penaltyTypes" :key="t.code" :value="t.code" :label="`${t.label}（${t.hint}）`" />
+            <el-option :value="null" label="未登记（待核实）" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否重点领域">
+          <el-select v-model="factForm.key_field" placeholder="未确认" style="width:100%">
+            <el-option :value="1" label="属于重点领域（食品、药品、医疗器械、化妆品、特种设备、重点工业产品）" />
+            <el-option :value="0" label="不属于重点领域" />
+            <el-option :value="null" label="未确认" />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="restrictNeeded" label="限制期限届满日">
+          <el-date-picker v-model="factForm.restrict_until" type="date" value-format="YYYY-MM-DD" placeholder="决定书载明的限制期限届满日" style="width:100%" />
+        </el-form-item>
+      </template>
+      <template v-if="data?.case?.type === 'abnormal'">
+        <el-form-item label="列入原因">
+          <el-select v-model="factForm.abnormal_reason" placeholder="未登记（待核实）" style="width:100%">
+            <el-option v-for="r in legalOptions.abnormalReasons" :key="r.code" :value="r.code" :label="r.label" />
+            <el-option :value="null" label="未登记（待核实）" />
+          </el-select>
+        </el-form-item>
+        <div v-if="abnormalProof" class="muted tiny" style="line-height:1.8;margin:-6px 0 14px 150px">对应整改与证明：{{ abnormalProof }}</div>
+      </template>
+      <el-form-item label="处罚决定日期"><el-date-picker v-model="factForm.decision_date" type="date" value-format="YYYY-MM-DD" placeholder="决定书载明日期" style="width:100%" /></el-form-item>
+      <el-form-item label="实际公示日期"><el-date-picker v-model="factForm.publicity_date" type="date" value-format="YYYY-MM-DD" placeholder="以官方公示页为准" style="width:100%" /></el-form-item>
+      <el-form-item label="最短公示期起算依据">
+        <el-select v-model="factForm.start_basis" placeholder="未选择（按已登记日期辅助判断）" style="width:100%">
+          <el-option v-for="b in legalOptions.dateBases" :key="b.code" :value="b.code" :label="`${b.label}：${b.hint}`" />
+          <el-option :value="null" label="未选择（按已登记日期辅助判断）" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="同类再次处罚情况">
         <el-select v-model="factForm.no_new_similar" placeholder="未登记" style="width:100%">
-          <el-option :value="1" label="无新增（符合）" />
-          <el-option :value="0" label="有新增（不符合）" />
+          <el-option :value="1" label="人工核实无同类再次处罚" />
+          <el-option :value="0" label="人工核实存在同类再次处罚" />
           <el-option :value="null" label="未核查（待确认）" />
         </el-select>
       </el-form-item>
@@ -396,6 +523,40 @@
     <template #footer>
       <el-button @click="factsVisible = false">取消</el-button>
       <el-button type="primary" :loading="savingFacts" @click="saveFacts">保存并重新诊断</el-button>
+    </template>
+  </el-dialog>
+  <!-- 人工核实结论：须写明依据；后端按快照比对，字段变更后自动失效 -->
+  <el-dialog v-model="verifyVisible" title="记录人工核实结论" width="560px">
+    <el-alert type="warning" :closable="false" show-icon style="margin-bottom:14px"
+      title="平台不代替经办人判断。请对照处罚决定书、公示记录和证明材料后填写，并写明核实依据；结论会作为诊断依据留痕。" />
+    <el-form label-width="120px">
+      <el-form-item label="核实范围"><el-input :model-value="scopeLabel(verifyForm.scope)" disabled /></el-form-item>
+      <el-form-item label="核实结论">
+        <el-select v-model="verifyForm.conclusion" placeholder="请选择" style="width:100%">
+          <el-option v-for="c in verifyConclusions" :key="c.code" :value="c.code" :label="c.label" />
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="verifyForm.scope === 'similar_history'" label="回溯范围">
+        <el-select v-model="verifyForm.months" style="width:100%">
+          <el-option :value="0" label="全部历史处罚" />
+          <el-option :value="12" label="回溯 12 个月" />
+          <el-option :value="24" label="回溯 24 个月" />
+          <el-option :value="36" label="回溯 36 个月" />
+          <el-option :value="60" label="回溯 60 个月" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="依据材料">
+        <el-select v-model="verifyForm.evidence_id" clearable placeholder="可选：关联已上传的决定书或证明" style="width:100%">
+          <el-option v-for="f in verifyEvidence" :key="f.id" :value="f.id" :label="`${f.filename}（${f.kind}）`" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="核实说明">
+        <el-input v-model="verifyForm.note" type="textarea" :rows="4" maxlength="1000" show-word-limit placeholder="写明对照了哪份决定书、哪段公示记录，结论如何得出" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="verifyVisible = false">取消</el-button>
+      <el-button type="primary" :loading="verifySaving" @click="saveVerify">保存核实结论</el-button>
     </template>
   </el-dialog>
 </template>
@@ -438,18 +599,33 @@ const caseId = computed(() => route.params.id)
 const rule = computed(() => data.value?.rule || { conditions: [], materials: [], basis: [], warnings: [], score: 0 })
 
 const statusText = computed(() => {
-  // 轻微失信是「到期由机关停止公示」，不需要企业申请，不能再显示「可申请」
-  if (rule.value.autoStopOnly) return rule.value.eligible || rule.value.applyFrom ? '无需申请' : '待核实'
-  return {
-    needs_review:'待复核适用规则', eligible: '可申请', not_yet: `还需 ${rule.value.waitDays || 0} 天`,
+  const map = {
+    needs_review:'待复核适用规则', needs_verification:'待人工核实', auto_stop: rule.value.noPublicity ? '不予公示，无需办理' : '无需申请，到期停止公示',
+    eligible: '可申请', not_yet: `还需 ${rule.value.waitDays || 0} 天`,
     pending_facts: '待补充事实', blocked: '暂不符合'
-  }[rule.value.status] || (rule.value.eligible ? '可申请' : '待确认')
+  }
+  return map[rule.value.status] || (rule.value.eligible ? '可申请' : '待确认')
 })
 
 // —— 补充事实
 const factsVisible = ref(false)
 const savingFacts = ref(false)
-const factForm = ref({ obligation_at: '', rectified: null, rectify_at: '', no_new_similar: null, removed_date: '', fine_amount: '', discretion: null })
+const factForm = ref({ obligation_at: '', rectified: null, rectify_at: '', no_new_similar: null, removed_date: '', fine_amount: '', discretion: null,
+  penalty_type: null, key_field: null, restrict_until: '', abnormal_reason: null, decision_date: '', publicity_date: '', start_basis: null })
+// 法规口径选项由后端字典提供，前端不复制条文
+const legalOptions = ref({ penaltyTypes: [], keyFields: [], abnormalReasons: [], dateBases: [], verificationConclusions: {} })
+const restrictNeeded = computed(() => (legalOptions.value.penaltyTypes || []).some(t => t.code === factForm.value.penalty_type && t.group === 'second'))
+const abnormalProof = computed(() => {
+  const reason = factForm.value.abnormal_reason || data.value?.case?.abnormal_reason
+  const r = (legalOptions.value.abnormalReasons || []).find(x => x.code === reason)
+  return r ? `${r.evidenceLabel}（${r.proof}）；${r.rule}` : ''
+})
+const scopeLabel = sc => ({ penalty_kind: '处罚种类与限制期限', abnormal_reason: '经营异常列入原因与整改证明', similar_history: '同类历史处罚对照', dates: '日期与起算依据' }[sc] || sc)
+function conclusionLabel(scope, code) {
+  const list = (legalOptions.value.verificationConclusions || {})[scope] || []
+  return (list.find(c => c.code === code) || {}).label || code
+}
+const verifyConclusions = computed(() => (legalOptions.value.verificationConclusions || {})[verifyForm.value.scope] || [])
 
 function openFacts() {
   const c = data.value?.case || {}
@@ -460,7 +636,14 @@ function openFacts() {
     no_new_similar: c.no_new_similar === 1 ? 1 : c.no_new_similar === 0 ? 0 : null,
     removed_date:c.removed_date||'',
     fine_amount: c.fine_amount == null ? '' : String(Number(c.fine_amount)),
-    discretion: c.discretion || null
+    discretion: c.discretion || null,
+    penalty_type: c.penalty_type || null,
+    key_field: c.key_field === 1 ? 1 : c.key_field === 0 ? 0 : null,
+    restrict_until: c.restrict_until || '',
+    abnormal_reason: c.abnormal_reason || null,
+    decision_date: c.decision_date || '',
+    publicity_date: c.publicity_date || '',
+    start_basis: c.start_basis || null
   }
   factsVisible.value = true
 }
@@ -473,6 +656,47 @@ async function saveFacts() {
     factsVisible.value = false
     await reload()
   } catch (e) { ElMessage.error(e.message) } finally { savingFacts.value = false }
+}
+
+// —— 人工核实与历史对照
+const verifyVisible = ref(false)
+const verifySaving = ref(false)
+const verifyForm = ref({ scope: '', conclusion: '', note: '', evidence_id: null, months: 36 })
+const verifyEvidence = ref([])
+const history = ref(null)
+const historyMonths = ref(36)
+const historyLoading = ref(false)
+
+async function openVerifyRecord(scope) {
+  if (!scope) return
+  verifyForm.value = { scope, conclusion: '', note: '', evidence_id: null, months: historyMonths.value || 36 }
+  try { verifyEvidence.value = (await api.evidence(caseId.value)).items.filter(f => !f.archived) } catch { verifyEvidence.value = [] }
+  verifyVisible.value = true
+}
+
+async function saveVerify() {
+  verifySaving.value = true
+  try {
+    const body = {
+      scope: verifyForm.value.scope,
+      conclusion: verifyForm.value.conclusion,
+      note: verifyForm.value.note,
+      evidence_id: verifyForm.value.evidence_id || null,
+      detail: verifyForm.value.scope === 'similar_history' ? { months: Number(verifyForm.value.months) || 0 } : {}
+    }
+    const r = await api.verify(caseId.value, body)
+    ElMessage.success(r.rule?.verification?.pending?.length ? '核实结论已记录，仍有待核实事项' : '核实结论已记录，诊断已更新')
+    verifyVisible.value = false
+    await reload()
+    if (history.value) await loadHistory()
+  } catch (e) { ElMessage.error(e.message) } finally { verifySaving.value = false }
+}
+
+async function loadHistory() {
+  historyLoading.value = true
+  try { history.value = await api.history(caseId.value, historyMonths.value) }
+  catch (e) { ElMessage.error(e.message) }
+  finally { historyLoading.value = false }
 }
 
 // —— 阶段推进
@@ -491,6 +715,12 @@ async function commitStage(to,note,evidenceId){
 function saveStage(){return commitStage(stageForm.value.to,stageForm.value.note,stageForm.value.evidence_id)}
 const docs = computed(() => data.value?.docs || [])
 const currentDoc = computed(() => docs.value.find(d => d.key === activeDoc.value))
+function materialCategory(key){
+  const m = rule.value.materials.find(x => x.key === key)
+  if (m) return `${m.categoryLabel}${m.required ? '' : '（条件性 / 辅助）'}`
+  if(key==='auth')return '条件性材料：委托时按要求提供'
+  return '辅助说明：相关事实和证明材料须另行核对'
+}
 
 const fmt = s => String(s || '').replace('T', ' ').slice(0, 16)
 const fmtc = s => String(s || '').slice(0, 10)
@@ -512,7 +742,7 @@ const docStatus = key => {
   if (!d) return '未生成'
   if (materialCheck.value?.missing?.some(item => item.doc === key)) return '待完善'
   if (materialCheck.value?.issues?.some(item => item.doc === key)) return '需校正'
-  return d.status === 'template' ? '模板' : '已校验'
+  return d.finalized ? '已定稿' : d.version ? '已保存草稿' : '模板'
 }
 
 async function reload() {
@@ -548,7 +778,7 @@ async function polish() {
     const r = await api.polish(caseId.value, activeDoc.value)
     if (!r.degraded) {
       data.value.docs = r.docs
-      ElMessage.success('AI 润色完成，已保存定稿')
+      ElMessage.success('AI 润色完成，已保存草稿，请核对后确认定稿')
     } else ElMessage.warning(r.reason || 'AI 不可用，已保留模板')
   } catch (e) { ElMessage.error(e.message) } finally { polishing.value = false }
 }
@@ -634,6 +864,7 @@ watch(tab, t => router.replace({ query: { ...route.query, tab: t } }))
 
 onMounted(async () => {
   await reload()
+  try { legalOptions.value = await api.legalOptions() } catch { /* 字典缺失时表单降级为手填 */ }
   try { aiOn.value = (await api.aiStatus()).available } catch { aiOn.value = false }
 })
 </script>
