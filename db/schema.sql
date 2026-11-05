@@ -573,3 +573,12 @@ CREATE TABLE IF NOT EXISTS authorities (
  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
  UNIQUE KEY uq_authority_name (name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 行政区划：用于按「地区 + 机关类型」检索全国机关
+CREATE TABLE IF NOT EXISTS regions (
+ code VARCHAR(12) PRIMARY KEY,
+ name VARCHAR(80) NOT NULL,
+ level TINYINT NOT NULL,
+ parent VARCHAR(12) NULL,
+ KEY idx_region_name (name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -13,9 +13,10 @@
       </div>
       <el-form-item label="事项描述（必填）"><el-input v-model="form.event" type="textarea" :rows="3" maxlength="500" show-word-limit placeholder="填写决定书或公示记录所记载的行为" /></el-form-item>
       <el-form-item label="主管机关（必填，仅可选择已核验机关）">
-        <el-select v-model="form.authority" filterable placeholder="输入关键词搜索，如「雨湖区市场监督管理」" style="width:100%" :loading="authLoading">
+        <el-select v-model="form.authority" filterable remote reserve-keyword :remote-method="searchAuthorities"
+          placeholder="输入地区或机关，如「广州 市场监督管理」" style="width:100%" :loading="authLoading">
           <el-option v-for="a in authorities" :key="a.id" :label="a.name" :value="a.name">
-            <span>{{ a.name }}</span><span class="muted tiny" style="float:right">{{ a.region }}</span>
+            <span>{{ a.name }}</span><span class="muted tiny" style="float:right">{{ a.source === 'derived' ? '待核验' : a.region }}</span>
           </el-option>
         </el-select>
         <div class="muted tiny" style="line-height:1.7;margin-top:4px">
@@ -65,11 +66,11 @@ const emit=defineEmits(['update:modelValue','saved'])
 const form=reactive({}),saving=ref(false),error=ref('')
 const types=ref([])
 const authorities=ref([]),authLoading=ref(false)
-async function loadAuthorities(){
-  if(authLoading.value||authorities.value.length)return
+async function searchAuthorities(q=''){
   authLoading.value=true
-  try{const r=await api.authorities();authorities.value=r.items||[]}catch(e){error.value=e.message}finally{authLoading.value=false}
+  try{const r=await api.authorities(q);authorities.value=r.items||[]}catch(e){error.value=e.message}finally{authLoading.value=false}
 }
+function loadAuthorities(){ searchAuthorities('') }
 const current=computed(()=>types.value.find(t=>t.code===form.type))
 const levels={minor:'轻微失信',general:'一般失信',serious:'严重失信',severe:'严重违法失信'}
 watch(()=>props.modelValue,async open=>{

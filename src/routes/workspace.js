@@ -47,7 +47,7 @@ module.exports = function register(r) {
 
   r.post('/api/enterprises', async ({user,body,ip}) => ({enterprise: await enterprises.create(user,body,ip)}), {auth:true});
   r.patch('/api/enterprises/:id', async ({user,params,body,ip}) => ({enterprise: await enterprises.update(user,Number(params.id),body,ip)}), {auth:true});
-  r.get('/api/authorities', async ({ query }) => ({ items: await authorities.list({ keyword: query?.q || '' }) }), { auth: true });
+  r.get('/api/authorities', async ({ url }) => ({ items: await authorities.list({ keyword: url.searchParams.get('q') || '' }) }), { auth: true });
   r.post('/api/enterprises/:id/cases', async ({user,params,body,ip}) => ({case: await cases.create(user,Number(params.id),body,ip)}), {auth:true});
 
   // 工作台：企业 + 案件列表 + 汇总

@@ -58,5 +58,21 @@ module.exports = async function migrate({ all, one, run }) {
     }
   }
 
+  // 行政区划：为空时从 db/regions.json 导入（省/市/县区）
+  const [{ n: regionCount }] = await all('SELECT COUNT(*) AS n FROM regions');
+  if (Number(regionCount) === 0) {
+    const regions = require('./regions.json');
+    for (const r of regions) {
+      await run('INSERT IGNORE INTO regions (code,name,level,parent) VALUES (?,?,?,?)', [r.code, r.name, r.level, r.parent]);
+    }
+  }
+
+  // 湖南省机关名录：每次启动补齐（INSERT IGNORE，幂等）
+  const hunan = require('./authorities-hunan.json');
+  for (const [name, region, level] of hunan) {
+    await run('INSERT IGNORE INTO authorities (name,region,level,credit_code,verified,note) VALUES (?,?,?,\'\',1,?)',
+      [name, region, level, '湖南省机关名录']);
+  }
+
   // 启动迁移只修改结构；账号、授权和业务事实由明确操作产生。
 };
