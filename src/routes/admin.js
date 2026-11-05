@@ -11,6 +11,17 @@ function requireAdmin(user) {
 }
 
 module.exports = function register(r) {
+  // 主管机关核验：生成候选默认 verified=0，须人工比对官方门户后确认
+  r.get('/api/admin/authorities/pending', async ({ user }) => {
+    requireAdmin(user);
+    return { items: await require('../services/authorities.js').pending() };
+  }, { auth: true });
+
+  r.post('/api/admin/authorities/:id/verify', async ({ user, params }) => {
+    requireAdmin(user);
+    return { authority: await require('../services/authorities.js').verify(Number(params.id), user.name) };
+  }, { auth: true });
+
   r.get('/api/admin/rule-versions',async({user})=>{requireAdmin(user);return {items:await db.all('SELECT * FROM rule_versions ORDER BY id DESC')}} ,{auth:true});
   r.post('/api/admin/rule-versions',async({user,body})=>{requireAdmin(user);return {rule:await require('../services/rule-versions').create(body,user)}} ,{auth:true});
 

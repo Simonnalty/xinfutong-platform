@@ -55,9 +55,18 @@ function typeName(entry, level) {
 // 直辖市按市级命名（「北京市市场监督管理局」而不是「北京市市场监督管理厅」）
 const MUNICIPAL = new Set(['北京市', '上海市', '天津市', '重庆市']);
 
-function buildName(region, entry, level) {
+function buildName(region, entry, level, parentName = '') {
   const [local, prov, tpl] = entry;
-  if (tpl) return tpl.replace('%s', region);
+  if (tpl) {
+    // 税务：区县级要带上级市名（国家税务总局济南市历下区税务局）
+    if (tpl.indexOf('税务局') >= 0 && level === 3 && parentName) {
+      return tpl.replace('%s', parentName + region);
+    }
+    // 税务：保留「市」字（国家税务总局济南市税务局）
+    if (tpl.indexOf('税务局') >= 0) return tpl.replace('%s', region);
+    // 海关：用简称（大连海关、义乌海关，去掉「市」）
+    return tpl.replace('%s', region.replace(/市$/u, ''));
+  }
   // 省级用省级通名（厅/委），市县用地方通名（局/委）
   const effLevel = MUNICIPAL.has(region) ? 2 : level;
   return region + ((effLevel === 1 && prov) ? prov : local);
@@ -87,6 +96,7 @@ async function list({ keyword = '' } = {}) {
       WHERE verified=1 AND (?='' OR name LIKE ?) ORDER BY id LIMIT 50`, [k, `%${k}%`]);
   if (!k) return curated;
 
+
   // 机构类型识别：允许用户只输入前半段（「市场监督管理」而非全称「市场监督管理局」）
   const stemOf = t => t.replace(/(局|厅|委员会|委|支队|总队)$/u, '');
   const stems = TYPES.filter(e => {
@@ -113,6 +123,22 @@ async function list({ keyword = '' } = {}) {
   const items = [...curated];
   const seen = new Set(items.map(i => i.name));
 
+
+  // 预生成的全国候选（verified=0）：按地区词查库，再按机构词过滤，省掉实时拼装
+  if (regionKw.length >= 2) {
+    const pool = await db().all(
+      `SELECT id,name,region,level,credit_code,'generated' AS source FROM authorities
+        WHERE verified=0 AND name LIKE ? ORDER BY (name=?) DESC, id LIMIT 200`, [`%${regionKw}%`, k]);
+    const want = stems.length ? stems : DEFAULTS.map(t => TYPES.find(e => e[0] === t)).filter(Boolean);
+    for (const g of pool) {
+      if (seen.has(g.name)) continue;
+      if (!want.some(([local, , tpl]) => g.name.includes(local) || (tpl && /税务局/.test(tpl) && /税务局/.test(g.name)))) continue;
+      seen.add(g.name);
+      items.push(g);
+      if (items.length >= 60) break;
+    }
+  }
+
   // 关键词被「地区 + 机构」拆开时，人工名录用地区词再匹配一次（避免把已核验机关标成待核验）
   if (stems.length && regionKw.length >= 2) {
     const more = await db().all(
@@ -129,15 +155,18 @@ async function list({ keyword = '' } = {}) {
   const useTypes = stems.length ? stems : DEFAULTS.map(t => TYPES.find(e => e[0] === t)).filter(Boolean);
   if (useTypes.length) {
     const regions = await db().all(
-      `SELECT code,name,level FROM regions
-        WHERE ?<>'' AND level<=3
-          AND (name LIKE ? OR ? LIKE CONCAT('%', name, '%'))
-          AND name NOT LIKE '%镇' AND name NOT LIKE '%乡' AND name NOT LIKE '%街道'
-        ORDER BY (name = ?) DESC, level ASC LIMIT 12`,
-      [regionKw, `%${regionKw}%`, regionKw, regionKw]);
+      `SELECT r.code,r.name,r.level,p.name AS parent_name FROM regions r
+        LEFT JOIN regions p ON r.parent=p.code
+        WHERE ?<>'' AND r.level<=3
+          AND (r.name LIKE CONCAT(?, '%') OR ? LIKE CONCAT('%', r.name, '%'))
+          AND r.name NOT LIKE '%镇' AND r.name NOT LIKE '%乡' AND r.name NOT LIKE '%街道'
+        ORDER BY (r.name = ?) DESC, r.level ASC LIMIT 12`,
+      [regionKw, regionKw, regionKw, regionKw]);
     for (const r of regions) {
       for (const entry of useTypes) {
-        const name = buildName(r.name, entry, r.level);
+        // 海关按口岸设置，只有省/市级可能有直属海关，区县不生成
+        if (entry[0] === '海关' && r.level === 3 && !/市$/u.test(r.name)) continue;
+        const name = buildName(r.name, entry, r.level, r.parent_name);
         if (seen.has(name)) continue;
         seen.add(name);
         items.push({ name, region: r.name, level: r.level === 3 ? 'county' : 'city', credit_code: '', source: 'derived' });
@@ -157,7 +186,7 @@ async function lookup(name) {
   const derived = await derive(n);
   if (derived) {
     await db().run(
-      `INSERT IGNORE INTO authorities (name,region,level,credit_code,verified,note) VALUES (?,?,?,'',1,?)`,
+      `INSERT IGNORE INTO authorities (name,region,level,credit_code,verified,note) VALUES (?,?,?,'',0,?)`,
       [derived.name, derived.region, derived.level, '按行政区划与机构命名规则生成，待人工核验']);
     return db().one('SELECT * FROM authorities WHERE name=?', [derived.name]);
   }
@@ -165,6 +194,21 @@ async function lookup(name) {
   const near = await db().all('SELECT name FROM authorities WHERE verified=1 AND name LIKE ? LIMIT 5', [`%${n.slice(-6)}%`]);
   const hint = near.length ? `；你可能想选：${near.map(r => r.name).join('、')}` : '';
   throw new Error(`「${n}」不在已核验的主管机关名录中，也无法按行政区划生成，请从名录中选择${hint}`);
+}
+
+/** 运营核验：把待核验候选确认为已核验（人工比对官方门户后调用） */
+async function verify(id, operator) {
+  const row = await db().one('SELECT * FROM authorities WHERE id=?', [id]);
+  if (!row) throw new Error('机关不存在');
+  await db().run(
+    'UPDATE authorities SET verified=1, note=?, credit_code=? WHERE id=?',
+    [`${row.note || ''}；由 ${operator || '运营'} 于 ${new Date().toISOString().slice(0, 10)} 核验`, row.credit_code || '', id]);
+  return db().one('SELECT * FROM authorities WHERE id=?', [id]);
+}
+
+/** 待核验候选（运营端工作台用） */
+async function pending(limit = 100) {
+  return db().all('SELECT id,name,region,level,note,created_at FROM authorities WHERE verified=0 ORDER BY id DESC LIMIT ?', [limit]);
 }
 
 /** 尝试把「地区名 + 机构名」还原成真实机关 */
@@ -185,4 +229,4 @@ async function derive(n) {
   return null;
 }
 
-module.exports = { list, lookup };
+module.exports = { list, lookup, verify, pending, TYPES, buildName };

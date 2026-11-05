@@ -16,7 +16,7 @@
         <el-select v-model="form.authority" filterable remote reserve-keyword :remote-method="searchAuthorities"
           placeholder="输入地区或机关，如「广州 市场监督管理」" style="width:100%" :loading="authLoading">
           <el-option v-for="a in authorities" :key="a.id" :label="a.name" :value="a.name">
-            <span>{{ a.name }}</span><span class="muted tiny" style="float:right">{{ a.source === 'derived' ? '待核验' : a.region }}</span>
+            <span>{{ a.name }}</span><span class="muted tiny" style="float:right">{{ a.source === 'curated' ? a.region : '待核验' }}</span>
           </el-option>
         </el-select>
         <div class="muted tiny" style="line-height:1.7;margin-top:4px">
