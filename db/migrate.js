@@ -95,5 +95,40 @@ module.exports = async function migrate({ all, one, run }) {
       [`名称来源：${source}`, name, '按行政区划与机构命名规则生成，待人工核验', '旧版演示候选，待核验', '湖南省机关候选，待核验']);
   }
 
+  // 区县级机关命名修正（依据 docs/qa/湖南待核验168条-名称校验-2026-11-06.md）：
+  // 种子改名只对新库生效，已部署库里的旧名要靠这里的显式映射更新。
+  const RENAMES = [
+    ['雨湖区生态环境局', '湘潭市生态环境局雨湖分局'],
+    ['雨湖区卫生健康委员会', '雨湖区卫生健康局'],
+    ['雨湖区公安局', '湘潭市公安局雨湖分局'],
+    ['国家税务总局雨湖区税务局', '国家税务总局湘潭市雨湖区税务局'],
+    ['岳塘区生态环境局', '湘潭市生态环境局岳塘分局'],
+    ['岳塘区卫生健康委员会', '岳塘区卫生健康局'],
+    ['岳塘区公安局', '湘潭市公安局岳塘分局'],
+    ['国家税务总局岳塘区税务局', '国家税务总局湘潭市岳塘区税务局'],
+    ['湘潭县生态环境局', '湘潭市生态环境局湘潭县分局'],
+    ['湘潭县卫生健康委员会', '湘潭县卫生健康局'],
+    ['湘乡市生态环境局', '湘潭市生态环境局湘乡分局'],
+    ['湘乡市卫生健康委员会', '湘乡市卫生健康局'],
+    ['韶山市生态环境局', '湘潭市生态环境局韶山分局'],
+    ['韶山市卫生健康委员会', '韶山市卫生健康局'],
+    ['岳阳市教育局', '岳阳市教育体育局'],
+    ['湘西土家族苗族自治州教育局', '湘西土家族苗族自治州教育和体育局']
+  ];
+  for (const [oldName, newName] of RENAMES) {
+    const rows = await all('SELECT id,verified FROM authorities WHERE name=?', [oldName]);
+    if (!rows.length) continue;
+    const target = await one('SELECT id FROM authorities WHERE name=?', [newName]);
+    for (const row of rows) {
+      if (!target) {
+        await run('UPDATE authorities SET name=? WHERE id=?', [newName, row.id]);
+        continue;
+      }
+      // 新旧两名并存时保留目标名，但把已核验状态带过去
+      if (row.verified) await run('UPDATE authorities SET verified=1 WHERE id=?', [target.id]);
+      await run('DELETE FROM authorities WHERE id=?', [row.id]);
+    }
+  }
+
   // 启动迁移只修改结构；账号、授权和业务事实由明确操作产生。
 };

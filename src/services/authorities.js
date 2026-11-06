@@ -55,20 +55,61 @@ function typeName(entry, level) {
 // 直辖市按市级命名（「北京市市场监督管理局」而不是「北京市市场监督管理厅」）
 const MUNICIPAL = new Set(['北京市', '上海市', '天津市', '重庆市']);
 
+// 县级区划的简称：市辖区、县级市去尾字（雨湖区→雨湖、湘乡市→湘乡），县与自治县保留（湘潭县）
+function countyShort(region) {
+  if (/旗$/u.test(region)) return region;
+  return region.replace(/(区|市)$/u, '');
+}
+
+// 教育与体育合并的市州（机构改革后官方名称，见 docs/qa/湖南待核验168条-名称校验-2026-11-06.md）
+const EDU_SPORTS = new Map([
+  ['岳阳市', '教育体育局'],
+  ['湘西土家族苗族自治州', '教育和体育局']
+]);
+
+// 管理区/开发区/新区等非标准区划：名称本身已含属地，不能再冠上级市名
+function isNonStandard(region, parentName) {
+  if (/(管理区|开发区|园区|工业区|新区|林区|矿区)$/u.test(region)) return true;
+  return !!parentName && region.length > parentName.length && region.startsWith(parentName);
+}
+
+/**
+ * 县级（区/县/县级市）机关的官方命名差异：
+ *  - 区级卫健机构称「局」，不是「委员会」；
+ *  - 生态环境、公安按市局派出机构命名（湘潭市生态环境局雨湖分局、湘潭市公安局雨湖分局），县级市分局名去「市」；
+ *  - 其余机构沿用「地区名 + 通名」。
+ */
+function countyName(region, local, parentName) {
+  if (local === '卫生健康委员会') return `${region}卫生健康局`;
+  // 管理区/开发区/新区等非标准区划自带属地，再冠市名会重复（永州市永州市回龙圩管理区）
+  const isDistrict = /区$/u.test(region) && !!parentName && /市$/u.test(parentName) && !isNonStandard(region, parentName);
+  if (local === '生态环境局' && parentName && !isNonStandard(region, parentName)) {
+    return `${parentName}生态环境局${countyShort(region)}分局`;
+  }
+  if (local === '公安局' && isDistrict) return `${parentName}公安局${countyShort(region)}分局`;
+  return '';
+}
+
 function buildName(region, entry, level, parentName = '') {
   const [local, prov, tpl] = entry;
   if (tpl) {
-    // 税务：区县级要带上级市名（国家税务总局济南市历下区税务局）
-    if (tpl.indexOf('税务局') >= 0 && level === 3 && parentName) {
+    // 税务：区级冠上级市名（国家税务总局湘潭市雨湖区税务局）；县与县级市不冠（国家税务总局湘潭县税务局）
+    if (tpl.indexOf('税务局') >= 0 && level === 3 && parentName && /区$/u.test(region) && !isNonStandard(region, parentName)) {
       return tpl.replace('%s', parentName + region);
     }
-    // 税务：保留「市」字（国家税务总局济南市税务局）
+    // 税务：保留「市」字（国家税务总局湘潭市税务局）
     if (tpl.indexOf('税务局') >= 0) return tpl.replace('%s', region);
     // 海关：用简称（大连海关、义乌海关，去掉「市」）
     return tpl.replace('%s', region.replace(/市$/u, ''));
   }
   // 省级用省级通名（厅/委），市县用地方通名（局/委）
   const effLevel = MUNICIPAL.has(region) ? 2 : level;
+  if (effLevel === 3) {
+    const renamed = countyName(region, local, parentName);
+    if (renamed) return renamed;
+  }
+  const eduSports = EDU_SPORTS.get(region);
+  if (local === '教育局' && eduSports && effLevel !== 1) return region + eduSports;
   return region + ((effLevel === 1 && prov) ? prov : local);
 }
 
