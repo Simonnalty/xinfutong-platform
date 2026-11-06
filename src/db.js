@@ -75,6 +75,22 @@ async function tx(fn) {
   }
 }
 
+
+/** 执行 db/ 下的大段 SQL 种子（规则版本、合规知识库）。表为空时才执行，幂等。 */
+async function runSqlSeed(file, table) {
+  const conn = await mysql.createConnection({ ...config.db, charset: 'utf8mb4', dateStrings: true, multipleStatements: true });
+  try {
+    const sqlCount = 'SELECT COUNT(*) AS n FROM `' + table + '`';
+    const [{ n }] = (await conn.query(sqlCount))[0];
+    if (Number(n) > 0) return false;
+    const sql = fs.readFileSync(path.join(__dirname, '..', 'db', file), 'utf8');
+    await conn.query(sql);
+    return true;
+  } finally {
+    await conn.end();
+  }
+}
+
 let readyPromise = null;
 
 function ready() {
@@ -84,10 +100,14 @@ function ready() {
       await p.query(`CREATE DATABASE IF NOT EXISTS \`${config.db.database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
       await ensureSchema(p);
       const [{ n }] = (await p.query('SELECT COUNT(*) AS n FROM enterprises'))[0];
-      if (Number(n) === 0) {
+      if (Number(n) === 0 && config.demoSeed) {
         const seed = require('../db/seed.js');
         await seed({ all, one, run });
       }
+      await require('../db/catalog.js')({all,one,run});
+      // 法规规则版本与合规知识库是独立 SQL 种子，表为空时导入
+      await runSqlSeed('seed-rules.sql', 'rule_versions');
+      await runSqlSeed('seed-knowledge.sql', 'knowledge_entries');
       await require('../db/migrate.js')({ all, one, run });
     })().catch(err => { readyPromise = null; throw err; });
   }

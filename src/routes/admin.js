@@ -11,6 +11,20 @@ function requireAdmin(user) {
 }
 
 module.exports = function register(r) {
+  // 主管机关核验：生成候选默认 verified=0，须人工比对官方门户后确认
+  r.get('/api/admin/authorities/pending', async ({ user }) => {
+    requireAdmin(user);
+    return { items: await require('../services/authorities.js').pending() };
+  }, { auth: true });
+
+  r.post('/api/admin/authorities/:id/verify', async ({ user, params }) => {
+    requireAdmin(user);
+    return { authority: await require('../services/authorities.js').verify(Number(params.id), user.name) };
+  }, { auth: true });
+
+  r.get('/api/admin/rule-versions',async({user})=>{requireAdmin(user);return {items:await db.all('SELECT * FROM rule_versions ORDER BY id DESC')}} ,{auth:true});
+  r.post('/api/admin/rule-versions',async({user,body})=>{requireAdmin(user);return {rule:await require('../services/rule-versions').create(body,user)}} ,{auth:true});
+
   r.get('/api/admin/rules', async ({ user }) => {
     requireAdmin(user);
     return { items: await db.all('SELECT * FROM rule_params ORDER BY id') };
@@ -18,16 +32,12 @@ module.exports = function register(r) {
 
   r.put('/api/admin/rules/:key', async ({ user, params, body, ip }) => {
     requireAdmin(user);
+    if(!Number.isInteger(Number(body.value))||Number(body.value)<0||Number(body.value)>120)throw new Error('参数须为 0 至 120 的整数');
     await db.run('UPDATE rule_params SET pvalue = ? WHERE pkey = ?', [String(body.value), params.key]);
     rules.invalidate();
     await auth.audit(user.id, 'rule_update', params.key, String(body.value), ip);
     return { items: await db.all('SELECT * FROM rule_params ORDER BY id') };
   }, { auth: true });
-
-  r.get('/api/kb', async () => ({
-    policies: await db.all('SELECT * FROM policies ORDER BY published_at DESC'),
-    articles: await db.all("SELECT * FROM kb_articles WHERE status = 'published' ORDER BY id")
-  }), { auth: true });
 
   r.get('/api/admin/audit', async ({ user, url }) => {
     requireAdmin(user);

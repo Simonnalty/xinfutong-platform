@@ -5,7 +5,7 @@
  */
 const db = require('../db.js');
 const rules = require('./rules.js');
-const { sha256 } = require('../crypto.js');
+const { sha256,stable } = require('../crypto.js');
 
 const BASIS = {
   abnormal: [
@@ -23,17 +23,23 @@ const BASIS = {
 async function run(caseId) {
   const kase = await db.one('SELECT * FROM cases WHERE id = ?', [caseId]);
   if (!kase) throw new Error('案件不存在');
-  const ent = await db.one('SELECT * FROM enterprises WHERE id = ?', [kase.enterprise_id]);
+
   const today = new Date().toISOString().slice(0, 10);
   const ev = await rules.evaluate(kase, today);
 
   const warnings = [];
   for (const b of ev.blockers) {
-    warnings.push({ level: b.kind === 'unmet' ? 'bad' : b.kind === 'unknown' ? 'warn' : 'warn', text: b.text });
+    warnings.push({ level: b.kind === 'unmet' || b.kind === 'level_conflict' ? 'bad' : b.kind === 'level_unknown' ? 'warn' : b.kind === 'unknown' ? 'warn' : 'warn', text: b.text });
   }
-  if (ev.eligible) warnings.push({ level: 'info', text: `三项条件均已满足，${ev.applyFrom} 起可提交申请，法定办理时限 ${ev.reviewDays} 个工作日。` });
-  if (kase.type === 'penalty') warnings.push({ level: 'info', text: '行政处罚类修复需附缴款凭证与整改复查意见，缺一将被退回。' });
-  warnings.push({ level: 'info', text: '信用修复不收取任何费用，任何声称「内部渠道包过」的均为诈骗。' });
+  // 轻微失信：公示期满由机关停止公示，不需要企业申请。
+  // 这里必须把「无需申请」讲明白，否则等于让企业去做一件法律上不必做的事。
+  if (ev.autoStopOnly) {
+    warnings.push({ level: 'warn', text: `如经核实属于仅受通报批评或仅受较低数额罚款的情形，公示期满三个月由机关停止公示，无需申请；仅受警告的行政处罚信息不予公示。请核对处罚种类、公示状态及适用规定。${ev.applyFrom ? `按登记日期推算参考日期 ${ev.applyFrom}，起算依据尚须核实。` : ''}` });
+  } else if (ev.eligible) {
+    warnings.push({ level: 'info', text: `三项条件均已满足，${ev.applyFrom} 起可提交申请，规则配置办理参考时限 ${ev.reviewDays} 个工作日（以受理机关告知为准）。` });
+  }
+  if (kase.type === 'penalty') warnings.push({ level: 'info', text: '请按受理机关要求准备履行及整改证明，材料清单须结合具体事项核对。' });
+  warnings.push({ level: 'info', text: '请通过官方渠道核实办理要求，警惕声称「内部渠道包过」的中介承诺。' });
 
   const result = {
     caseId,
@@ -46,7 +52,17 @@ async function run(caseId) {
     waitDays: ev.waitDays,
     conditions: ev.conditions,
     materials: ev.materials,
-    basis: BASIS[kase.type] || BASIS.penalty,
+    levelCheck: ev.levelCheck || null,
+    autoStopOnly: Boolean(ev.autoStopOnly),
+    noPublicity: Boolean(ev.noPublicity),
+    classification: ev.classification || null,
+    dateInfo: ev.dateInfo || null,
+    verification: ev.verification || null,
+    requiredEvidence: ev.requiredEvidence || [],
+    otherPenalties: ev.otherPenalties || 0,
+    rejectReasons: ev.rejectReasons || [],
+    basis: (ev.basis && ev.basis.length) ? ev.basis : (ev.ruleVersion?[{law:ev.ruleVersion.title,text:ev.ruleVersion.review_note,url:ev.ruleVersion.source_url}]:[]),
+    ruleVersion:ev.ruleVersion,
     warnings,
     score: ev.score,
     reviewDays: ev.reviewDays,
@@ -54,9 +70,12 @@ async function run(caseId) {
     fingerprint: sha256([caseId, ev.level.code, ev.applyFrom || '', ev.score, today].join('|')).slice(0, 16)
   };
 
-  await db.run(`INSERT INTO diagnoses (case_id, level, apply_from, conditions, basis, score) VALUES (?,?,?,?,?,?)`,
-    [caseId, ev.level.code, ev.applyFrom, JSON.stringify(ev.conditions), JSON.stringify(result.basis), ev.score]);
-  await db.run('UPDATE cases SET apply_from = ?, level = ? WHERE id = ?', [ev.applyFrom, ev.level.code, caseId]);
+  await db.tx(async t=>{
+    const d=await t.run('INSERT INTO diagnoses (case_id,level,apply_from,conditions,basis,score) VALUES (?,?,?,?,?,?)',[caseId,ev.level.code,ev.applyFrom,JSON.stringify(ev.conditions),JSON.stringify(result.basis),ev.score]);
+    const content={facts:kase,rule:ev.ruleVersion,result};
+    await t.run('INSERT INTO diagnosis_snapshots (diagnosis_id,case_id,content,digest) VALUES (?,?,?,?)',[d.insertId,caseId,JSON.stringify(content),sha256(stable(content))]);
+    await t.run('UPDATE cases SET apply_from=? WHERE id=?',[ev.applyFrom,caseId]);
+  });
 
   return result;
 }

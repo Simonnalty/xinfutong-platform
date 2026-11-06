@@ -3,17 +3,18 @@
     <div class="login-left">
       <div>
         <div class="brand" style="padding:0 0 40px">
-          <div class="logo" style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#1FA69B,#37C2B4);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px">信</div>
-          <div>
-            <div style="font-size:17px;font-weight:600;color:#fff;letter-spacing:1px">信复通</div>
-            <div style="font-size:11px;color:#7E96AD">Credit Restoration Platform</div>
-          </div>
+          <div class="logo"><el-icon :size="24"><DocumentChecked /></el-icon></div>
+          <div><div class="name">信复通</div><div class="slogan">民营企业信用修复平台</div></div>
         </div>
         <h1>让每一次信用修复<br />都有据可依、<em>有迹可循</em></h1>
         <p>
           面向民营企业的信用修复自助平台：从诊断失信等级、生成合规材料，到跟踪办理进度、
-          监测多平台同步、出具可扫码核验的数字凭证 —— 全程留痕，不代办、不承诺结果。
+          监测多平台同步、留痕办理过程 —— 全程留痕，不代办、不代提交、不承诺结果。
         </p>
+        <div class="login-note">
+          <strong>平台不能提交信用修复申请。</strong>
+          申请的唯一受理渠道是「信用中国」及作出决定的行政机关；平台只帮企业判断条件、备齐材料、记录进度。
+        </div>
         <div class="login-feats">
           <div class="login-feat" v-for="f in feats" :key="f.t">
             <div class="t">{{ f.t }}</div>
@@ -21,40 +22,46 @@
           </div>
         </div>
       </div>
-      <div style="font-size:12px;color:#6E8598">
-        本平台数据为演示数据 · 法规参数以属地主管部门口径为准
+      <div class="muted tiny">
+        诊断需配置已复核规则 · 办理要求以主管部门公布口径为准 · 平台结论不替代行政决定
       </div>
     </div>
 
     <div class="login-right">
       <div class="login-form">
-        <h2>登录</h2>
-        <p class="tip">使用手机号登录企业工作台</p>
+        <div class="brand login-mobile-brand"><div class="logo"><el-icon :size="24"><DocumentChecked /></el-icon></div><div><div class="name">信复通</div><div class="slogan">民营企业信用修复平台</div></div></div>
+        <h2>登录工作台</h2>
+        <p class="tip">企业、机构与运营账号使用各自手机号登录</p>
         <el-form :model="form" @submit.prevent="submit" label-position="top">
           <el-form-item label="手机号">
-            <el-input v-model="form.phone" size="large" placeholder="请输入手机号" :prefix-icon="Iphone" />
+            <el-input v-model="form.phone" size="large" placeholder="请输入手机号" autocomplete="username" :prefix-icon="Iphone" />
           </el-form-item>
           <el-form-item label="密码">
-            <el-input v-model="form.password" type="password" size="large" show-password placeholder="请输入密码" :prefix-icon="Lock" @keyup.enter="submit" />
+            <el-input v-model="form.password" type="password" size="large" show-password placeholder="请输入密码" autocomplete="current-password" :prefix-icon="Lock" @keyup.enter="submit" />
           </el-form-item>
           <el-alert v-if="error" :title="error" type="error" :closable="false" show-icon style="margin-bottom:14px" />
           <el-button type="primary" size="large" style="width:100%" :loading="loading" @click="submit">登 录</el-button>
         </el-form>
-        <div class="demo-accounts">
-          演示账号（密码均为 <b>xft2026</b>）：<br />
-          企业端 <b>13907320001</b>（负责人 · 可写）<br />
-          机构端 <b>13907320002</b>（园区服务中心 · 只读）<br />
-          只读成员 <b>13907320003</b>（同企业 · 不可写）<br />
-          运营端 <b>18600000000</b>（平台运营）
-        </div>
         <div style="margin-top:18px;font-size:13px" class="muted">
           没有账号？<el-link type="primary" @click="registerOpen = true">注册企业账号</el-link>
         </div>
+
+
       </div>
 
       <el-dialog v-model="registerOpen" title="注册企业账号" width="420px">
         <el-form :model="reg" label-position="top">
-          <el-form-item label="手机号"><el-input v-model="reg.phone" /></el-form-item>
+          <el-form-item label="手机号">
+            <el-input v-model="reg.phone" style="margin-right:8px" />
+          </el-form-item>
+          <el-form-item label="短信验证码">
+            <div style="display:flex;gap:8px;width:100%">
+              <el-input v-model="reg.code" placeholder="6 位验证码" style="flex:1" />
+              <el-button :loading="smsLoading" :disabled="countdown > 0" @click="sendCode" style="min-width:108px">
+                {{ countdown > 0 ? `重新发送(${countdown}s)` : '获取验证码' }}
+              </el-button>
+            </div>
+          </el-form-item>
           <el-form-item label="姓名"><el-input v-model="reg.name" /></el-form-item>
           <el-form-item label="密码（至少 6 位）"><el-input v-model="reg.password" type="password" show-password /></el-form-item>
         </el-form>
@@ -77,18 +84,21 @@ import { login } from '../store.js'
 
 const router = useRouter()
 const route = useRoute()
-const form = reactive({ phone: '13907320001', password: 'xft2026' })
+const form = reactive({ phone: '', password: '' })
+
 const loading = ref(false)
 const error = ref('')
 const registerOpen = ref(false)
 const regLoading = ref(false)
-const reg = reactive({ phone: '', name: '', password: '' })
+const reg = reactive({ phone: '', name: '', password: '', code: '' })
+const smsLoading = ref(false)
+const countdown = ref(0)
 
 const feats = [
-  { t: '智能诊断', d: '按失信类型与等级判定可申请日、所需材料与法定时限' },
+  { t: '智能诊断', d: '依据已复核规则和企业事实生成材料清单与办理提示' },
   { t: '材料工坊', d: '事实锁定、AI 只润色措辞，跨文书自动一致性校验' },
-  { t: '同步监测', d: '多源渠道巡检，差异定位并可一键生成数据异议函' },
-  { t: '数字凭证', d: '链式存证 + 扫码验真，银行与招标方可直接采信' }
+  { t: '同步监测', d: '区分人工核录与接入渠道，定位差异并生成异议草稿' },
+  { t: '办理进度记录', d: '把办理过程留成可核对的记录，证明「内容没被改」而非「已经修复」' }
 ]
 
 async function submit() {
@@ -106,7 +116,27 @@ async function submit() {
   }
 }
 
+async function sendCode() {
+  if (!reg.phone) { ElMessage.warning('请先填写手机号'); return }
+  smsLoading.value = true
+  try {
+    const res = await api.smsSend(reg.phone)
+    if (res.devCode) ElMessage.success(`验证码已发送（联调码：${res.devCode}）`)
+    else ElMessage.success('验证码已发送，请查收短信')
+    countdown.value = 60
+    const timer = setInterval(() => {
+      countdown.value -= 1
+      if (countdown.value <= 0) clearInterval(timer)
+    }, 1000)
+  } catch (e) {
+    ElMessage.error(e.message)
+  } finally {
+    smsLoading.value = false
+  }
+}
+
 async function doRegister() {
+  if (!reg.phone || !reg.password || !reg.code) { ElMessage.warning('请填写手机号、验证码与密码'); return }
   regLoading.value = true
   try {
     await api.register({ ...reg })

@@ -25,6 +25,7 @@ loadEnv(path.join(__dirname, '..', '.env'));
 const env = process.env;
 
 module.exports = {
+  demoSeed: env.XFT_DEMO_SEED === '1',
   db: {
     host: env.DB_HOST || '127.0.0.1',
     port: Number(env.DB_PORT || 3306),
@@ -46,6 +47,21 @@ module.exports = {
     ttlDays: Number(env.SESSION_TTL_DAYS || 7),
     cookie: 'xft_sid'
   },
+  publicBaseUrl: (env.XFT_PUBLIC_BASE_URL || `http://127.0.0.1:${env.PORT_V2 || env.PORT || 8790}`).replace(/\/+$/, ''),
   python: env.PYTHON || 'python3',
-  signKey: env.XFT_SIGN_KEY || 'xinfutong-dev-key'
+  signKey: env.XFT_SIGN_KEY || 'xinfutong-dev-key',
+  // 短信验证码（阿里云短信认证）。mode=dev 走本地假发码（无费用、便于联调），mode=aliyun 走真实下发。
+  sms: {
+    mode: env.SMS_MODE || 'dev',                       // dev | aliyun
+    endpoint: env.SMS_ENDPOINT || 'dypnsapi.aliyuncs.com',
+    accessKeyId: env.SMS_ACCESS_KEY_ID || '',
+    accessKeySecret: env.SMS_ACCESS_KEY_SECRET || '',
+    signName: env.SMS_SIGN_NAME || '',
+    templateCode: env.SMS_TEMPLATE_CODE || '',
+    schemeName: env.SMS_SCHEME_NAME || '',             // 方案名称，发送与核验须一致；留空用默认方案
+    required: env.SMS_REQUIRED === '1',                // 是否强制注册前完成手机号短信核验
+    codeTtlSeconds: Number(env.SMS_CODE_TTL || 300),   // 验证码有效期
+    verifyTtlSeconds: Number(env.SMS_VERIFY_TTL || 3600), // 核验通过后到注册的宽限期
+    resendSeconds: Number(env.SMS_RESEND || 60)        // 同一号码两次发送的最小间隔
+  }
 };

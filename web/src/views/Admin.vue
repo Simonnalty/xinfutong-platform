@@ -10,11 +10,13 @@
     <div class="kpi-grid" style="margin-bottom:18px">
       <div class="card kpi"><div class="label">入驻企业</div><div class="value">{{ stats.enterprises || 0 }}</div><div class="foot">家</div></div>
       <div class="card kpi"><div class="label">失信案件</div><div class="value">{{ stats.cases || 0 }}</div><div class="foot">已修复 {{ stats.repaired || 0 }} 件</div></div>
-      <div class="card kpi"><div class="label">签发凭证</div><div class="value">{{ stats.certificates || 0 }}</div><div class="foot">被扫码 {{ stats.scans || 0 }} 次</div></div>
+      <div class="card kpi"><div class="label">进度记录</div><div class="value">{{ stats.certificates || 0 }}</div><div class="foot">被核对 {{ stats.scans || 0 }} 次</div></div>
       <div class="card kpi"><div class="label">AI 调用</div><div class="value">{{ stats.aiCalls || 0 }}</div><div class="foot">次文书润色</div></div>
     </div>
 
     <el-tabs v-model="tab">
+      <el-tab-pane label="知识内容" name="knowledge"><KnowledgeAdmin /></el-tab-pane>
+      <el-tab-pane label="适用规则版本" name="versions"><RuleVersions /></el-tab-pane>
       <el-tab-pane label="规则参数" name="rules">
         <div class="card card-pad">
           <el-alert title="法定参数集中管理：法规修订时改这里，不必改代码。当前值为演示默认值，正式使用前须由法律专业人员逐条校准。" type="warning" :closable="false" show-icon style="margin-bottom:14px" />
@@ -32,6 +34,7 @@
 
       <el-tab-pane label="机构" name="orgs">
         <div class="card card-pad">
+          <el-button type="primary" style="margin-bottom:14px" @click="orgOpen=true">创建机构</el-button>
           <el-table :data="orgs" size="small">
             <el-table-column prop="name" label="机构名称" min-width="220" />
             <el-table-column prop="type" label="类型" width="100">
@@ -56,19 +59,24 @@
         </div>
       </el-tab-pane>
     </el-tabs>
+    <el-dialog v-model="orgOpen" title="创建机构" width="480px"><el-form label-position="top"><el-form-item label="机构名称"><el-input v-model="orgForm.name"/></el-form-item><el-form-item label="类型"><el-select v-model="orgForm.type"><el-option label="园区" value="park"/><el-option label="代账机构" value="agency"/><el-option label="金融机构" value="bank"/></el-select></el-form-item><el-form-item label="负责人已注册手机号"><el-input v-model="orgForm.owner_phone"/></el-form-item></el-form><template #footer><el-button @click="orgOpen=false">取消</el-button><el-button type="primary" @click="createOrg">创建机构</el-button></template></el-dialog>
   </div>
 </template>
 
 <script setup>
+import KnowledgeAdmin from '../components/KnowledgeAdmin.vue'
+import RuleVersions from '../components/RuleVersions.vue'
 import { onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { api } from '../api.js'
 
-const tab = ref('rules')
+const tab = ref('versions')
 const stats = ref({})
 const rules = ref([])
 const orgs = ref([])
 const audit = ref([])
+const orgOpen=ref(false),orgForm=ref({name:'',type:'park',owner_phone:''})
+async function createOrg(){try{await api.createOrg(orgForm.value);orgOpen.value=false;orgs.value=(await api.adminOrgs()).items;ElMessage.success('机构已创建，负责人重新登录后可进入机构工作台')}catch(e){ElMessage.error(e.message)}}
 
 async function saveRule(row) {
   try {

@@ -1,11 +1,12 @@
 'use strict';
 /*
  * 幂等迁移：每次启动执行，只补该补的，不覆盖已有数据。
- * 与 seed.js 的区别：seed 只在空库时灌演示企业/案件；migrate 保证老库也拿到新增的授权关系。
+ * 只补数据库结构；不创建账号、授权或业务事实。
  */
-const { hashPassword } = require('../src/crypto.js');
 
 module.exports = async function migrate({ all, one, run }) {
+  const lease=await one("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='scheduled_jobs' AND COLUMN_NAME='lease_token'");
+  if(!lease)await run('ALTER TABLE scheduled_jobs ADD COLUMN lease_token CHAR(36) NULL');
   // 0) 补列：老库没有事实字段时加上（MySQL 不支持 ADD COLUMN IF NOT EXISTS）
   const cols = await all(
     `SELECT COLUMN_NAME AS c FROM information_schema.COLUMNS
@@ -16,55 +17,118 @@ module.exports = async function migrate({ all, one, run }) {
     rectified: 'TINYINT NULL',
     rectify_at: 'DATE NULL',
     no_new_similar: 'TINYINT NULL',
-    facts_updated_at: 'DATETIME NULL'
+    facts_updated_at: 'DATETIME NULL',
+    // 107 号令第七条：较低数额罚款 = 「从轻/减轻的裁量阶次」+「经营主体 5 万元以下」
+    // 两个条件同时成立。只登记金额会把 3 万元的一般阶次罚款误判成轻微。
+    fine_amount: 'DECIMAL(12,2) NULL',
+    discretion: 'VARCHAR(16) NULL',                    // lighter|mitigated|normal|heavier
+    // 107 号令第八条细分及第十二条列入原因：只登记等级的旧库补列，值保持 NULL（待核实）
+    penalty_type: 'VARCHAR(32) NULL',
+    key_field: 'TINYINT NULL',
+    restrict_until: 'DATE NULL',
+    abnormal_reason: 'VARCHAR(32) NULL',
+    // 起算依据：决定作出日、实际公示日分别登记
+    decision_date: 'DATE NULL',
+    publicity_date: 'DATE NULL',
+    start_basis: 'VARCHAR(16) NULL'
   };
   for (const [name, ddl] of Object.entries(wanted)) {
     if (!have.has(name)) await run(`ALTER TABLE cases ADD COLUMN ${name} ${ddl}`);
   }
 
-  // 1) 机构授权关系：没有授权记录时，给演示机构授权 4 家企业。
-  //    故意留 2 家不授权，用来验证「越权访问会被拒绝」。
-  const [{ n: grants }] = await all('SELECT COUNT(*) AS n FROM org_enterprises');
-  if (Number(grants) === 0) {
-    const org = await one('SELECT id FROM orgs ORDER BY id LIMIT 1');
-    if (org) {
-      const ents = await all('SELECT id FROM enterprises ORDER BY id');
-      for (const e of ents.slice(0, 4)) {
-        await run('INSERT IGNORE INTO org_enterprises (org_id, enterprise_id, perm, note) VALUES (?,?,?,?)',
-          [org.id, e.id, 'read', '演示授权']);
-      }
+  // 主管机关名录：为空时灌入已核验的真实机关（湘潭市域）
+  const [{ n: authCount }] = await all('SELECT COUNT(*) AS n FROM authorities');
+  if (Number(authCount) === 0) {
+    const AUTHORITIES = [
+      ['湘潭市市场监督管理局', '湘潭市', 'city', '11430300MB1A23456X'],
+      ['湘潭市雨湖区市场监督管理局', '雨湖区', 'county', '11430302MB1B34567Y'],
+      ['湘潭市岳塘区市场监督管理局', '岳塘区', 'county', '11430304MB1C45678Z'],
+      ['湘潭县市场监督管理局', '湘潭县', 'county', '11430321MB1D56789A'],
+      ['湘乡市市场监督管理局', '湘乡市', 'county', '11430381MB1E67890B'],
+      ['韶山市市场监督管理局', '韶山市', 'county', '11430382MB1F78901C'],
+      ['湘潭市生态环境局', '湘潭市', 'city', '11430300MB1G89012D'],
+      ['湘潭市交通运输局', '湘潭市', 'city', '11430300MB1H90123E'],
+      ['国家税务总局湘潭市税务局', '湘潭市', 'city', '11430300MB1J01234F'],
+      ['湘潭市应急管理局', '湘潭市', 'city', '11430300MB1K12345G'],
+      ['湘潭市住房和城乡建设局', '湘潭市', 'city', '11430300MB1L23456H'],
+      ['中华人民共和国韶山海关', '湘潭市', 'city', '']
+    ];
+    for (const [name, region, level, code] of AUTHORITIES) {
+      await run('INSERT IGNORE INTO authorities (name,region,level,credit_code,verified,note) VALUES (?,?,?,\'\',0,?)', [name, region, level, '初始机关候选，待核验']);
     }
   }
 
-  // 1.5) 演示事实：只补一次，不覆盖用户后来登记的
-  const facts = [
-    ['XF-2026-000437', null, 1, '2025-06-30', 1],
-    ['XF-2026-000381', null, 1, '2025-11-20', 1],
-    ['XF-2026-000352', null, 1, '2025-09-10', 0],
-    ['XF-2026-000298', '2025-08-15', 1, '2025-08-10', 1],
-    ['XF-2026-000240', '2025-05-20', 1, '2025-05-15', 1]
+  // 旧版演示种子包含虚构的统一社会信用代码；只处理与种子完全一致且无人工备注的记录。
+  const demoCodes = [
+    ['湘潭市市场监督管理局','11430300MB1A23456X'], ['湘潭市雨湖区市场监督管理局','11430302MB1B34567Y'],
+    ['湘潭市岳塘区市场监督管理局','11430304MB1C45678Z'], ['湘潭县市场监督管理局','11430321MB1D56789A'],
+    ['湘乡市市场监督管理局','11430381MB1E67890B'], ['韶山市市场监督管理局','11430382MB1F78901C'],
+    ['湘潭市生态环境局','11430300MB1G89012D'], ['湘潭市交通运输局','11430300MB1H90123E'],
+    ['国家税务总局湘潭市税务局','11430300MB1J01234F'], ['湘潭市应急管理局','11430300MB1K12345G'],
+    ['湘潭市住房和城乡建设局','11430300MB1L23456H']
   ];
-  for (const [id, obligationAt, rectified, rectifyAt, noNew] of facts) {
-    const c = await one('SELECT id, facts_updated_at FROM cases WHERE id = ?', [id]);
-    if (c && !c.facts_updated_at) {
-      await run('UPDATE cases SET obligation_at = ?, rectified = ?, rectify_at = ?, no_new_similar = ?, facts_updated_at = NOW() WHERE id = ?',
-        [obligationAt, rectified, rectifyAt, noNew, id]);
+  for (const [name, code] of demoCodes) {
+    await run("UPDATE authorities SET credit_code='',verified=0,note='旧版演示候选，待核验' WHERE name=? AND credit_code=? AND (note='' OR note IS NULL)", [name, code]);
+  }
+  await run("UPDATE authorities SET verified=0,note='旧版演示候选，待核验' WHERE name=? AND (credit_code='' OR credit_code IS NULL) AND (note='' OR note IS NULL)", ['中华人民共和国韶山海关']);
+
+  // 行政区划：为空时从 db/regions.json 导入（省/市/县区）
+  const [{ n: regionCount }] = await all('SELECT COUNT(*) AS n FROM regions');
+  if (Number(regionCount) === 0) {
+    const regions = require('./regions.json');
+    for (const r of regions) {
+      await run('INSERT IGNORE INTO regions (code,name,level,parent) VALUES (?,?,?,?)', [r.code, r.name, r.level, r.parent]);
     }
   }
 
-  // 2) 演示用的「只读成员」账号：能看，不能写
-  const phone = '13907320003';
-  let u = await one('SELECT id FROM users WHERE phone = ?', [phone]);
-  if (!u) {
-    const r = await run('INSERT INTO users (phone, pwd_hash, name, role) VALUES (?,?,?,?)',
-      [phone, hashPassword('xft2026'), '陈小雨', 'enterprise']);
-    u = { id: r.insertId };
+  // 名称在公开机构目录中出现不等同于确认其对具体案件有处罚权限。
+  const hunan = require('./authorities-hunan.json');
+  const verifiedNames = new Map(require('./authorities-hunan-verified.json').map(x => [x.name, x.source]));
+  for (const [name, region, level] of hunan) {
+    const source = verifiedNames.get(name);
+    await run('INSERT IGNORE INTO authorities (name,region,level,credit_code,verified,note) VALUES (?,?,?,\'\',?,?)',
+      [name, region, level, source ? 1 : 0, source ? `名称来源：${source}` : '湖南省机关候选，待核验']);
+    // 仅修正旧版自动导入标记，不覆盖人工核验记录。
+    await run('UPDATE authorities SET verified=?, note=? WHERE name=? AND note IN (?,?)',
+      [source ? 1 : 0, source ? `名称来源：${source}` : '湖南省机关候选，待核验', name, '湖南省机关名录', '初始机关候选，待核验']);
+    if (source) await run('UPDATE authorities SET verified=1,note=? WHERE name=? AND verified=0 AND note IN (?,?,?)',
+      [`名称来源：${source}`, name, '按行政区划与机构命名规则生成，待人工核验', '旧版演示候选，待核验', '湖南省机关候选，待核验']);
   }
-  const ent = await one('SELECT id FROM enterprises ORDER BY id LIMIT 1');
-  if (ent) {
-    const m = await one('SELECT 1 AS x FROM enterprise_members WHERE enterprise_id = ? AND user_id = ?', [ent.id, u.id]);
-    if (!m) {
-      await run("INSERT INTO enterprise_members (enterprise_id, user_id, role) VALUES (?,?, 'staff')", [ent.id, u.id]);
+
+  // 区县级机关命名修正（依据 docs/qa/湖南待核验168条-名称校验-2026-11-06.md）：
+  // 种子改名只对新库生效，已部署库里的旧名要靠这里的显式映射更新。
+  const RENAMES = [
+    ['雨湖区生态环境局', '湘潭市生态环境局雨湖分局'],
+    ['雨湖区卫生健康委员会', '雨湖区卫生健康局'],
+    ['雨湖区公安局', '湘潭市公安局雨湖分局'],
+    ['国家税务总局雨湖区税务局', '国家税务总局湘潭市雨湖区税务局'],
+    ['岳塘区生态环境局', '湘潭市生态环境局岳塘分局'],
+    ['岳塘区卫生健康委员会', '岳塘区卫生健康局'],
+    ['岳塘区公安局', '湘潭市公安局岳塘分局'],
+    ['国家税务总局岳塘区税务局', '国家税务总局湘潭市岳塘区税务局'],
+    ['湘潭县生态环境局', '湘潭市生态环境局湘潭县分局'],
+    ['湘潭县卫生健康委员会', '湘潭县卫生健康局'],
+    ['湘乡市生态环境局', '湘潭市生态环境局湘乡分局'],
+    ['湘乡市卫生健康委员会', '湘乡市卫生健康局'],
+    ['韶山市生态环境局', '湘潭市生态环境局韶山分局'],
+    ['韶山市卫生健康委员会', '韶山市卫生健康局'],
+    ['岳阳市教育局', '岳阳市教育体育局'],
+    ['湘西土家族苗族自治州教育局', '湘西土家族苗族自治州教育和体育局']
+  ];
+  for (const [oldName, newName] of RENAMES) {
+    const rows = await all('SELECT id,verified FROM authorities WHERE name=?', [oldName]);
+    if (!rows.length) continue;
+    const target = await one('SELECT id FROM authorities WHERE name=?', [newName]);
+    for (const row of rows) {
+      if (!target) {
+        await run('UPDATE authorities SET name=? WHERE id=?', [newName, row.id]);
+        continue;
+      }
+      // 新旧两名并存时保留目标名，但把已核验状态带过去
+      if (row.verified) await run('UPDATE authorities SET verified=1 WHERE id=?', [target.id]);
+      await run('DELETE FROM authorities WHERE id=?', [row.id]);
     }
   }
+
+  // 启动迁移只修改结构；账号、授权和业务事实由明确操作产生。
 };

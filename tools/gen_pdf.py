@@ -42,13 +42,33 @@ HAVE_HEI = _font('Hei', 'simhei.ttf')
 HAVE_SONG = _font('Song', 'simsun.ttc', sub=0)
 HAVE_KAI = _font('Kai', 'simkai.ttf')
 
-BODY_FONT = 'Song' if HAVE_SONG else ('Hei' if HAVE_HEI else 'Helvetica')
+if not HAVE_SONG and not HAVE_HEI:
+    from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+    pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
+
+BODY_FONT = 'Song' if HAVE_SONG else ('Hei' if HAVE_HEI else 'STSong-Light')
 TITLE_FONT = 'Hei' if HAVE_HEI else BODY_FONT
 
 INK = colors.HexColor('#0F2A44')
 SUB = colors.HexColor('#6E7A89')
 LINE = colors.HexColor('#D8D2C6')
 RED = colors.HexColor('#B03A2E')
+
+# ---------------------------------------------------------------------------
+# 页脚免责声明（硬编码，不依赖调用方传入）
+#
+# 文件一旦导出就脱离了平台，界面上的提示全都看不到，只有这一行能跟着文件走。
+# 所以这里必须写死在渲染层：任何一份 PDF、任何一页，都带这两行。
+# 修改前请确认与《平台服务说明》及 107 号令、36 号令的口径一致。
+# ---------------------------------------------------------------------------
+FOOTER_NOTICE = [
+    '本文件由信复通平台生成，仅供企业自助备料与办理进度留痕，'
+    '不构成行政机关的修复决定，也不代表平台代为提交。',
+    '信用修复申请请通过「信用中国」或作出决定的行政机关办理，'
+    '是否受理、能否修复以该机关决定为准。',
+]
+NOTICE_SIZE = 6.8
+NOTICE_LEAD = 3.6 * mm
 
 
 def styles():
@@ -89,8 +109,8 @@ class Rule(Flowable):
 
 
 class Seal(Flowable):
-    """红色圆形印章（仅用于平台出具的凭证）"""
-    def __init__(self, size=96, top='信复通', bottom='信用修复专用章'):
+    """平台自制圆形标识（注意：这不是行政机关的印章，也不代表任何行政确认）"""
+    def __init__(self, size=96, top='信复通', bottom='办理进度记录专用'):
         Flowable.__init__(self)
         self.size, self.top, self.bottom = size, top, bottom
 
@@ -140,19 +160,26 @@ def build(data, out):
     def on_page(canvas, doc):
         canvas.saveState()
         w, h = A4
-        canvas.setFont(BODY_FONT, 8.5)
-        canvas.setFillColor(SUB)
-        canvas.drawString(24 * mm, 15 * mm, footer + ('　·　编号 ' + doc_no if doc_no else ''))
-        canvas.drawRightString(w - 24 * mm, 15 * mm, '第 %d 页' % doc.page)
+        # 分隔线抬高，给页脚的免责声明留出空间
         canvas.setStrokeColor(LINE)
         canvas.setLineWidth(0.5)
-        canvas.line(24 * mm, 19 * mm, w - 24 * mm, 19 * mm)
+        canvas.line(24 * mm, 24 * mm, w - 24 * mm, 24 * mm)
+        canvas.setFont(BODY_FONT, 8.5)
+        canvas.setFillColor(SUB)
+        canvas.drawString(24 * mm, 19.5 * mm, footer + ('　·　编号 ' + doc_no if doc_no else ''))
+        canvas.drawRightString(w - 24 * mm, 19.5 * mm, '第 %d 页' % doc.page)
+        # 免责声明：固定两行，任何一份导出文件都必须带上
+        canvas.setFont(BODY_FONT, NOTICE_SIZE)
+        canvas.setFillColor(colors.HexColor('#8A8794'))
+        base = 13.2 * mm
+        for i, line in enumerate(FOOTER_NOTICE):
+            canvas.drawString(24 * mm, base - i * NOTICE_LEAD, line)
         canvas.restoreState()
 
     doc = SimpleDocTemplate(
         out, pagesize=A4,
         leftMargin=26 * mm, rightMargin=26 * mm,
-        topMargin=25 * mm, bottomMargin=24 * mm,
+        topMargin=25 * mm, bottomMargin=29 * mm,
         title=data.get('title', '信用修复材料'),
         author='信复通', creator='信复通 · 信用修复 SaaS',
     )
@@ -179,6 +206,18 @@ def build(data, out):
             txt = clean_inline(inner)
             if txt:
                 flow.append(Paragraph(txt, style))
+
+    if data.get('qrUrl'):
+        from reportlab.graphics.barcode.qr import QrCodeWidget
+        from reportlab.graphics.shapes import Drawing
+        q = QrCodeWidget(data['qrUrl'])
+        x0, y0, x1, y1 = q.getBounds()
+        size = 100
+        drawing = Drawing(size, size, transform=[size/(x1-x0), 0, 0, size/(y1-y0), 0, 0])
+        drawing.add(q)
+        flow.append(Spacer(1, 8))
+        flow.append(drawing)
+        flow.append(Paragraph('扫码查看当前有效状态', st['meta']))
 
     if data.get('seal'):
         flow.append(Spacer(1, 10))

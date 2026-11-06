@@ -4,6 +4,7 @@ import { bootstrap, store } from './store.js'
 const routes = [
   { path: '/', redirect: '/app' },
   { path: '/login', name: 'login', component: () => import('./views/Login.vue'), meta: { public: true } },
+  {path:'/share',component:()=>import('./views/Share.vue'),meta:{public:true}},
   { path: '/verify', name: 'verify', component: () => import('./views/Verify.vue'), meta: { public: true } },
   {
     path: '/app',
@@ -13,6 +14,9 @@ const routes = [
       { path: 'dashboard', name: 'dashboard', component: () => import('./views/Dashboard.vue') },
       { path: 'case/:id', name: 'case', component: () => import('./views/CaseDetail.vue') },
       { path: 'knowledge', name: 'knowledge', component: () => import('./views/Knowledge.vue') },
+      { path: 'notices', component: () => import('./views/Notices.vue') },
+      { path: 'collaboration', component: () => import('./views/Collaboration.vue') },
+      { path: 'organization', component: () => import('./views/Organization.vue') },
       { path: 'admin', name: 'admin', component: () => import('./views/Admin.vue') }
     ]
   }
