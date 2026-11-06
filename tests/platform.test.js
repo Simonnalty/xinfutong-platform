@@ -5,6 +5,10 @@ const http = require('node:http');
 let isolated, server, base;
 before(async () => {
   isolated = await require('./helpers/isolated-db')();
+  // 这些名称仅为隔离测试数据，避免依赖线上机关名录。
+  for (const name of ['测试局','测试市场监督管理局','测试市场监管局','测试机关','测试税务局','严重处罚核查机关','定稿测试机关','材料推进专用机关','核查事项专用机关','流转专用机关','轻微核查专用机关','湘潭市市场监督管理局']) {
+    await isolated.db.run("INSERT IGNORE INTO authorities (name,region,level,verified,note) VALUES (?,'测试地区','city',1,'测试')", [name]);
+  }
   const router = require('../src/router').createRouter();
   require('../src/routes/auth')(router);
   require('../src/routes/workspace')(router);
@@ -53,10 +57,12 @@ test('PATCH facts preserves dates and unknown values, rejects malformed facts at
 });
 test('new owner can build enterprise and case, reopen session, and cannot claim or change another enterprise', async () => {
   const owner=await account('13900009002'), other=await account('13900009003');
-  const input={name:'新建企业测试',credit_code:'91430100MA4L000019',legal:'测试法人',region:'湖南长沙',contact:'测试联系人',phone:'13900009002'};
+  const input={name:'新建企业测试',credit_code:'91430100MA4L000019',legal:'测试法人',region:'湖南省长沙市',contact:'测试联系人',phone:'13900009002'};
   const created=await request('/api/enterprises','POST',input,owner);
   assert.equal(created.status,200);
   const id=created.body.enterprise.id;
+  assert.equal((await request(`/api/enterprises/${id}`,'PATCH',{region:'湖南省北京市'},owner)).status,400);
+  assert.equal((await request(`/api/enterprises/${id}`,'PATCH',{region:'湖南省株洲市'},owner)).status,200);
   assert.equal((await request('/api/enterprises','GET',undefined,owner)).body.items[0].relation,'owner');
   assert.equal((await request('/api/enterprises','POST',input,other)).status,400);
   assert.equal((await request('/api/enterprises','GET',undefined,other)).body.items.length,0);

@@ -2,6 +2,7 @@
 const db = require('../db');
 const auth = require('./auth');
 const v = require('./validation');
+const { validateRegion } = require('./regions');
 const fields = {name:200,credit_code:18,legal:50,industry:60,region:60,scale:40,contact:50,phone:20};
 const labels = {name:'企业名称',credit_code:'统一社会信用代码',legal:'法定代表人',industry:'行业',region:'地区',scale:'规模',contact:'联系人',phone:'联系电话'};
 function normalize(input) {
@@ -15,6 +16,7 @@ function normalize(input) {
 async function create(user, input, ip) {
   if (!['enterprise','admin'].includes(user.role)) throw v.forbidden('机构请通过企业授权管理已有企业');
   const data=normalize(input);
+  data.region = validateRegion(data.region);
   try {
     return await db.tx(async t=>{
       const r=await t.run('INSERT INTO enterprises (name,credit_code,legal,industry,region,scale,contact,phone) VALUES (?,?,?,?,?,?,?,?)',Object.keys(fields).map(k=>data[k]));
@@ -31,6 +33,7 @@ async function update(user, id, input, ip) {
     if (!old) throw Object.assign(new Error('企业不存在'),{code:'NOT_FOUND'});
     if (input.credit_code != null && String(input.credit_code).trim().toUpperCase()!==old.credit_code) throw new Error('信用代码为企业身份标识，不能修改');
     const data=normalize({...old,...input});
+    if (data.region !== (old.region || '')) data.region = validateRegion(data.region);
     const keys=Object.keys(fields).filter(k=>k!=='credit_code');
     await t.run(`UPDATE enterprises SET ${keys.map(k=>k+'=?').join(',')} WHERE id=?`,[...keys.map(k=>data[k]),id]);
     await t.run("INSERT INTO audit_logs (actor_id,action,target,detail,ip) VALUES (?,'enterprise_update',?,?,?)",[user.id,String(id),'更新企业档案',ip||null]);

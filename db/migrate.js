@@ -54,9 +54,23 @@ module.exports = async function migrate({ all, one, run }) {
       ['中华人民共和国韶山海关', '湘潭市', 'city', '']
     ];
     for (const [name, region, level, code] of AUTHORITIES) {
-      await run('INSERT IGNORE INTO authorities (name,region,level,credit_code,verified) VALUES (?,?,?,?,1)', [name, region, level, code]);
+      await run('INSERT IGNORE INTO authorities (name,region,level,credit_code,verified,note) VALUES (?,?,?,\'\',0,?)', [name, region, level, '初始机关候选，待核验']);
     }
   }
+
+  // 旧版演示种子包含虚构的统一社会信用代码；只处理与种子完全一致且无人工备注的记录。
+  const demoCodes = [
+    ['湘潭市市场监督管理局','11430300MB1A23456X'], ['湘潭市雨湖区市场监督管理局','11430302MB1B34567Y'],
+    ['湘潭市岳塘区市场监督管理局','11430304MB1C45678Z'], ['湘潭县市场监督管理局','11430321MB1D56789A'],
+    ['湘乡市市场监督管理局','11430381MB1E67890B'], ['韶山市市场监督管理局','11430382MB1F78901C'],
+    ['湘潭市生态环境局','11430300MB1G89012D'], ['湘潭市交通运输局','11430300MB1H90123E'],
+    ['国家税务总局湘潭市税务局','11430300MB1J01234F'], ['湘潭市应急管理局','11430300MB1K12345G'],
+    ['湘潭市住房和城乡建设局','11430300MB1L23456H']
+  ];
+  for (const [name, code] of demoCodes) {
+    await run("UPDATE authorities SET credit_code='',verified=0,note='旧版演示候选，待核验' WHERE name=? AND credit_code=? AND (note='' OR note IS NULL)", [name, code]);
+  }
+  await run("UPDATE authorities SET verified=0,note='旧版演示候选，待核验' WHERE name=? AND (credit_code='' OR credit_code IS NULL) AND (note='' OR note IS NULL)", ['中华人民共和国韶山海关']);
 
   // 行政区划：为空时从 db/regions.json 导入（省/市/县区）
   const [{ n: regionCount }] = await all('SELECT COUNT(*) AS n FROM regions');
@@ -67,11 +81,18 @@ module.exports = async function migrate({ all, one, run }) {
     }
   }
 
-  // 湖南省机关名录：每次启动补齐（INSERT IGNORE，幂等）
+  // 名称在公开机构目录中出现不等同于确认其对具体案件有处罚权限。
   const hunan = require('./authorities-hunan.json');
+  const verifiedNames = new Map(require('./authorities-hunan-verified.json').map(x => [x.name, x.source]));
   for (const [name, region, level] of hunan) {
-    await run('INSERT IGNORE INTO authorities (name,region,level,credit_code,verified,note) VALUES (?,?,?,\'\',1,?)',
-      [name, region, level, '湖南省机关名录']);
+    const source = verifiedNames.get(name);
+    await run('INSERT IGNORE INTO authorities (name,region,level,credit_code,verified,note) VALUES (?,?,?,\'\',?,?)',
+      [name, region, level, source ? 1 : 0, source ? `名称来源：${source}` : '湖南省机关候选，待核验']);
+    // 仅修正旧版自动导入标记，不覆盖人工核验记录。
+    await run('UPDATE authorities SET verified=?, note=? WHERE name=? AND note IN (?,?)',
+      [source ? 1 : 0, source ? `名称来源：${source}` : '湖南省机关候选，待核验', name, '湖南省机关名录', '初始机关候选，待核验']);
+    if (source) await run('UPDATE authorities SET verified=1,note=? WHERE name=? AND verified=0 AND note IN (?,?,?)',
+      [`名称来源：${source}`, name, '按行政区划与机构命名规则生成，待人工核验', '旧版演示候选，待核验', '湖南省机关候选，待核验']);
   }
 
   // 启动迁移只修改结构；账号、授权和业务事实由明确操作产生。
