@@ -1,0 +1,19 @@
+{
+  "name": "xinfutong-app",
+  "version": "2.0.0",
+  "private": true,
+  "description": "信复通 · 民营企业信用修复 SaaS 平台",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --env-file-if-exists=.env.test --test tests/platform.test.js tests/authority-naming.test.js"
+  },
+  "dependencies": {
+    "docx": "^9.15.0",
+    "domutils": "^4.0.2",
+    "htmlparser2": "^12.0.0",
+    "mysql2": "^3.11.0",
+    "sanitize-html": "^2.18.1"
+  }
+}
