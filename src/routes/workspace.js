@@ -216,7 +216,9 @@ module.exports = function register(r) {
   // 同类历史处罚对照：列出本企业其他处罚，回溯范围可调，结论须人工记录
   r.get('/api/cases/:id/history', async ({ user, params, url }) => {
     const kase = await guard(user, params.id);
-    const months = Math.max(0, Math.min(120, Number(url.searchParams.get('months')) || 36));
+    // months=0 表示不回溯（全部历史），与人工核实记录中的语义一致；非法取值回落默认 36 个月
+    const rawMonths = Number(url.searchParams.get('months'));
+    const months = Number.isFinite(rawMonths) ? Math.max(0, Math.min(120, Math.round(rawMonths))) : 36;
     const base = kase.listed_date || new Date().toISOString().slice(0, 10);
     const from = months > 0 ? rules.addMonths(base, -months) : null;
     const items = await db.all(

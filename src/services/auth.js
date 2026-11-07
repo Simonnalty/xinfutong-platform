@@ -11,6 +11,17 @@ const { hashPassword, verifyPassword, newToken } = require('../crypto.js');
 
 const ROLES = ['enterprise', 'org', 'admin'];
 
+// 登录失败限流：同一手机号连续失败达到阈值后临时锁定（内存态，重启即清空）。
+// 成功登录、锁定过期后自动解除；密码错误与账号不存在同样计数，避免探测手机号。
+const LOGIN_LOCK_THRESHOLD = 5;
+const LOGIN_LOCK_MS = 15 * 60e3;
+const loginAttempts = new Map(); // phone -> { count, lockedUntil }
+function liveLoginAttempt(entry) {
+  if (!entry) return null;
+  if (entry.lockedUntil && Date.now() >= entry.lockedUntil + LOGIN_LOCK_MS) return null;
+  return entry;
+}
+
 async function register({ phone, password, name, role }) {
   if (!/^1[3-9]\d{9}$/.test(String(phone || ''))) throw new Error('手机号格式不正确');
   if (String(password || '').length < 6) throw new Error('密码至少 6 位');
@@ -23,8 +34,26 @@ async function register({ phone, password, name, role }) {
 }
 
 async function login({ phone, password, ip, ua }) {
+  const key = String(phone || '');
+  const entry = liveLoginAttempt(loginAttempts.get(key));
+  if (entry) loginAttempts.set(key, entry); else loginAttempts.delete(key);
+  if (entry && entry.lockedUntil && Date.now() < entry.lockedUntil) {
+    const mins = Math.max(1, Math.ceil((entry.lockedUntil - Date.now()) / 60e3));
+    throw new Error(`登录尝试次数过多，请约 ${mins} 分钟后再试`);
+  }
   const user = await db.one('SELECT * FROM users WHERE phone = ?', [phone]);
-  if (!user || !verifyPassword(password, user.pwd_hash)) throw new Error('手机号或密码不正确');
+  if (!user || !verifyPassword(password, user.pwd_hash)) {
+    const next = entry || { count: 0, lockedUntil: 0 };
+    next.count += 1;
+    if (next.count >= LOGIN_LOCK_THRESHOLD) {
+      next.lockedUntil = Date.now() + LOGIN_LOCK_MS;
+      loginAttempts.set(key, next);
+      throw new Error('登录尝试次数过多，账号已临时锁定 15 分钟');
+    }
+    loginAttempts.set(key, next);
+    throw new Error('手机号或密码不正确');
+  }
+  loginAttempts.delete(key);
   if (user.status !== 'active') throw new Error('账号已被停用');
   const token = newToken();
   const expires = new Date(Date.now() + config.session.ttlDays * 86400e3);

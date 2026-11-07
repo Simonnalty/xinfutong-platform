@@ -107,8 +107,8 @@ module.exports = function register(r) {
     return { certificate: c };
   }, { auth: true });
 
-  // 验真（公开）
-  r.get('/api/verify/:code', async ({ params }) => ({ result: await cert.verify(decodeURIComponent(params.code)) }), { auth: false });
+  // 验真（公开）：记录扫码来源 ip/ua，供核验统计
+  r.get('/api/verify/:code', async ({ params, ip, req }) => ({ result: await cert.verify(decodeURIComponent(params.code), { ip, ua: req.headers['user-agent'] || '' }) }), { auth: false });
 
   // AI 润色
   r.post('/api/cases/:id/docs/:key/polish', async ({ user, params, ip }) => {

@@ -30,7 +30,7 @@ async function issue(caseId,{months=12}={}){
   });
 }
 async function get(code){return db.one('SELECT * FROM certificates WHERE code=?',[code]);}
-async function verify(code){
+async function verify(code,meta={}){
   const c=await get(code);if(!c)return {state:'notfound',message:'未找到该记录编号'};
   const s=await db.one('SELECT * FROM certificate_snapshots WHERE code=?',[code]);
   if(!s)return {state:'legacy',message:'此为旧版演示记录，缺少不可变证据快照，请重新生成'};
@@ -40,7 +40,8 @@ async function verify(code){
   else if(valid&&c.valid_until<new Date().toISOString().slice(0,10)){state='expired';message='该记录已过核对有效期。';}
   const active=await evidence.official(c.case_id);
   if(valid&&state==='valid'&&(!active||active.id!==content.officialProof.id)){state='stale';message='该记录所依据的官方材料已归档或更新，请重新生成。';}
-  await db.run('INSERT INTO cert_scans (code,ip,ua,result) VALUES (?,?,?,?)',[code,'','',state]);
+  // 仅记录真实扫码（公开验真入口）；平台内部的状态校验不写入扫码统计
+  if(!meta.internal)await db.run('INSERT INTO cert_scans (code,ip,ua,result) VALUES (?,?,?,?)',[code,String(meta.ip||'').slice(0,100),String(meta.ua||'').slice(0,300),state]);
   if(!valid)return {state,message,certificate:{code:c.code}};
   return {state,message,certificate:{code:c.code,docNo:c.doc_no,issuedAt:c.issued_at,validUntil:c.valid_until,digest:c.digest,prevHash:c.prev_hash,status:c.status,version:s.version},enterprise:content.enterprise,case:content.case,officialProof:{digest:content.officialProof.digest,observedAt:content.officialProof.observedAt,reviewType:content.officialProof.reviewType},channels:content.channels.map(x=>({name:x.channel_name,state:x.state,provider:x.provider,checkedAt:x.last_checked_at}))};
 }

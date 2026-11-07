@@ -35,7 +35,9 @@ function createRouter() {
       const m = r.re.exec(path);
       if (!m) continue;
       const params = {};
-      r.keys.forEach((k, i) => { params[k] = decodeURIComponent(m[i + 1]); });
+      try {
+        r.keys.forEach((k, i) => { params[k] = decodeURIComponent(m[i + 1]); });
+      } catch { return fail(res, 400, '请求路径包含非法编码'); }
       if (r.auth && !user) return fail(res, 401, '请先登录');
       try {
         const body = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) ? await readBody(req, r.bodyLimit) : {};
@@ -47,6 +49,7 @@ function createRouter() {
       } catch (e) {
         if (e && e.code === 'NOT_FOUND') return fail(res, 404, e.message);
         if (e && e.code === 'FORBIDDEN') return fail(res, 403, e.message);
+        if (e && e.code === 'BODY_TOO_LARGE') return fail(res, 413, e.message);
         console.error(`[${req.method} ${path}]`, e);
         return fail(res, 400, e.message || '请求处理失败');
       }

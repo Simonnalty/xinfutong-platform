@@ -38,14 +38,25 @@ function fail(res, code, message, extra) {
 
 function readBody(req, limit = 2 * 1024 * 1024) {
   return new Promise((resolve, reject) => {
-    let size = 0;
+    let size = 0, settled = false;
     const chunks = [];
     req.on('data', c => {
       size += c.length;
-      if (size > limit) { reject(new Error('请求体过大')); req.destroy(); return; }
-      chunks.push(c);
+      if (size > limit) {
+        // 超限后继续丢弃剩余请求体而不销毁连接，保证错误响应能正常送达客户端
+        if (!settled) {
+          settled = true;
+          chunks.length = 0;
+          const err = new Error('请求体过大');
+          err.code = 'BODY_TOO_LARGE';
+          reject(err);
+        }
+        return;
+      }
+      if (!settled) chunks.push(c);
     });
     req.on('end', () => {
+      if (settled) return;
       const raw = Buffer.concat(chunks).toString('utf8');
       if (!raw) return resolve({});
       try { resolve(JSON.parse(raw)); } catch { reject(new Error('请求体不是合法 JSON')); }

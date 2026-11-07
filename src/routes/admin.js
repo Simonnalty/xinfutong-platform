@@ -41,7 +41,8 @@ module.exports = function register(r) {
 
   r.get('/api/admin/audit', async ({ user, url }) => {
     requireAdmin(user);
-    const limit = Math.min(200, Number(url.searchParams.get('limit') || 50));
+    const rawLimit = Number(url.searchParams.get('limit') || 50);
+    const limit = Number.isFinite(rawLimit) ? Math.max(1, Math.min(200, Math.round(rawLimit))) : 50;
     return { items: await db.all('SELECT * FROM audit_logs ORDER BY id DESC LIMIT ?', [limit]) };
   }, { auth: true });
 

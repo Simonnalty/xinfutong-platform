@@ -81,6 +81,11 @@ function genCode() {
   return String(crypto.randomInt(0, 1000000)).padStart(6, '0');
 }
 
+// dev 模式验证码尝试限制：同一号码连续输错达到上限即作废当前验证码，防止在有效期内爆破 6 位数字码。
+// （内存态，重新发码即重新计数；aliyun 模式的核验由阿里云侧控制，不走此逻辑）
+const CODE_MAX_ATTEMPTS = 5;
+const checkAttempts = new Map(); // phone -> wrong attempts since latest send
+
 /** 发送验证码。返回 { schemeName, devCode?, expiresAt } */
 async function send({ phone }) {
   if (!/^1[3-9]\d{9}$/.test(String(phone || ''))) throw new Error('手机号格式不正确');
@@ -125,6 +130,7 @@ async function send({ phone }) {
   await db.run(
     'INSERT INTO sms_verifications (phone, code_hash, scheme, sent_at, expires_at, verified) VALUES (?,?,?,NOW(),DATE_ADD(NOW(), INTERVAL ? SECOND),0)',
     [phone, crypto.createHash('sha256').update(code).digest('hex'), schemeName, config.sms.codeTtlSeconds]);
+  checkAttempts.delete(phone);
 
   return { schemeName, devCode };
 }
@@ -164,7 +170,17 @@ async function check({ phone, code }) {
   const expires = Date.parse(String(row.expires_at).replace(' ', 'T'));
   if (!Number.isFinite(expires)) throw new Error('验证码已过期，请重新获取');
   if (expires < Date.now()) throw new Error('验证码已过期，请重新获取');
-  if (row.code_hash !== codeHash) throw new Error('验证码不正确');
+  const attempts = checkAttempts.get(phone) || 0;
+  if (attempts >= CODE_MAX_ATTEMPTS) {
+    await db.run('UPDATE sms_verifications SET expires_at = NOW() WHERE phone = ? AND scheme = ? AND verified = 0', [phone, schemeName]);
+    checkAttempts.delete(phone);
+    throw new Error('验证码错误次数过多已作废，请重新获取');
+  }
+  if (row.code_hash !== codeHash) {
+    checkAttempts.set(phone, attempts + 1);
+    throw new Error('验证码不正确');
+  }
+  checkAttempts.delete(phone);
   await markVerified(phone, schemeName);
   return { ok: true };
 }
